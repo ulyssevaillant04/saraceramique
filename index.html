@@ -248,6 +248,24 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 .pc-name{font-family:'Playfair Display',serif;font-style:italic;font-size:.98rem;color:var(--dark);margin-bottom:.45rem;}
 .pc-desc{font-size:.76rem;font-weight:300;color:var(--text-soft);line-height:1.7;}
 
+
+/* ══ GALLERY LIGHTBOX ══ */
+#gal-lb{position:fixed;inset:0;z-index:2100;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(10,20,20,.92);backdrop-filter:blur(18px);}
+#gal-lb.open{display:flex;}
+#gal-lb-img-wrap{position:relative;display:flex;align-items:center;justify-content:center;max-width:95vw;max-height:80vh;}
+#gal-lb-img{max-width:90vw;max-height:78vh;object-fit:contain;border-radius:6px;box-shadow:0 24px 80px rgba(0,0,0,.5);transition:opacity .3s;}
+#gal-lb-img.fade{opacity:0;}
+.gal-lb-nav{position:fixed;top:50%;transform:translateY(-50%);background:rgba(253,250,247,.12);border:1px solid rgba(253,250,247,.2);border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:1.1rem;transition:background .2s;z-index:10;-webkit-tap-highlight-color:transparent;}
+.gal-lb-nav:hover{background:rgba(253,250,247,.25);}
+#gal-lb-prev{left:1rem;}
+#gal-lb-next{right:1rem;}
+#gal-lb-close{position:fixed;top:1.2rem;right:1.2rem;background:rgba(253,250,247,.12);border:1px solid rgba(253,250,247,.2);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:1rem;transition:background .2s;-webkit-tap-highlight-color:transparent;}
+#gal-lb-close:hover{background:rgba(253,250,247,.25);}
+#gal-lb-counter{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.5);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;}
+.gal-lb-dots{display:flex;gap:.5rem;position:fixed;bottom:3rem;left:50%;transform:translateX(-50%);}
+.gal-lb-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25);border:none;cursor:pointer;transition:background .2s,transform .2s;padding:0;-webkit-tap-highlight-color:transparent;}
+.gal-lb-dot.active{background:#fff;transform:scale(1.4);}
+
 /* ══ LIGHTBOX ══ */
 #lightbox{position:fixed;inset:0;z-index:2000;display:none;align-items:center;justify-content:center;background:rgba(26,53,53,.82);backdrop-filter:blur(10px);animation:fadeIn .3s ease;}
 #lightbox.open{display:flex;}
@@ -567,15 +585,15 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     <div><p class="s-lbl no-flower"><svg class="s-lbl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="4"/></svg>Galerie</p><h2 class="s-ttl">Fleurs de <em>terre cuite</em></h2></div>
     <p class="gal-note">Chaque pièce, une invitation à rêver.</p>
   </div>
-  <div class="bento reveal">
-    <div class="g"><img src="images/mug.JPG" /><div class="g-ov"></div></div>
-    <div class="g"><img src="images/coupe.JPG" /><div class="g-ov"></div></div>
-    <div class="g"><img src="images/fiole.JPG" /><div class="g-ov"></div></div>
-    <div class="g"><img src="images/mug2.JPG" /><div class="g-ov"></div></div>
-    <div class="g"><img src="images/coupe2.JPG" /><div class="g-ov"></div></div>
-    <div class="g"><img src="images/lampadaire.JPG" /><div class="g-ov"></div></div>
-    <div class="g"><img src="images/mug.JPG" /><div class="g-ov"></div></div>
-    <div class="g"><img src="images/coupe.JPG" /><div class="g-ov"></div></div>
+  <div class="bento reveal" id="gal-bento">
+    <div class="g" onclick="openGallery(0)" style="cursor:zoom-in;"><img src="images/mug.JPG" /><div class="g-ov"></div></div>
+    <div class="g" onclick="openGallery(1)" style="cursor:zoom-in;"><img src="images/coupe.JPG" /><div class="g-ov"></div></div>
+    <div class="g" onclick="openGallery(2)" style="cursor:zoom-in;"><img src="images/fiole.JPG" /><div class="g-ov"></div></div>
+    <div class="g" onclick="openGallery(3)" style="cursor:zoom-in;"><img src="images/mug2.JPG" /><div class="g-ov"></div></div>
+    <div class="g" onclick="openGallery(4)" style="cursor:zoom-in;"><img src="images/coupe2.JPG" /><div class="g-ov"></div></div>
+    <div class="g" onclick="openGallery(5)" style="cursor:zoom-in;"><img src="images/lampadaire.JPG" /><div class="g-ov"></div></div>
+    <div class="g" onclick="openGallery(6)" style="cursor:zoom-in;"><img src="images/mug.JPG" /><div class="g-ov"></div></div>
+    <div class="g" onclick="openGallery(7)" style="cursor:zoom-in;"><img src="images/coupe.JPG" /><div class="g-ov"></div></div>
   </div>
 </section>
 
@@ -830,6 +848,19 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   </ul>
   <p class="f-copy">© 2026 Sara Mahjoub — Tous droits réservés</p>
 </footer>
+</div>
+
+
+<!-- ══ GALLERY LIGHTBOX ══ -->
+<div id="gal-lb" onclick="galLbClickOutside(event)">
+  <button id="gal-lb-close" onclick="closeGallery()">✕</button>
+  <div id="gal-lb-img-wrap">
+    <img id="gal-lb-img" src="" alt=""/>
+  </div>
+  <button class="gal-lb-nav" id="gal-lb-prev" onclick="galNav(-1)">‹</button>
+  <button class="gal-lb-nav" id="gal-lb-next" onclick="galNav(1)">›</button>
+  <div class="gal-lb-dots" id="gal-lb-dots"></div>
+  <div id="gal-lb-counter"></div>
 </div>
 
 <!-- ══ LIGHTBOX ══ -->
@@ -1181,8 +1212,69 @@ function navScrollTo(hash){
   requestAnimationFrame(frame);
 })();
 
-/* ── LIGHTBOX ── */
-let lbImgs=[], lbIdx=0;
+/* ── GALLERY LIGHTBOX ── */
+const galImgs = [
+  'images/mug.JPG','images/coupe.JPG','images/fiole.JPG','images/mug2.JPG',
+  'images/coupe2.JPG','images/lampadaire.JPG','images/mug.JPG','images/coupe.JPG'
+];
+let galIdx = 0;
+let galTouchX = null;
+
+function openGallery(i) {
+  galIdx = i;
+  setGalImg();
+  buildGalDots();
+  document.getElementById('gal-lb').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeGallery() {
+  document.getElementById('gal-lb').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function galLbClickOutside(e) {
+  if(e.target.id === 'gal-lb') closeGallery();
+}
+function galNav(dir) {
+  galIdx = (galIdx + dir + galImgs.length) % galImgs.length;
+  const img = document.getElementById('gal-lb-img');
+  img.classList.add('fade');
+  setTimeout(() => { setGalImg(); img.classList.remove('fade'); }, 280);
+}
+function setGalImg() {
+  document.getElementById('gal-lb-img').src = galImgs[galIdx];
+  document.getElementById('gal-lb-counter').textContent = (galIdx+1) + ' / ' + galImgs.length;
+  document.querySelectorAll('.gal-lb-dot').forEach((d,i) => d.classList.toggle('active', i===galIdx));
+}
+function buildGalDots() {
+  document.getElementById('gal-lb-dots').innerHTML =
+    galImgs.map((_,i) => `<button class="gal-lb-dot${i===0?' active':''}" onclick="galGoTo(${i})"></button>`).join('');
+}
+function galGoTo(i) {
+  galIdx = i;
+  const img = document.getElementById('gal-lb-img');
+  img.classList.add('fade');
+  setTimeout(() => { setGalImg(); img.classList.remove('fade'); }, 280);
+}
+// Swipe tactile
+document.addEventListener('DOMContentLoaded', () => {
+  const lb = document.getElementById('gal-lb');
+  lb.addEventListener('touchstart', e => { galTouchX = e.touches[0].clientX; }, {passive:true});
+  lb.addEventListener('touchend', e => {
+    if(galTouchX === null) return;
+    const diff = galTouchX - e.changedTouches[0].clientX;
+    if(Math.abs(diff) > 40) galNav(diff > 0 ? 1 : -1);
+    galTouchX = null;
+  });
+});
+// Clavier
+document.addEventListener('keydown', e => {
+  if(!document.getElementById('gal-lb').classList.contains('open')) return;
+  if(e.key === 'ArrowRight') galNav(1);
+  if(e.key === 'ArrowLeft') galNav(-1);
+  if(e.key === 'Escape') closeGallery();
+});
+
+
 
 function openLightbox(el){
   lbImgs = JSON.parse(el.dataset.imgs);

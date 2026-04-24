@@ -7,11 +7,94 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Nunito:wght@200;300;400&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script>
-  (function(){
-    // ⬇ Remplace par ta Public Key EmailJS
-    emailjs.init({ publicKey: "U5kND4jW0NLLN75-F" });
-  })();
+<script>emailjs.init({publicKey:"U5kND4jW0NLLN75-F"});</script>
+<!-- Firebase realtime sync -->
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getFirestore,doc,getDoc,collection,getDocs,onSnapshot,query,orderBy}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const fb=initializeApp({apiKey:"AIzaSyBk6Kh6jBG3slID3G2cuUk0KE59cCIIfRM",authDomain:"sara-ceramique.firebaseapp.com",projectId:"sara-ceramique",storageBucket:"sara-ceramique.firebasestorage.app",messagingSenderId:"948372418186",appId:"1:948372418186:web:7f9dea6726c43536ebc773"});
+const db=getFirestore(fb);
+
+// Textes
+onSnapshot(doc(db,'site','textes'),snap=>{
+  if(!snap.exists())return;
+  const d=snap.data();
+  const set=(sel,val)=>{if(!val)return;document.querySelectorAll(sel).forEach(el=>el.innerHTML=val);};
+  if(d.heroTitle){document.querySelectorAll('.h-title').forEach(el=>{el.innerHTML=d.heroTitle+(d.heroSub?`<em>${d.heroSub}</em>`:'');});}
+  if(d.abBody)set('.ab-body',d.abBody);
+  if(d.abQuote)set('.ab-quote',`"${d.abQuote}"`);
+  if(d.abTtl)set('#apropos .s-ttl',d.abTtl);
+  if(d.collCorolles)document.querySelectorAll('[data-coll=corolles] .coll-desc').forEach(el=>el.textContent=d.collCorolles);
+  if(d.collMer)document.querySelectorAll('[data-coll=mer] .coll-desc').forEach(el=>el.textContent=d.collMer);
+  if(d.collUnique)document.querySelectorAll('[data-coll=unique] .coll-desc').forEach(el=>el.textContent=d.collUnique);
+  if(d.univQuote)set('.univ-quote',`"${d.univQuote}"`);
+  if(d.contactTag)set('.c-tagline',d.contactTag);
+  if(d.boutiqueTtl)document.querySelectorAll('.b-title').forEach(el=>el.innerHTML=d.boutiqueTtl+(d.boutiqueSub?`<em>${d.boutiqueSub}</em>`:''));
+  if(d.boutiqueDesc)set('.b-desc',d.boutiqueDesc);
+  if(d.heroBtn1)document.querySelectorAll('.btn-teal').forEach(el=>el.textContent=d.heroBtn1);
+  if(d.heroBtn2)document.querySelectorAll('.btn-outline').forEach(el=>el.textContent=d.heroBtn2);
+});
+
+// Contact
+onSnapshot(doc(db,'site','contact'),snap=>{
+  if(!snap.exists())return;
+  const d=snap.data();
+  if(d.email)document.querySelectorAll('.c-val-email').forEach(el=>el.textContent=d.email);
+  if(d.instagram)document.querySelectorAll('.c-val-ig').forEach(el=>el.textContent=d.instagram);
+  if(d.instagramUrl)document.querySelectorAll('a.f-ig').forEach(el=>el.href=d.instagramUrl);
+  if(d.adresse)document.querySelectorAll('.c-val-adresse').forEach(el=>el.childNodes[0].textContent=d.adresse+' ');
+  if(d.newsletterTxt)document.querySelectorAll('.b-newsletter-txt').forEach(el=>el.textContent=d.newsletterTxt);
+});
+
+// Couleurs
+onSnapshot(doc(db,'site','couleurs'),snap=>{
+  if(!snap.exists())return;
+  const d=snap.data();
+  const r=document.documentElement.style;
+  if(d.teal)r.setProperty('--teal',d.teal);
+  if(d.tealDeep)r.setProperty('--teal-deep',d.tealDeep);
+  if(d.rose)r.setProperty('--rose',d.rose);
+  if(d.ivory)r.setProperty('--ivory',d.ivory);
+  if(d.dark)r.setProperty('--dark',d.dark);
+  if(d.gold)r.setProperty('--gold',d.gold);
+});
+
+// Galerie
+onSnapshot(doc(db,'site','galerie'),snap=>{
+  if(!snap.exists())return;
+  const imgs=snap.data().imgs||[];
+  const cells=document.querySelectorAll('#gal-bento .g img');
+  imgs.forEach((src,i)=>{if(cells[i]&&src)cells[i].src=src;});
+  // Mettre à jour la lightbox galerie
+  if(window.galImgs&&imgs.length)imgs.forEach((src,i)=>{if(src)window.galImgs[i]=src;});
+});
+
+// Portrait
+onSnapshot(doc(db,'site','general'),snap=>{
+  if(!snap.exists())return;
+  const d=snap.data();
+  if(d.portrait){const img=document.querySelector('.ab-frame img');if(img)img.src=d.portrait;}
+});
+
+// Collections — charger depuis Firebase si données présentes
+async function loadCollFromFirebase(collKey,pageId){
+  const q=query(collection(db,'collections',collKey,'pieces'),orderBy('order'));
+  onSnapshot(q,snap=>{
+    if(snap.empty)return;
+    const items=[];snap.forEach(d=>items.push({id:d.id,...d.data()}));
+    const grid=document.querySelector(`#${pageId} .cp-grid`);
+    if(!grid)return;
+    grid.innerHTML=items.map(item=>`
+      <div class="pc" onclick="openLightbox(this)"
+        data-imgs='${JSON.stringify(item.imgs||[])}' data-name="${item.name||''}" data-desc="${item.desc||''}">
+        <div class="pc-img"><img src="${(item.imgs||[])[0]||''}" /></div>
+        <div class="pc-body"><p class="pc-name">${item.name||''}</p><p class="pc-desc">${item.desc||''}</p></div>
+      </div>`).join('');
+  });
+}
+loadCollFromFirebase('corolles','page-corolles');
+loadCollFromFirebase('mer','page-mer');
+loadCollFromFirebase('unique','page-unique');
 </script>
 <style>
 /* ══════════════════════════════════════════
@@ -604,15 +687,15 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     <h2 class="s-ttl">Collections</h2>
   </div>
   <div class="coll-grid">
-    <div class="coll-card reveal" onclick="goTo('corolles')">
+    <div class="coll-card reveal" onclick="goTo('corolles')" data-coll="corolles">
       <div class="coll-img"><img src="images/mug2.JPG" /><div class="coll-img-ov"></div></div>
       <div class="coll-body"><p class="coll-tag">Collection</p><h3 class="coll-name">Jardin Enchanté</h3><p class="coll-desc">Boire dans une fleur. Des tasses et mugs aux bords pétales, pour transformer chaque thé en rituel enchanté.</p><span class="coll-link">Découvrir →</span></div>
     </div>
-    <div class="coll-card reveal" style="transition-delay:.15s" onclick="goTo('mer')">
+    <div class="coll-card reveal" style="transition-delay:.15s" onclick="goTo('mer')" data-coll="mer">
       <div class="coll-img"><img src="images/coupe.JPG" /><div class="coll-img-ov"></div></div>
       <div class="coll-body"><p class="coll-tag">Collection</p><h3 class="coll-name">Trésors Marins</h3><p class="coll-desc">Coquillages devenus coupelles, vagues sculptées dans l'argile. La mer réinterprétée avec des yeux de fée.</p><span class="coll-link">Découvrir →</span></div>
     </div>
-    <div class="coll-card reveal" style="transition-delay:.3s" onclick="goTo('unique')">
+    <div class="coll-card reveal" style="transition-delay:.3s" onclick="goTo('unique')" data-coll="unique">
       <div class="coll-img"><img src="images/lampadaire.JPG" /><div class="coll-img-ov"></div></div>
       <div class="coll-body"><p class="coll-tag">Sur commande</p><h3 class="coll-name">Pièces Uniques</h3><p class="coll-desc">Lampadaires sculpturaux, cadeaux précieux, objets sur-mesure nés d'un désir particulier.</p><span class="coll-link">Découvrir →</span></div>
     </div>
@@ -636,8 +719,8 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     <p class="c-tagline">Commande sur-mesure, acquisition d'une pièce, cours de céramique — toutes les lettres de fées sont bienvenues.</p>
     <div class="c-list">
       <div><p class="c-lbl">Atelier</p><p class="c-val"><a href="https://maps.app.goo.gl/heBq47Lfc4VbpKif9" target="_blank" rel="noopener">32 boulevard d'Aguillon, 06600 Antibes <svg style="display:inline;margin-left:.3rem;vertical-align:middle;" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></a></p></div>
-      <div><p class="c-lbl">Email</p><p class="c-val">saraceramique06@gmail.com</p></div>
-      <div><p class="c-lbl">Instagram</p><p class="c-val"><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener">@saraceramique</a></p></div>
+      <div><p class="c-lbl">Email</p><p class="c-val" class="c-val-email">saraceramique06@gmail.com</p></div>
+      <div><p class="c-lbl">Instagram</p><p class="c-val" class="c-val-ig-wrap"><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="c-val-ig">@saraceramique</a></p></div>
     </div>
   </div>
   <div class="c-form reveal">
@@ -659,7 +742,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     <li><a onclick="navScrollTo('#collections')">Collections</a></li>
     <li><a onclick="goTo('boutique')">Boutique</a></li>
     <li><a onclick="navScrollTo('#contact')">Contact</a></li>
-    <li><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="f-ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg>@saraceramique</a></li>
+    <li class="c-val-ig-wrap"><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="f-ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg class="c-val-ig">@saraceramique</a></li>
   </ul>
   <p class="f-copy">© 2026 Sara Mahjoub — Tous droits réservés</p>
 </footer>
@@ -705,7 +788,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     <li><a onclick="navScrollTo('#collections')">Collections</a></li>
     <li><a onclick="goTo('boutique')">Boutique</a></li>
     <li><a onclick="navScrollTo('#contact')">Contact</a></li>
-    <li><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="f-ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg>@saraceramique</a></li>
+    <li class="c-val-ig-wrap"><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="f-ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg class="c-val-ig">@saraceramique</a></li>
   </ul>
   <p class="f-copy">© 2026 Sara Mahjoub — Tous droits réservés</p>
 </footer>
@@ -754,7 +837,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     <li><a onclick="navScrollTo('#collections')">Collections</a></li>
     <li><a onclick="goTo('boutique')">Boutique</a></li>
     <li><a onclick="navScrollTo('#contact')">Contact</a></li>
-    <li><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="f-ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg>@saraceramique</a></li>
+    <li class="c-val-ig-wrap"><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="f-ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg class="c-val-ig">@saraceramique</a></li>
   </ul>
   <p class="f-copy">© 2026 Sara Mahjoub — Tous droits réservés</p>
 </footer>
@@ -799,7 +882,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     <li><a onclick="navScrollTo('#collections')">Collections</a></li>
     <li><a onclick="goTo('boutique')">Boutique</a></li>
     <li><a onclick="navScrollTo('#contact')">Contact</a></li>
-    <li><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="f-ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg>@saraceramique</a></li>
+    <li class="c-val-ig-wrap"><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="f-ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg class="c-val-ig">@saraceramique</a></li>
   </ul>
   <p class="f-copy">© 2026 Sara Mahjoub — Tous droits réservés</p>
 </footer>
@@ -819,7 +902,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 3c0 0-3 3-3 9s3 9 3 9M12 3c0 0 3 3 3 9s-3 9-3 9M3 12c0 0 3-3 9-3s9 3 9 3M3 12c0 0 3 3 9 3s9-3 9-3"/></svg>
     <div class="h-orn-line r"></div>
   </div>
-  <p style="font-size:.76rem;color:var(--text-soft);font-family:'Cormorant Garamond',serif;font-style:italic;margin-bottom:.9rem;">Soyez averti(e) dès l'ouverture :</p>
+  <p style="font-size:.76rem;color:var(--text-soft);font-family:'Cormorant Garamond',serif;font-style:italic;margin-bottom:.9rem;" class="b-newsletter-txt">Soyez averti(e) dès l'ouverture :</p>
   <div class="b-notify">
     <input id="newsletter-email" class="b-input" type="email" placeholder="votre@email.com"/>
     <button class="b-btn" onclick="subscribeNewsletter()">Me prévenir</button>
@@ -844,7 +927,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     <li><a onclick="navScrollTo('#collections')">Collections</a></li>
     <li><a onclick="goTo('boutique')">Boutique</a></li>
     <li><a onclick="navScrollTo('#contact')">Contact</a></li>
-    <li><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="f-ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg>@saraceramique</a></li>
+    <li class="c-val-ig-wrap"><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="f-ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg class="c-val-ig">@saraceramique</a></li>
   </ul>
   <p class="f-copy">© 2026 Sara Mahjoub — Tous droits réservés</p>
 </footer>

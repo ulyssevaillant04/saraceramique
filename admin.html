@@ -112,6 +112,29 @@ body{font-family:'Nunito',sans-serif;background:var(--ivory);color:var(--text);}
 .mbtn-s:hover{border-color:var(--teal);color:var(--teal-deep);}
 .mbtn-row{display:flex;gap:.7rem;margin-top:1.4rem;}
 
+/* ══ PHOTO DELETE sur pièce ══ */
+.pc-img-del{position:absolute;top:.4rem;right:.4rem;width:24px;height:24px;border-radius:50%;background:rgba(192,80,80,.9);color:#fff;border:none;cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center;z-index:5;opacity:0;transition:opacity .2s;}
+.pc-img-wrap:hover .pc-img-del{opacity:1;}
+.pc-img-wrap{position:relative;}
+
+/* ══ COLLECTION DELETE ══ */
+.coll-del-btn{position:absolute;top:.8rem;right:.8rem;width:32px;height:32px;border-radius:50%;background:rgba(192,80,80,.85);color:#fff;border:none;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;z-index:10;opacity:0;transition:opacity .2s;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.coll-card-wrap{position:relative;}
+.coll-card-wrap:hover .coll-del-btn{opacity:1;}
+
+/* ══ ADD COLLECTION CARD ══ */
+.add-coll-card{
+  border:2.5px dashed rgba(75,191,196,.4);border-radius:20px;
+  min-height:380px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1rem;cursor:pointer;transition:all .25s;background:none;
+  color:var(--teal-deep);font-family:'Nunito',sans-serif;
+}
+.add-coll-card:hover{border-color:var(--teal);background:rgba(75,191,196,.04);}
+.add-coll-plus{width:56px;height:56px;border-radius:50%;border:2px solid rgba(75,191,196,.5);display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:var(--teal);transition:all .25s;}
+.add-coll-card:hover .add-coll-plus{background:var(--teal);color:#fff;border-color:var(--teal);}
+.add-coll-label{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;}
+
+
 /* ══ REPRISE CSS DU SITE ══ */
 nav{position:relative;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 5rem;background:rgba(253,250,247,.93);backdrop-filter:blur(16px);}
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.12rem;font-weight:400;font-style:italic;color:var(--dark);text-decoration:none;letter-spacing:.03em;}
@@ -289,34 +312,47 @@ section{padding:8rem 5rem;position:relative;overflow:hidden;}
     <p class="s-lbl" style="justify-content:center;">Collections</p>
     <h2 class="s-ttl" contenteditable="true" data-key="collTtl" spellcheck="false">Collections</h2>
   </div>
-  <div class="coll-grid">
-    <div class="coll-card">
-      <div class="coll-img"><img class="editable-img" onclick="changeImg('coll-corolles')" id="img-coll-corolles" src="images/mug2.JPG" alt=""/></div>
-      <div class="coll-body">
-        <p class="coll-tag">Collection</p>
-        <h3 class="coll-name">Jardin Enchanté</h3>
-        <p class="coll-desc" contenteditable="true" data-key="collCorolles" spellcheck="false">Boire dans une fleur. Des tasses et mugs aux bords pétales, pour transformer chaque thé en rituel enchanté.</p>
-        <span class="coll-link">Découvrir →</span>
+  <div class="coll-grid" id="coll-grid">
+    <div class="coll-card-wrap">
+      <div class="coll-card">
+        <div class="coll-img"><img class="editable-img" onclick="changeImg('coll-corolles')" id="img-coll-corolles" src="images/mug2.JPG" alt=""/></div>
+        <div class="coll-body">
+          <p class="coll-tag">Collection</p>
+          <h3 class="coll-name">Jardin Enchanté</h3>
+          <p class="coll-desc" contenteditable="true" data-key="collCorolles" spellcheck="false">Boire dans une fleur. Des tasses et mugs aux bords pétales, pour transformer chaque thé en rituel enchanté.</p>
+          <span class="coll-link">Découvrir →</span>
+        </div>
       </div>
     </div>
-    <div class="coll-card">
-      <div class="coll-img"><img class="editable-img" onclick="changeImg('coll-mer')" id="img-coll-mer" src="images/coupe.JPG" alt=""/></div>
-      <div class="coll-body">
-        <p class="coll-tag">Collection</p>
-        <h3 class="coll-name">Trésors Marins</h3>
-        <p class="coll-desc" contenteditable="true" data-key="collMer" spellcheck="false">Coquillages devenus coupelles, vagues sculptées dans l'argile. La mer réinterprétée avec des yeux de fée.</p>
-        <span class="coll-link">Découvrir →</span>
+    <div class="coll-card-wrap">
+      <div class="coll-card">
+        <div class="coll-img"><img class="editable-img" onclick="changeImg('coll-mer')" id="img-coll-mer" src="images/coupe.JPG" alt=""/></div>
+        <div class="coll-body">
+          <p class="coll-tag">Collection</p>
+          <h3 class="coll-name">Trésors Marins</h3>
+          <p class="coll-desc" contenteditable="true" data-key="collMer" spellcheck="false">Coquillages devenus coupelles, vagues sculptées dans l'argile. La mer réinterprétée avec des yeux de fée.</p>
+          <span class="coll-link">Découvrir →</span>
+        </div>
       </div>
     </div>
-    <div class="coll-card">
-      <div class="coll-img"><img class="editable-img" onclick="changeImg('coll-unique')" id="img-coll-unique" src="images/lampadaire.JPG" alt=""/></div>
-      <div class="coll-body">
-        <p class="coll-tag">Sur commande</p>
-        <h3 class="coll-name">Pièces Uniques</h3>
-        <p class="coll-desc" contenteditable="true" data-key="collUnique" spellcheck="false">Lampadaires sculpturaux, cadeaux précieux, objets sur-mesure nés d'un désir particulier.</p>
-        <span class="coll-link">Découvrir →</span>
+    <div class="coll-card-wrap">
+      <div class="coll-card">
+        <div class="coll-img"><img class="editable-img" onclick="changeImg('coll-unique')" id="img-coll-unique" src="images/lampadaire.JPG" alt=""/></div>
+        <div class="coll-body">
+          <p class="coll-tag">Sur commande</p>
+          <h3 class="coll-name">Pièces Uniques</h3>
+          <p class="coll-desc" contenteditable="true" data-key="collUnique" spellcheck="false">Lampadaires sculpturaux, cadeaux précieux, objets sur-mesure nés d'un désir particulier.</p>
+          <span class="coll-link">Découvrir →</span>
+        </div>
       </div>
     </div>
+    <!-- Collections dynamiques chargées depuis Firebase -->
+    <div id="dynamic-colls"></div>
+    <!-- Card + ajouter -->
+    <button class="add-coll-card" onclick="openAddColl()">
+      <div class="add-coll-plus">+</div>
+      <div class="add-coll-label">Nouvelle collection</div>
+    </button>
   </div>
 </section>
 
@@ -395,6 +431,21 @@ section{padding:8rem 5rem;position:relative;overflow:hidden;}
 </div>
 
 <!-- MODAL IMAGE -->
+<!-- MODAL NOUVELLE COLLECTION -->
+<div class="modal-ov" id="newcoll-modal">
+  <div class="modal">
+    <div class="modal-ttl">Nouvelle collection</div>
+    <div class="mfield"><label>Nom de la collection *</label><input id="nc-name" type="text" placeholder="Ex: Jardins Secrets"/></div>
+    <div class="mfield"><label>Tag (ex: Collection, Sur commande…)</label><input id="nc-tag" type="text" placeholder="Collection"/></div>
+    <div class="mfield"><label>Description</label><textarea id="nc-desc" placeholder="Courte description…"></textarea></div>
+    <div class="mfield"><label>Photo de couverture (chemin)</label><input id="nc-img" type="text" placeholder="images/maphoto.JPG"/></div>
+    <div class="mbtn-row">
+      <button class="mbtn mbtn-p" onclick="saveNewColl()">Créer la collection ✦</button>
+      <button class="mbtn mbtn-s" onclick="document.getElementById('newcoll-modal').classList.remove('open')">Annuler</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-ov" id="img-modal">
   <div class="modal">
     <div class="modal-ttl">Changer la photo</div>
@@ -461,7 +512,7 @@ window.scrollTo2=(id)=>{
 
 // ── LOAD ALL ──
 async function loadAll(){
-  await Promise.all([loadTextes(),loadGalerie(),loadImages(),loadCollections(),loadContact()]);
+  await Promise.all([loadTextes(),loadGalerie(),loadImages(),loadCollections(),loadContact(),loadDynamicColls()]);
 }
 
 // ── TEXTES ──
@@ -597,18 +648,25 @@ async function loadColl(coll){
 function renderColl(coll,items){
   const grid=document.getElementById('grid-'+coll);
   if(!grid)return;
-  grid.innerHTML=items.map(item=>`
-    <div class="pc">
-      <div class="pc-img"><img src="${(item.imgs||[])[0]||''}" onerror="this.parentElement.style.background='rgba(75,191,196,.1)'" style="width:100%;height:100%;object-fit:cover;"/></div>
+  grid.innerHTML=items.map(item=>{
+    const imgs=item.imgs||[];
+    const photosHtml=imgs.map((src,pi)=>`
+      <div class="pc-img-wrap" style="height:160px;border-radius:8px;overflow:hidden;margin-bottom:.5rem;position:relative;">
+        <img src="${src}" style="width:100%;height:100%;object-fit:cover;"/>
+        <button class="pc-img-del" onclick="delItemPhoto('${coll}','${item.id}',${pi})">✕</button>
+      </div>`).join('');
+    return `<div class="pc">
+      ${photosHtml||`<div style="height:160px;background:rgba(75,191,196,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text-soft);font-size:.8rem;margin-bottom:.5rem;">Aucune photo</div>`}
       <div class="pc-body">
         <p class="pc-name">${item.name||''}</p>
         <p class="pc-desc">${item.desc||''}</p>
       </div>
       <div class="pc-edit-overlay">
-        <button class="pc-edit-btn" onclick="openEditItem('${coll}','${item.id}',\`${(item.name||'').replace(/`/g,"'")}\`,\`${(item.desc||'').replace(/`/g,"'")}\`,'${(item.imgs||[]).join(',')}')">✏️</button>
+        <button class="pc-edit-btn" onclick="openEditItem('${coll}','${item.id}',\`${(item.name||'').replace(/`/g,"'")}\`,\`${(item.desc||'').replace(/`/g,"'")}\`,'${imgs.join(',')}')">✏️</button>
         <button class="pc-edit-btn del" onclick="delItem('${coll}','${item.id}')">🗑️</button>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 window.openAddItem=(coll)=>{
@@ -652,6 +710,77 @@ window.delItem=async(coll,id)=>{
   await loadColl(coll);
   toast('Pièce supprimée');
 };
+
+// ── SUPPRIMER UNE PHOTO D'UNE PIÈCE ──
+window.delItemPhoto=async(coll,id,photoIdx)=>{
+  if(!confirm('Retirer cette photo ?'))return;
+  try{
+    const snap=await getDoc(doc(db,'collections',coll,'pieces',id));
+    if(!snap.exists())return;
+    const imgs=[...(snap.data().imgs||[])];
+    imgs.splice(photoIdx,1);
+    await updateDoc(doc(db,'collections',coll,'pieces',id),{imgs});
+    await loadColl(coll);
+    toast('Photo retirée ✦');
+  }catch(e){toast('Erreur: '+e.message,'err');}
+};
+
+// ── NOUVELLES COLLECTIONS DYNAMIQUES ──
+window.openAddColl=()=>{
+  ['nc-name','nc-tag','nc-desc','nc-img'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('nc-tag').value='Collection';
+  document.getElementById('newcoll-modal').classList.add('open');
+};
+window.saveNewColl=async()=>{
+  const name=document.getElementById('nc-name').value.trim();
+  if(!name){toast('Nom obligatoire','err');return;}
+  const id=name.toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-');
+  try{
+    await setDoc(doc(db,'site','extraCollections',id),{
+      id,name,tag:document.getElementById('nc-tag').value||'Collection',
+      desc:document.getElementById('nc-desc').value,
+      img:document.getElementById('nc-img').value,
+      order:Date.now()
+    });
+    document.getElementById('newcoll-modal').classList.remove('open');
+    await loadDynamicColls();
+    toast('Collection créée ✦');
+  }catch(e){toast('Erreur: '+e.message,'err');}
+};
+window.delDynColl=async(id,name)=>{
+  if(!confirm(`Supprimer la collection "${name}" et toutes ses pièces ?`))return;
+  await deleteDoc(doc(db,'site','extraCollections',id));
+  await loadDynamicColls();
+  toast('Collection supprimée');
+};
+
+async function loadDynamicColls(){
+  try{
+    const snap=await getDocs(collection(db,'site','extraCollections'));
+    const colls=[];snap.forEach(d=>colls.push({id:d.id,...d.data()}));
+    colls.sort((a,b)=>(a.order||0)-(b.order||0));
+    const container=document.getElementById('dynamic-colls');
+    container.innerHTML=colls.map(c=>`
+      <div class="coll-card-wrap" style="grid-column:auto;">
+        <button class="coll-del-btn" onclick="delDynColl('${c.id}','${c.name.replace(/'/g,"\\'")}')">✕</button>
+        <div class="coll-card">
+          <div class="coll-img"><img src="${c.img||''}" onerror="this.parentElement.style.background='rgba(75,191,196,.1)'" style="width:100%;height:100%;object-fit:cover;"/></div>
+          <div class="coll-body">
+            <p class="coll-tag">${c.tag||'Collection'}</p>
+            <h3 class="coll-name">${c.name}</h3>
+            <p class="coll-desc">${c.desc||''}</p>
+            <span class="coll-link">Découvrir →</span>
+          </div>
+        </div>
+        <!-- Pièces de cette collection -->
+        <div class="cp-grid" id="grid-${c.id}" style="margin-top:1rem;"></div>
+        <button class="add-item-btn" onclick="openAddItem('${c.id}')">+ Ajouter une pièce</button>
+      </div>`).join('');
+    // Charger les pièces de chaque collection dynamique
+    colls.forEach(c=>loadColl(c.id));
+  }catch(e){}
+}
+
 
 // ── CONTACT ──
 async function loadContact(){

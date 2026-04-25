@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Import Firebase — Sara Céramique</title>
+<style>
+body{font-family:sans-serif;max-width:600px;margin:3rem auto;padding:2rem;background:#faf8f5;color:#1a3535;}
+h1{font-size:1.4rem;margin-bottom:.5rem;}
+p{font-size:.85rem;color:#6a9496;margin-bottom:2rem;line-height:1.7;}
+button{padding:1rem 2rem;background:#2a9da3;color:#fff;border:none;border-radius:10px;font-size:1rem;cursor:pointer;width:100%;margin-bottom:.8rem;}
+button:hover{background:#1a3535;}
+button:disabled{background:#ccc;cursor:not-allowed;}
+#log{margin-top:1.5rem;padding:1rem;background:#fff;border-radius:8px;border:1px solid rgba(75,191,196,.2);font-size:.8rem;line-height:2;min-height:80px;white-space:pre-line;color:#2a5055;}
+.ok{color:#2a9da3;}.err{color:#c05050;}
+</style>
+</head>
+<body>
+<h1>📥 Import Firebase — Sara Céramique</h1>
+<p>Cet outil importe toutes les pièces de tes collections directement dans Firebase.<br>Clique sur le bouton, attends quelques secondes, c'est fait.</p>
+<button id="btn" onclick="doImport()">Importer toutes les pièces dans Firebase</button>
+<div id="log">En attente…</div>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import{getFirestore,collection,addDoc,getDocs,deleteDoc,doc}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const fb=initializeApp({apiKey:"AIzaSyBk6Kh6jBG3slID3G2cuUk0KE59cCIIfRM",authDomain:"sara-ceramique.firebaseapp.com",projectId:"sara-ceramique",storageBucket:"sara-ceramique.firebasestorage.app",messagingSenderId:"948372418186",appId:"1:948372418186:web:7f9dea6726c43536ebc773"});
+const auth=getAuth(fb);
+const db=getFirestore(fb);
+
+const log=document.getElementById('log');
+const btn=document.getElementById('btn');
+
+const DATA = {
+  corolles: [
+    {name:'Tasses Aurore',desc:"Tasses délicates aux teintes nacrées de l'aurore, bords ondulés comme des pétales au lever du jour.",imgs:['images/mug2.JPG','images/mug.JPG']},
+    {name:'Mugs Cueillette',desc:"Grands mugs généreux aux reliefs floraux, pour les matins où l'on prend le temps de rêver.",imgs:['images/mug.JPG','images/mug2.JPG']},
+    {name:'Tasses Cueillette',desc:"Tasses à thé façonnées comme des corolles fraîchement cueillies, glaçure ivoire et touches turquoise.",imgs:['images/mug2.JPG','images/mug.JPG']},
+    {name:'Soucoupes Cueillette',desc:"Soucoupes assorties aux tasses Cueillette, bords en vague et relief floral délicat.",imgs:['images/mug.JPG','images/mug2.JPG']},
+    {name:'Pots Cueillette',desc:"Pots à plante ou vases bas aux textures de bourgeons, pour accueillir le vivant sur votre table.",imgs:['images/mug2.JPG','images/mug.JPG']},
+  ],
+  mer: [
+    {name:'Coupes Coquillage',desc:"Coupelles en grès aux reflets bronze et or, texturées comme des coquillages échoués sur la plage.",imgs:['images/coupe.JPG','images/coupe2.JPG']},
+    {name:'Plateaux Écume',desc:"Grands plateaux bas aux bords irréguliers évoquant l'écume, glaçure nacre et argent.",imgs:['images/coupe2.JPG','images/coupe.JPG']},
+    {name:'Tasses Écume',desc:"Tasses aux reliefs marins et glaçure blanc-argent, pour boire comme au bord des vagues.",imgs:['images/mug.JPG','images/coupe.JPG']},
+    {name:'Vases Abysses',desc:"Vases sculpturaux aux formes organiques des profondeurs, glaçure vert-de-mer et bleu nuit.",imgs:['images/fiole.JPG','images/coupe2.JPG']},
+    {name:'Bougies Algues marines',desc:"Photophores en céramique aux reliefs d'algues, pour une lumière douce comme celle des fonds marins.",imgs:['images/coupe.JPG','images/fiole.JPG']},
+    {name:'Fioles Écumes',desc:"Fioles en grès aux reflets nacrés, inspirées de l'écume qui tourbillonne au creux des vagues.",imgs:['images/fiole.JPG','images/coupe2.JPG']},
+    {name:'Bols Écumes',desc:"Bols en grès blanc veiné, dont les bords irréguliers évoquent l'écume figée sur le rivage.",imgs:['images/coupe2.JPG','images/coupe.JPG']},
+    {name:'Fôret Flottante',desc:"Pièces sculpturales aux formes d'algues et de coraux qui semblent flotter entre deux eaux.",imgs:['images/fiole.JPG','images/coupe.JPG']},
+  ],
+  unique: [
+    {name:'Lampadaire Nouréa',desc:"Sculpture lumineuse en grès noir, ailes de plumes modelées à la main. Pièce unique sur commande.",imgs:['images/lampadaire.JPG']},
+    {name:'Fiole',desc:"Carafe sculpturale aux bras végétaux, glaçure vert céladon. Objet de contemplation autant que de service.",imgs:['images/fiole.JPG','images/coupe2.JPG']},
+    {name:'Lampe',desc:"Lampe en céramique tournée à la main, lumière douce filtrée par la matière. Pièce sur commande.",imgs:['images/lampadaire.JPG','images/fiole.JPG']},
+    {name:'Oya',desc:"Pièce d'exception aux formes libres, née d'une intention unique. Chaque Oya est différente.",imgs:['images/coupe2.JPG','images/lampadaire.JPG']},
+  ]
+};
+
+function addLog(msg, type=''){
+  log.innerHTML += `<span class="${type}">${msg}</span>\n`;
+}
+
+onAuthStateChanged(auth, u => {
+  if(u) {
+    addLog('✓ Connecté : ' + u.email, 'ok');
+    btn.disabled = false;
+  } else {
+    addLog('Connexion requise…');
+    signInWithPopup(auth, new GoogleAuthProvider()).catch(e => addLog('Erreur auth: '+e.message,'err'));
+  }
+});
+
+window.doImport = async () => {
+  btn.disabled = true;
+  btn.textContent = 'Import en cours…';
+  log.textContent = '';
+  const collNames = {corolles:'Jardin Enchanté', mer:'Trésors Marins', unique:'Pièces Uniques'};
+  let total = 0;
+  for(const [coll, pieces] of Object.entries(DATA)) {
+    addLog(`\n── ${collNames[coll]} ──`);
+    // Supprimer les existants
+    try{
+      const snap = await getDocs(collection(db,'collections',coll,'pieces'));
+      for(const d of snap.docs) await deleteDoc(doc(db,'collections',coll,'pieces',d.id));
+      addLog(`  Anciens documents supprimés (${snap.size})`);
+    }catch(e){ addLog('  (aucun document existant)', ''); }
+    // Importer les nouveaux
+    for(let i=0; i<pieces.length; i++){
+      try{
+        await addDoc(collection(db,'collections',coll,'pieces'), {...pieces[i], order:(i+1)*100});
+        addLog(`  ✓ ${pieces[i].name}`, 'ok');
+        total++;
+      }catch(e){ addLog(`  ✗ ${pieces[i].name}: ${e.message}`, 'err'); }
+    }
+  }
+  addLog(`\n✦ Import terminé — ${total} pièces importées !`, 'ok');
+  btn.textContent = '✦ Import terminé !';
+  btn.style.background = '#2a9da3';
+};
+</script>
+</body>
+</html>

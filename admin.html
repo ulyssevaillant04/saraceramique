@@ -324,9 +324,15 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
   <div class="ab-vis">
     <div class="ab-ring ab-ring1"></div>
     <div class="ab-ring ab-ring2"></div>
-    <div class="ab-frame eimg del-wrap" onclick="changeImg('portrait')" id="portrait-wrap">
+    <div class="ab-frame" id="portrait-wrap" style="position:relative;cursor:pointer;"
+      onmouseenter="document.getElementById('portrait-hover').style.opacity='1'"
+      onmouseleave="document.getElementById('portrait-hover').style.opacity='0'"
+      onclick="changeImg('portrait')">
       <div class="ab-ph"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span style="font-size:.62rem;letter-spacing:.17em;text-transform:uppercase;">Votre portrait</span></div>
-      <img id="portrait-img" src="images/portrait.JPG" onerror="this.style.display='none'" alt=""/>
+      <img id="portrait-img" src="images/portrait.JPG" onerror="this.style.display='none'" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;"/>
+      <div id="portrait-hover" style="position:absolute;inset:0;background:rgba(26,53,53,.6);opacity:0;transition:opacity .25s;display:flex;align-items:center;justify-content:center;z-index:10;border-radius:inherit;pointer-events:none;">
+        <span style="color:#fff;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer</span>
+      </div>
     </div>
   </div>
   <div>

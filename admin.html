@@ -68,6 +68,17 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--text);}
 .pdel{position:absolute;top:.3rem;right:.3rem;width:22px;height:22px;border-radius:50%;background:rgba(192,60,60,.9);color:#fff;border:none;cursor:pointer;font-size:.7rem;display:flex;align-items:center;justify-content:center;z-index:20;opacity:0;transition:opacity .2s;}
 .pc:hover .pdel{opacity:1;}
 
+/* ══ COLLECTION PHOTO EDIT ══ */
+.coll-photo-edit{
+  position:absolute;bottom:.7rem;left:50%;transform:translateX(-50%);
+  background:rgba(253,250,247,.92);color:var(--dark);
+  padding:.35rem .9rem;border-radius:20px;
+  font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;
+  font-family:'Nunito',sans-serif;cursor:pointer;
+  opacity:0;transition:opacity .2s;z-index:10;white-space:nowrap;
+  box-shadow:0 2px 12px rgba(0,0,0,.15);
+}
+.coll-img:hover .coll-photo-edit{opacity:1;}
 /* ══ ADD COLLECTION CARD ══ */
 .add-coll{border:2.5px dashed rgba(75,191,196,.38);border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;cursor:pointer;transition:all .25s;background:none;min-height:340px;font-family:'Nunito',sans-serif;color:var(--teal-deep);}
 .add-coll:hover{border-color:var(--teal);background:rgba(75,191,196,.04);}
@@ -373,7 +384,11 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
     <div class="del-wrap">
       <button class="del-x" onclick="delFixedColl('corolles',event)" title="Masquer cette collection">✕</button>
       <div class="coll-card" onclick="goPage('corolles',null)">
-        <div class="coll-img"><img id="img-coll-corolles" src="images/mug2.JPG" class="eimg" onclick="changeImg('coll-corolles');event.stopPropagation()"/><div class="coll-img-ov"></div></div>
+        <div class="coll-img" style="position:relative;">
+          <img id="img-coll-corolles" src="images/mug2.JPG" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"/>
+          <div class="coll-img-ov"></div>
+          <div class="coll-photo-edit" onclick="changeImg('coll-corolles');event.stopPropagation()">📷 Changer la photo</div>
+        </div>
         <div class="coll-body"><p class="coll-tag">Collection</p><h3 class="coll-name">Jardin Enchanté</h3><p class="coll-desc" contenteditable="true" data-key="collCorolles" spellcheck="false" onclick="event.stopPropagation()">Boire dans une fleur. Des tasses et mugs aux bords pétales, pour transformer chaque thé en rituel enchanté.</p><span class="coll-link">Découvrir →</span></div>
       </div>
     </div>
@@ -381,7 +396,11 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
     <div class="del-wrap">
       <button class="del-x" onclick="delFixedColl('mer',event)" title="Masquer cette collection">✕</button>
       <div class="coll-card" onclick="goPage('mer',null)">
-        <div class="coll-img"><img id="img-coll-mer" src="images/coupe.JPG" class="eimg" onclick="changeImg('coll-mer');event.stopPropagation()"/><div class="coll-img-ov"></div></div>
+        <div class="coll-img" style="position:relative;">
+          <img id="img-coll-mer" src="images/coupe.JPG" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"/>
+          <div class="coll-img-ov"></div>
+          <div class="coll-photo-edit" onclick="changeImg('coll-mer');event.stopPropagation()">📷 Changer la photo</div>
+        </div>
         <div class="coll-body"><p class="coll-tag">Collection</p><h3 class="coll-name">Trésors Marins</h3><p class="coll-desc" contenteditable="true" data-key="collMer" spellcheck="false" onclick="event.stopPropagation()">Coquillages devenus coupelles, vagues sculptées dans l'argile. La mer réinterprétée avec des yeux de fée.</p><span class="coll-link">Découvrir →</span></div>
       </div>
     </div>
@@ -389,7 +408,11 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
     <div class="del-wrap">
       <button class="del-x" onclick="delFixedColl('unique',event)" title="Masquer cette collection">✕</button>
       <div class="coll-card" onclick="goPage('unique',null)">
-        <div class="coll-img"><img id="img-coll-unique" src="images/lampadaire.JPG" class="eimg" onclick="changeImg('coll-unique');event.stopPropagation()"/><div class="coll-img-ov"></div></div>
+        <div class="coll-img" style="position:relative;">
+          <img id="img-coll-unique" src="images/lampadaire.JPG" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"/>
+          <div class="coll-img-ov"></div>
+          <div class="coll-photo-edit" onclick="changeImg('coll-unique');event.stopPropagation()">📷 Changer la photo</div>
+        </div>
         <div class="coll-body"><p class="coll-tag">Sur commande</p><h3 class="coll-name">Pièces Uniques</h3><p class="coll-desc" contenteditable="true" data-key="collUnique" spellcheck="false" onclick="event.stopPropagation()">Lampadaires sculpturaux, cadeaux précieux, objets sur-mesure nés d'un désir particulier.</p><span class="coll-link">Découvrir →</span></div>
       </div>
     </div>

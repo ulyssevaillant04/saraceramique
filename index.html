@@ -61,20 +61,15 @@ const db=getFirestore(fb);
 onSnapshot(doc(db,'site','textes'),snap=>{
   if(!snap.exists())return;
   const d=snap.data();
-  const set=(sel,val)=>{if(!val)return;document.querySelectorAll(sel).forEach(el=>el.innerHTML=val);};
-  if(d.heroTitle){document.querySelectorAll('.h-title').forEach(el=>{el.innerHTML=d.heroTitle+(d.heroSub?`<em>${d.heroSub}</em>`:'');});}
-  if(d.abBody)set('.ab-body',d.abBody);
-  if(d.abQuote)set('.ab-quote',`"${d.abQuote}"`);
-  if(d.abTtl)set('#apropos .s-ttl',d.abTtl);
+  // Mise à jour universelle via data-key (même système que l'admin)
+  document.querySelectorAll('[data-key]').forEach(el=>{
+    const v=d[el.dataset.key];
+    if(v!==undefined&&v!==null) el.innerHTML=v;
+  });
+  // Cas spéciaux sans data-key dans le HTML statique
   if(d.collCorolles)document.querySelectorAll('[data-coll=corolles] .coll-desc').forEach(el=>el.textContent=d.collCorolles);
   if(d.collMer)document.querySelectorAll('[data-coll=mer] .coll-desc').forEach(el=>el.textContent=d.collMer);
   if(d.collUnique)document.querySelectorAll('[data-coll=unique] .coll-desc').forEach(el=>el.textContent=d.collUnique);
-  if(d.univQuote)set('.univ-quote',`"${d.univQuote}"`);
-  if(d.contactTag)set('.c-tagline',d.contactTag);
-  if(d.boutiqueTtl)document.querySelectorAll('.b-title').forEach(el=>el.innerHTML=d.boutiqueTtl+(d.boutiqueSub?`<em>${d.boutiqueSub}</em>`:''));
-  if(d.boutiqueDesc)set('.b-desc',d.boutiqueDesc);
-  if(d.heroBtn1)document.querySelectorAll('.btn-teal').forEach(el=>el.textContent=d.heroBtn1);
-  if(d.heroBtn2)document.querySelectorAll('.btn-outline').forEach(el=>el.textContent=d.heroBtn2);
 });
 
 // Contact
@@ -126,11 +121,20 @@ onSnapshot(doc(db,'site','images'),snap=>{
   const d=snap.data();
   const collMap={'coll-corolles':'.coll-card[data-coll=corolles] .coll-img img','coll-mer':'.coll-card[data-coll=mer] .coll-img img','coll-unique':'.coll-card[data-coll=unique] .coll-img img'};
   Object.entries(collMap).forEach(([k,sel])=>{if(d[k]){const el=document.querySelector(sel);if(el)el.src=d[k];}});
-  const heroMap={'cp-corolles-hero':'#page-corolles .cp-hero-img img','cp-mer-hero':'#page-mer .cp-hero-img img','cp-unique-hero':'#page-unique .cp-hero-img img'};
+  const heroMap={'cp-corolles-hero':'#img-cp-corolles-hero','cp-mer-hero':'#img-cp-mer-hero','cp-unique-hero':'#img-cp-unique-hero'};
   Object.entries(heroMap).forEach(([k,sel])=>{
     if(d[k]){
       const el=document.querySelector(sel);
-      if(el){el.src=d[k];el.style.opacity='1';el.style.display='block';}
+      if(el){
+        el.onload=()=>el.style.opacity='1';
+        el.onerror=()=>el.style.opacity='1'; // afficher quand même si erreur
+        el.src=d[k];
+        if(el.complete) el.style.opacity='1';
+      }
+    } else {
+      // Pas de photo Firebase → afficher la photo par défaut
+      const el=document.querySelector(sel);
+      if(el) el.style.opacity='1';
     }
   });
 });
@@ -764,8 +768,8 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 
 <section id="hero">
   <p class="h-eyebrow"><span class="h-dot"></span>Céramiste · Côte d'Azur · Monde Enchanté<span class="h-dot"></span></p>
-  <h1 class="h-title">Sara Céramique<em>Petits Mondes Enchantés</em></h1>
-  <p class="h-tagline">Des formes nées des fleurs, des forêts et des rêves.<br><strong>Une corolle devient tasse. Un pétale devient pendentif.</strong><br>La magie entre dans les gestes du quotidien.</p>
+  <h1 class="h-title" data-key="heroTitle">Sara Céramique<em>Petits Mondes Enchantés</em></h1>
+  <p class="h-tagline" data-key="heroTagline">Des formes nées des fleurs, des forêts et des rêves.<br><strong>Une corolle devient tasse. Un pétale devient pendentif.</strong><br>La magie entre dans les gestes du quotidien.</p>
   <div class="h-orn">
     <div class="h-orn-line"></div>
     <span style="color:var(--teal);font-size:1rem;animation:spin 12s linear infinite;">✿</span>
@@ -796,9 +800,9 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="reveal">
     <p class="s-lbl">À propos</p>
     <h2 class="s-ttl">Sara Mahjoub,<br><em>façonneuse de rêves</em></h2>
-    <blockquote class="ab-quote">"J'aime imaginer que nous sommes de petits êtres miniatures, transformant les éléments naturels en objets du quotidien."</blockquote>
-    <p class="ab-body">Mon univers naît de la rencontre entre la nature et l'imaginaire. Je m'inspire du vivant, des fleurs, des formes organiques et des trésors que la nature nous offre. Une corolle devient une tasse, un coquillage devient coupelle, un pétale devient pendentif.<br><br>À travers mes créations, je cherche à faire entrer un peu de magie dans les gestes simples de chaque jour.</p>
-    <div class="ab-sig">Sara Mahjoub</div>
+    <blockquote class="ab-quote" data-key="abQuote">"J'aime imaginer que nous sommes de petits êtres miniatures, transformant les éléments naturels en objets du quotidien."</blockquote>
+    <p class="ab-body" data-key="abBody">Mon univers naît de la rencontre entre la nature et l'imaginaire. Je m'inspire du vivant, des fleurs, des formes organiques et des trésors que la nature nous offre. Une corolle devient une tasse, un coquillage devient coupelle, un pétale devient pendentif.<br><br>À travers mes créations, je cherche à faire entrer un peu de magie dans les gestes simples de chaque jour.</p>
+    <div class="ab-sig" data-key="abSig">Sara Mahjoub</div>
     <div class="stats">
       <div><div class="stat-n t">8+</div><div class="stat-l">Années d'atelier</div></div>
       <div><div class="stat-n r">300+</div><div class="stat-l">Pièces créées</div></div>
@@ -811,7 +815,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 <section id="galerie">
   <div class="gal-hdr reveal">
     <div><p class="s-lbl no-flower"><svg class="s-lbl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="4"/></svg>Galerie</p><h2 class="s-ttl">Fleurs de <em>terre cuite</em></h2></div>
-    <p class="gal-note">Chaque pièce, une invitation à rêver.</p>
+    <p class="gal-note" data-key="galNote">Chaque pièce, une invitation à rêver.</p>
   </div>
   <div class="bento reveal" id="gal-bento">
     <div class="g" onclick="openGallery(0)" style="cursor:zoom-in;"><img src="images/mug.JPG" /><div class="g-ov"></div></div>
@@ -851,8 +855,8 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 <section id="univers">
   <div class="reveal univ-inner">
     <canvas id="bf-icon" width="62" height="62" class="univ-icon"></canvas>
-    <blockquote class="univ-quote">"À travers mes créations, je cherche à faire entrer un peu de <span class="q-teal">magie dans les gestes simples de chaque jour</span>. Adopter l'une de mes tasses, c'est devenir une fée le temps d'un instant, buvant dans une jolie <span class="q-rose">fleur fraîchement cueillie</span>. Chaque pièce est une invitation à ralentir, à rêver, et à regarder le monde <span class="q-teal">avec des yeux d'enfant</span>."</blockquote>
-    <div class="univ-sig">Sara ✦</div>
+    <blockquote class="univ-quote" data-key="univQuote">"À travers mes créations, je cherche à faire entrer un peu de <span class="q-teal">magie dans les gestes simples de chaque jour</span>. Adopter l'une de mes tasses, c'est devenir une fée le temps d'un instant, buvant dans une jolie <span class="q-rose">fleur fraîchement cueillie</span>. Chaque pièce est une invitation à ralentir, à rêver, et à regarder le monde <span class="q-teal">avec des yeux d'enfant</span>."</blockquote>
+    <div class="univ-sig" data-key="univSig">Sara ✦</div>
   </div>
 </section>
 
@@ -861,7 +865,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="reveal">
     <p class="s-lbl no-flower"><svg class="s-lbl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Contact</p>
     <h2 class="s-ttl">Rêvons<br><em>ensemble</em></h2>
-    <p class="c-tagline">Commande sur-mesure, acquisition d'une pièce, cours de céramique — toutes les lettres de fées sont bienvenues.</p>
+    <p class="c-tagline" data-key="contactTag">Commande sur-mesure, acquisition d'une pièce, cours de céramique — toutes les lettres de fées sont bienvenues.</p>
     <div class="c-list">
       <div><p class="c-lbl">Atelier</p><p class="c-val"><a href="https://maps.app.goo.gl/heBq47Lfc4VbpKif9" target="_blank" rel="noopener">32 boulevard d'Aguillon, 06600 Antibes <svg style="display:inline;margin-left:.3rem;vertical-align:middle;" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></a></p></div>
       <div><p class="c-lbl">Email</p><p class="c-val" class="c-val-email">saraceramique06@gmail.com</p></div>
@@ -900,13 +904,13 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 <div id="page-corolles" class="page">
 <div class="coll-page">
   <div class="cp-hero">
-    <div class="cp-hero-img"><img src="images/mug.JPG" /></div>
+    <div class="cp-hero-img"><img src="images/mug.JPG" style="opacity:0;transition:opacity .4s;" id="img-cp-corolles-hero"/></div>
     <div class="cp-hero-text">
       <button class="cp-back" onclick="navScrollTo('#collections')"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
-      <p class="cp-hero-tag">Collection Sara Céramique</p>
-      <h1 class="cp-hero-title">Jardin Enchanté<em>Boire dans une fleur</em></h1>
+      <p class="cp-hero-tag" data-key="cpCorollesTag">Collection Sara Céramique</p>
+      <h1 class="cp-hero-title" data-key="cpCorollesTtl">Jardin Enchanté<em>Boire dans une fleur</em></h1>
       <div class="cp-divider"></div>
-      <p class="cp-hero-desc">Chaque matin peut être enchanté. Ces tasses et mugs sont façonnés comme des corolles ouvertes, pour que chaque gorgée devienne un instant féerique. Tenir l'une de ces pièces, c'est tenir une fleur dans le creux de ses mains.</p>
+      <p class="cp-hero-desc" data-key="cpCorollesDesc">Chaque matin peut être enchanté. Ces tasses et mugs sont façonnés comme des corolles ouvertes, pour que chaque gorgée devienne un instant féerique. Tenir l'une de ces pièces, c'est tenir une fleur dans le creux de ses mains.</p>
     </div>
   </div>
   <section class="cp-pieces">
@@ -946,13 +950,13 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 <div id="page-mer" class="page">
 <div class="coll-page">
   <div class="cp-hero">
-    <div class="cp-hero-img"><img src="images/coupe.JPG" /></div>
+    <div class="cp-hero-img"><img src="images/coupe.JPG" style="opacity:0;transition:opacity .4s;" id="img-cp-mer-hero"/></div>
     <div class="cp-hero-text">
       <button class="cp-back" onclick="navScrollTo('#collections')"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
-      <p class="cp-hero-tag">Collection Sara Céramique</p>
-      <h1 class="cp-hero-title">Trésors Marins<em>La mer en forme</em></h1>
+      <p class="cp-hero-tag" data-key="cpMerTag">Collection Sara Céramique</p>
+      <h1 class="cp-hero-title" data-key="cpMerTtl">Trésors Marins<em>La mer en forme</em></h1>
       <div class="cp-divider"></div>
-      <p class="cp-hero-desc">La mer est un jardin infini. Ces pièces naissent de ses coquillages, de ses vagues et de ses créatures. Chaque coupelle est un coquillage posé sur votre table, chaque vase une algue sortie des profondeurs.</p>
+      <p class="cp-hero-desc" data-key="cpMerDesc">La mer est un jardin infini. Ces pièces naissent de ses coquillages, de ses vagues et de ses créatures. Chaque coupelle est un coquillage posé sur votre table, chaque vase une algue sortie des profondeurs.</p>
     </div>
   </div>
   <section class="cp-pieces">
@@ -995,10 +999,10 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 <div id="page-unique" class="page">
 <div class="coll-page">
   <div class="cp-hero">
-    <div class="cp-hero-img"><img src="images/lampadaire.JPG" /></div>
+    <div class="cp-hero-img"><img src="images/lampadaire.JPG" style="opacity:0;transition:opacity .4s;" id="img-cp-unique-hero"/></div>
     <div class="cp-hero-text">
       <button class="cp-back" onclick="navScrollTo('#collections')"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
-      <p class="cp-hero-tag">Sur commande</p>
+      <p class="cp-hero-tag" data-key="cpUniqueTag">Sur commande</p>
       <h1 class="cp-hero-title">Pièces Uniques<em>Votre rêve en argile</em></h1>
       <div class="cp-divider"></div>
       <p class="cp-hero-desc">Certaines créations ne ressemblent à rien d'autre. Elles naissent d'une idée folle, d'un désir de faire entrer quelque chose d'extraordinaire dans le quotidien. Ces pièces sont disponibles à l'acquisition ou créées sur commande.</p>
@@ -1039,9 +1043,9 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 ══════════════════════════════════ -->
 <div id="page-boutique" class="page">
 <section class="boutique-hero">
-  <span class="b-badge">Bientôt disponible</span>
+  <span class="b-badge" data-key="bBadge">Bientôt disponible</span>
   <h1 class="b-title">La Boutique<em>ouvre ses portes</em></h1>
-  <p class="b-desc">Un espace pour acquérir des créations uniques directement depuis l'atelier. Tasses, coupes, sculptures et pièces d'exception — bientôt à portée de clic.</p>
+  <p class="b-desc" data-key="bDesc">Un espace pour acquérir des créations uniques directement depuis l'atelier. Tasses, coupes, sculptures et pièces d'exception — bientôt à portée de clic.</p>
   <div class="b-orn">
     <div class="h-orn-line"></div>
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 3c0 0-3 3-3 9s3 9 3 9M12 3c0 0 3 3 3 9s-3 9-3 9M3 12c0 0 3-3 9-3s9 3 9 3M3 12c0 0 3 3 9 3s9-3 9-3"/></svg>

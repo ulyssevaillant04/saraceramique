@@ -59,34 +59,45 @@ onSnapshot(doc(db,'site','couleurs'),snap=>{
   if(d.gold)r.setProperty('--gold',d.gold);
 });
 
-// Galerie
+// Galerie — reconstruire complètement depuis Firebase
 onSnapshot(doc(db,'site','galerie'),snap=>{
   if(!snap.exists())return;
   const imgs=snap.data().imgs||[];
-  const cells=document.querySelectorAll('#gal-bento .g img');
-  imgs.forEach((src,i)=>{if(cells[i]&&src)cells[i].src=src;});
-  // Mettre à jour la lightbox galerie
-  if(window.galImgs&&imgs.length)imgs.forEach((src,i)=>{if(src)window.galImgs[i]=src;});
-  setTimeout(()=>window.rebuildBento&&window.rebuildBento(), 300);
+  if(!imgs.length)return;
+  // Mettre à jour galImgs pour le carousel
+  window.galImgs=imgs;
+  // Reconstruire le bento avec les bonnes photos
+  const bento=document.getElementById('gal-bento');
+  if(bento){
+    bento.innerHTML=imgs.map((src,i)=>`
+      <div class="g" onclick="openGallery(${i})" style="cursor:zoom-in;">
+        <img src="${src}" alt=""/>
+        <div class="g-ov"></div>
+      </div>`).join('');
+    setTimeout(()=>window.rebuildBento&&window.rebuildBento(),300);
+  }
 });
 
 // Images (photos de couverture collections, hero pages)
 onSnapshot(doc(db,'site','images'),snap=>{
   if(!snap.exists())return;
   const d=snap.data();
-  // Photos de couverture des cartes collections
   const collMap={'coll-corolles':'.coll-card[data-coll=corolles] .coll-img img','coll-mer':'.coll-card[data-coll=mer] .coll-img img','coll-unique':'.coll-card[data-coll=unique] .coll-img img'};
   Object.entries(collMap).forEach(([k,sel])=>{if(d[k]){const el=document.querySelector(sel);if(el)el.src=d[k];}});
-  // Photos hero des pages collection
   const heroMap={'cp-corolles-hero':'#page-corolles .cp-hero-img img','cp-mer-hero':'#page-mer .cp-hero-img img','cp-unique-hero':'#page-unique .cp-hero-img img'};
   Object.entries(heroMap).forEach(([k,sel])=>{if(d[k]){const el=document.querySelector(sel);if(el)el.src=d[k];}});
 });
 
-
+// Portrait
+onSnapshot(doc(db,'site','general'),snap=>{
   if(!snap.exists())return;
   const d=snap.data();
-  if(d.portrait){const img=document.querySelector('.ab-frame img');if(img)img.src=d.portrait;}
+  if(d.portrait){
+    const img=document.querySelector('.ab-frame img');
+    if(img){img.src=d.portrait;img.style.opacity='1';img.style.display='block';}
+  }
 });
+
 
 // Collections — charger depuis Firebase si données présentes
 async function loadCollFromFirebase(collKey,pageId){
@@ -347,6 +358,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   position:fixed;inset:0;z-index:2100;display:none;flex-direction:column;
   align-items:center;justify-content:center;
   background:rgba(20,40,40,1);
+  touch-action:pan-x;
 }
 #gal-lb.open{display:flex;}
 /* Piste du carousel */
@@ -364,6 +376,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   transition:transform .55s cubic-bezier(.22,1,.36,1),opacity .45s,scale .55s cubic-bezier(.22,1,.36,1),filter .45s;
   will-change:transform,opacity,scale;
   cursor:pointer;
+  touch-action:pan-x;
 }
 .gal-slide img{
   display:block;border-radius:10px;
@@ -437,7 +450,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 #gal-lb-img{display:none;}
 
 /* ══ LIGHTBOX COLLECTIONS CAROUSEL ══ */
-#lightbox{position:fixed;inset:0;z-index:2000;display:none;flex-direction:column;background:rgba(20,40,40,1);}
+#lightbox{position:fixed;inset:0;z-index:2000;display:none;flex-direction:column;background:rgba(20,40,40,1);touch-action:pan-x;}
 #lightbox.open{display:flex;}
 #lb-track-wrap{flex:1;position:relative;overflow:hidden;}
 #lb-track{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
@@ -1606,7 +1619,15 @@ document.addEventListener('keydown',e=>{
 });
 
 
-// Scroll en haut à chaque chargement/refresh
+// Bloquer le pinch-to-zoom dans les lightbox sur mobile
+['gal-lb','lightbox'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.addEventListener('touchstart',e=>{if(e.touches.length>1)e.preventDefault();},{passive:false});
+  el.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault();},{passive:false});
+});
+
+
 if('scrollRestoration' in history) history.scrollRestoration = 'manual';
 window.addEventListener('load', () => { window.scrollTo(0,0); });
 

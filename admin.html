@@ -596,8 +596,9 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
   <div class="mbox" style="width:580px;">
     <div class="mttl" id="upload-ttl">Ajouter des photos</div>
     <div id="upload-github-ok" style="display:none;margin-bottom:.8rem;">
-      <div style="background:rgba(75,191,196,.08);border:1px solid rgba(75,191,196,.2);border-radius:8px;padding:.7rem 1rem;font-size:.75rem;color:var(--text-soft);">
-        ✦ Upload GitHub actif — les photos seront envoyées directement sur votre site
+      <div style="background:rgba(75,191,196,.08);border:1px solid rgba(75,191,196,.2);border-radius:8px;padding:.7rem 1rem;font-size:.75rem;color:var(--text-soft);display:flex;align-items:center;justify-content:space-between;">
+        <span>✦ Upload GitHub actif</span>
+        <button onclick="document.getElementById('upload-github-ok').style.display='none';document.getElementById('upload-github-setup').style.display='block';" style="font-size:.68rem;color:var(--teal-deep);background:none;border:none;cursor:pointer;text-decoration:underline;">Modifier</button>
       </div>
     </div>
     <div id="upload-github-setup" style="margin-bottom:1rem;">

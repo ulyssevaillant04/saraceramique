@@ -3,318 +3,671 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Sara Céramique — Admin</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+<title>Sara Céramique — Éditeur</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Nunito:wght@200;300;400&display=swap" rel="stylesheet">
 <style>
-:root{--teal:#4bbfc4;--teal-deep:#2a9da3;--rose:#e8a0b4;--dark:#1a3535;--ivory:#faf8f5;--white:#fff;--text:#2a4a4a;--soft:#6a9496;--border:rgba(75,191,196,.2);--shadow:0 8px 32px rgba(42,157,163,.12);}
+/* ══ REPRISE DES VARIABLES DU SITE ══ */
+:root{
+  --teal:#4bbfc4;--teal-deep:#2a9da3;--teal2:#cff0f1;
+  --rose:#e8a0b4;--rose-deep:#c96a88;--rose2:#f9edf1;
+  --gold:#e8c97a;--sage:#8bbf9a;
+  --dark:#1a3535;--white:#fff;--ivory:#faf8f5;
+  --text:#2a4a4a;--text-soft:#6a9496;
+  --lilac:rgba(200,180,210,.6);
+  --border:rgba(75,191,196,.2);
+}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Nunito',sans-serif;background:var(--ivory);color:var(--text);min-height:100vh;}
-#login{position:fixed;inset:0;background:var(--dark);display:flex;align-items:center;justify-content:center;z-index:999;transition:opacity .5s;}
-.login-box{background:var(--white);border-radius:24px;padding:3rem 2.5rem;width:360px;text-align:center;box-shadow:0 32px 80px rgba(0,0,0,.3);}
+body{font-family:'Nunito',sans-serif;background:var(--ivory);color:var(--text);}
+
+/* ══ LOGIN ══ */
+#login{position:fixed;inset:0;background:var(--dark);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s;}
+.login-box{background:var(--white);border-radius:24px;padding:3rem 2.5rem;width:360px;text-align:center;box-shadow:0 32px 80px rgba(0,0,0,.4);}
 .login-logo{font-family:'Playfair Display',serif;font-style:italic;font-size:1.5rem;color:var(--dark);}
 .login-logo span{color:var(--teal-deep);}
-.login-sub{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--soft);margin:.5rem 0 2rem;}
-.inp{width:100%;padding:.85rem 1.1rem;border:1.5px solid var(--border);border-radius:10px;font-family:'Nunito',sans-serif;font-size:.9rem;color:var(--dark);background:var(--ivory);outline:none;margin-bottom:.8rem;transition:border-color .2s;}
-.inp:focus{border-color:var(--teal);}
-.btn{padding:.85rem 1.5rem;background:var(--teal-deep);color:#fff;border:none;border-radius:10px;font-family:'Nunito',sans-serif;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .2s;width:100%;}
-.btn:hover{background:var(--dark);}
-.btn-sec{background:var(--ivory);color:var(--soft);border:1.5px solid var(--border);}
-.btn-sec:hover{border-color:var(--teal);color:var(--teal-deep);}
-.btn-sm{padding:.6rem 1.2rem;font-size:.72rem;width:auto;}
-.err{color:var(--rose);font-size:.78rem;margin-top:.5rem;display:none;}
-#app{display:none;}
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:240px;background:var(--dark);display:flex;flex-direction:column;z-index:100;overflow-y:auto;}
-.sb-logo{font-family:'Playfair Display',serif;font-style:italic;font-size:1.05rem;color:#fff;padding:1.8rem 1.5rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.08);}
-.sb-logo span{color:var(--teal);}
-.sb-badge{font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);display:block;margin-top:.2rem;}
-.sb-live{display:inline-flex;align-items:center;gap:.35rem;font-size:.55rem;letter-spacing:.12em;color:var(--teal);margin-top:.4rem;}
-.sb-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite;}
+.login-sub{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-soft);margin:.5rem 0 1.5rem;}
+.login-sub2{font-size:.72rem;color:var(--text-soft);margin-bottom:1.8rem;line-height:1.6;}
+.google-btn{width:100%;padding:.9rem;background:#fff;color:#3c4043;border:1.5px solid #dadce0;border-radius:10px;font-family:'Nunito',sans-serif;font-size:.88rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.8rem;transition:background .2s,box-shadow .2s;}
+.google-btn:hover{background:#f8f9fa;box-shadow:0 4px 12px rgba(0,0,0,.1);}
+.login-err{color:var(--rose-deep);font-size:.78rem;margin-top:.8rem;display:none;}
+
+/* ══ ADMIN BAR ══ */
+#admin-bar{
+  position:fixed;top:0;left:0;right:0;z-index:8888;
+  background:var(--dark);color:#fff;
+  display:flex;align-items:center;padding:0 2rem;height:52px;
+  box-shadow:0 2px 20px rgba(0,0,0,.3);
+  gap:1rem;
+}
+.ab-logo{font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:#fff;}
+.ab-logo span{color:var(--teal);}
+.ab-badge{font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.4);padding:.2rem .6rem;border:1px solid rgba(255,255,255,.15);border-radius:10px;}
+.ab-live{display:flex;align-items:center;gap:.4rem;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);}
+.ab-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-nav{flex:1;padding:1rem 0;}
-.nav-item{display:flex;align-items:center;gap:.7rem;padding:.75rem 1.5rem;color:rgba(255,255,255,.45);font-size:.75rem;letter-spacing:.1em;cursor:pointer;transition:all .2s;border-left:2px solid transparent;}
-.nav-item:hover{color:#fff;background:rgba(255,255,255,.05);}
-.nav-item.active{color:var(--teal);border-left-color:var(--teal);background:rgba(75,191,196,.08);}
-.sb-out{margin:1rem 1.5rem;padding:.6rem;border:1px solid rgba(255,255,255,.12);border-radius:8px;color:rgba(255,255,255,.35);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;background:none;cursor:pointer;font-family:'Nunito',sans-serif;width:calc(100% - 3rem);transition:all .2s;}
-.sb-out:hover{color:var(--rose);border-color:var(--rose);}
-.main{margin-left:240px;padding:2.5rem;min-height:100vh;}
-.page-ttl{font-family:'Playfair Display',serif;font-style:italic;font-size:1.7rem;color:var(--dark);}
-.page-sub{font-size:.77rem;color:var(--soft);margin:.3rem 0 2rem;}
-.section{display:none;}.section.active{display:block;}
-.card{background:var(--white);border-radius:16px;padding:1.8rem;box-shadow:var(--shadow);margin-bottom:1.5rem;border:1px solid var(--border);}
-.card-ttl{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--teal-deep);margin-bottom:1.2rem;font-weight:600;}
-.field{margin-bottom:1.2rem;}
-.field label{display:block;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin-bottom:.4rem;}
-.field input,.field textarea{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-family:'Nunito',sans-serif;font-size:.88rem;color:var(--dark);background:var(--ivory);outline:none;transition:border-color .2s;}
-.field input:focus,.field textarea:focus{border-color:var(--teal);}
-.field textarea{min-height:90px;resize:vertical;}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
-.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
-.btn-row{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;margin-top:.5rem;}
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;}
-.stat{background:var(--white);border-radius:14px;padding:1.3rem;box-shadow:var(--shadow);border:1px solid var(--border);text-align:center;}
-.stat-n{font-family:'Playfair Display',serif;font-size:2rem;color:var(--teal-deep);}
-.stat-l{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--soft);margin-top:.2rem;}
-.items-list{display:flex;flex-direction:column;gap:.65rem;}
-.item-row{display:flex;align-items:center;gap:.9rem;padding:.9rem 1.1rem;background:var(--ivory);border-radius:10px;border:1px solid var(--border);}
-.item-ph{width:48px;height:48px;border-radius:8px;background:rgba(75,191,196,.1);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;overflow:hidden;}
-.item-ph img{width:100%;height:100%;object-fit:cover;}
-.item-info{flex:1;min-width:0;}
-.item-name{font-size:.86rem;font-weight:600;color:var(--dark);}
-.item-desc{font-size:.73rem;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.item-acts{display:flex;gap:.4rem;flex-shrink:0;}
-.ico-btn{width:30px;height:30px;border-radius:6px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.8rem;transition:all .2s;}
-.ico-btn.edit{background:rgba(75,191,196,.12);color:var(--teal-deep);}
-.ico-btn.edit:hover{background:var(--teal-deep);color:#fff;}
-.ico-btn.del{background:rgba(220,80,80,.08);color:#c05050;}
-.ico-btn.del:hover{background:#c05050;color:#fff;}
-.ico-btn.up,.ico-btn.dn{background:rgba(200,200,200,.15);color:var(--soft);}
-.tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap;}
-.tab{padding:.5rem 1.1rem;border-radius:8px;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;background:none;border:1.5px solid var(--border);font-family:'Nunito',sans-serif;color:var(--soft);transition:all .2s;}
-.tab.active{background:var(--teal-deep);color:#fff;border-color:var(--teal-deep);}
-.modal-ov{position:fixed;inset:0;background:rgba(26,53,53,.5);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;}
+.ab-spacer{flex:1;}
+.ab-hint{font-size:.65rem;color:rgba(255,255,255,.35);font-style:italic;}
+.ab-save-all{padding:.45rem 1.1rem;background:var(--teal);color:#fff;border:none;border-radius:8px;font-family:'Nunito',sans-serif;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .2s;}
+.ab-save-all:hover{background:var(--teal-deep);}
+.ab-out{padding:.45rem 1rem;background:none;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.15);border-radius:8px;font-family:'Nunito',sans-serif;font-size:.68rem;cursor:pointer;transition:all .2s;}
+.ab-out:hover{color:var(--rose);border-color:var(--rose);}
+
+/* ══ CONTENU AVEC OFFSET ADMIN BAR ══ */
+#site-content{margin-top:52px;}
+
+/* ══ ÉLÉMENTS ÉDITABLES ══ */
+[contenteditable]{
+  outline:none;cursor:text;
+  border-radius:4px;
+  transition:background .2s,box-shadow .2s;
+  position:relative;
+}
+[contenteditable]:hover{background:rgba(75,191,196,.08);box-shadow:0 0 0 2px rgba(75,191,196,.3);}
+[contenteditable]:focus{background:rgba(75,191,196,.1);box-shadow:0 0 0 2px var(--teal);}
+.editable-img{cursor:pointer;position:relative;display:block;}
+.editable-img::after{
+  content:'📷 Cliquer pour changer';
+  position:absolute;inset:0;background:rgba(26,53,53,.55);
+  color:#fff;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .25s;border-radius:inherit;
+  font-family:'Nunito',sans-serif;
+}
+.editable-img:hover::after{opacity:1;}
+.add-item-btn{
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+  padding:1rem;border:2px dashed rgba(75,191,196,.4);border-radius:14px;
+  color:var(--teal-deep);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;
+  cursor:pointer;transition:all .2s;margin-top:1rem;background:none;width:100%;
+  font-family:'Nunito',sans-serif;
+}
+.add-item-btn:hover{border-color:var(--teal);background:rgba(75,191,196,.05);}
+.pc-edit-overlay{
+  position:absolute;top:.5rem;right:.5rem;
+  display:flex;gap:.3rem;opacity:0;transition:opacity .2s;z-index:10;
+}
+.pc:hover .pc-edit-overlay{opacity:1;}
+.pc-edit-btn{width:28px;height:28px;border-radius:6px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75rem;background:rgba(253,250,247,.95);color:var(--dark);transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.pc-edit-btn.del:hover{background:#c05050;color:#fff;}
+.pc{position:relative;}
+
+/* ══ TOAST ══ */
+#toast{position:fixed;bottom:2rem;right:2rem;background:var(--dark);color:#fff;padding:.8rem 1.4rem;border-radius:10px;font-size:.8rem;box-shadow:0 8px 32px rgba(0,0,0,.3);transform:translateY(80px);opacity:0;transition:all .35s;z-index:9999;border-left:3px solid var(--teal);}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast.err{border-left-color:var(--rose-deep);}
+
+/* ══ MODAL ══ */
+.modal-ov{position:fixed;inset:0;background:rgba(26,53,53,.6);backdrop-filter:blur(8px);z-index:9000;display:none;align-items:center;justify-content:center;}
 .modal-ov.open{display:flex;}
-.modal{background:var(--white);border-radius:20px;padding:2rem;width:520px;max-width:95vw;max-height:85vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.2);}
+.modal{background:var(--white);border-radius:20px;padding:2rem;width:500px;max-width:95vw;max-height:85vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.25);}
 .modal-ttl{font-family:'Playfair Display',serif;font-style:italic;font-size:1.25rem;color:var(--dark);margin-bottom:1.4rem;}
-.toast{position:fixed;bottom:2rem;right:2rem;background:var(--dark);color:#fff;padding:.8rem 1.4rem;border-radius:10px;font-size:.8rem;box-shadow:var(--shadow);transform:translateY(80px);opacity:0;transition:all .35s;z-index:1000;border-left:3px solid var(--teal);}
-.toast.show{transform:translateY(0);opacity:1;}
-.toast.err{border-left-color:var(--rose);}
-.clr-row{display:flex;gap:.7rem;align-items:center;}
-input[type=color]{width:38px;height:38px;border-radius:8px;border:2px solid var(--border);cursor:pointer;padding:2px;}
+.mfield{margin-bottom:1rem;}
+.mfield label{display:block;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-soft);margin-bottom:.35rem;}
+.mfield input,.mfield textarea{width:100%;padding:.7rem .9rem;border:1.5px solid var(--border);border-radius:8px;font-family:'Nunito',sans-serif;font-size:.87rem;color:var(--dark);background:var(--ivory);outline:none;transition:border-color .2s;}
+.mfield input:focus,.mfield textarea:focus{border-color:var(--teal);}
+.mfield textarea{min-height:80px;resize:vertical;}
+.mbtn{padding:.7rem 1.4rem;border-radius:8px;font-family:'Nunito',sans-serif;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border:none;transition:all .2s;}
+.mbtn-p{background:var(--teal-deep);color:#fff;}
+.mbtn-p:hover{background:var(--dark);}
+.mbtn-s{background:var(--ivory);color:var(--text-soft);border:1.5px solid var(--border);}
+.mbtn-s:hover{border-color:var(--teal);color:var(--teal-deep);}
+.mbtn-row{display:flex;gap:.7rem;margin-top:1.4rem;}
+
+/* ══ REPRISE CSS DU SITE ══ */
+nav{position:relative;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 5rem;background:rgba(253,250,247,.93);backdrop-filter:blur(16px);}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.12rem;font-weight:400;font-style:italic;color:var(--dark);text-decoration:none;letter-spacing:.03em;}
+.nav-logo span{color:var(--teal-deep);}
+.nav-links{display:flex;gap:2.5rem;list-style:none;align-items:center;}
+.nav-links a{font-size:.67rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-soft);cursor:default;}
+.nbadge{background:var(--teal-deep);color:#fff;font-size:.48rem;letter-spacing:.16em;padding:.2rem .6rem;border-radius:10px;}
+section{padding:8rem 5rem;position:relative;overflow:hidden;}
+.s-lbl{font-size:.62rem;letter-spacing:.38em;text-transform:uppercase;color:var(--rose);margin-bottom:1rem;display:flex;align-items:center;gap:1rem;}
+.s-lbl::before{content:'✿';font-size:.8rem;}
+.s-lbl.no-flower::before{content:none;}
+.s-ttl{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,4.5rem);font-weight:400;line-height:1.12;color:var(--dark);}
+.s-ttl em{font-style:italic;color:var(--rose-deep);}
+/* Hero */
+#page-home{min-height:100vh;display:flex;align-items:center;background:linear-gradient(135deg,rgba(207,240,241,.35) 0%,rgba(253,250,247,.8) 40%,rgba(249,237,241,.35) 100%);}
+.h-inner{max-width:700px;padding:8rem 5rem;}
+.h-tag{font-size:.58rem;letter-spacing:.38em;text-transform:uppercase;color:var(--teal-deep);margin-bottom:2.5rem;}
+.h-title{font-family:'Playfair Display',serif;font-size:clamp(3rem,8vw,7rem);font-weight:400;line-height:1.05;color:var(--dark);}
+.h-title em{font-style:italic;color:var(--teal-deep);display:block;font-size:.82em;}
+.h-tagline{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(.95rem,1.8vw,1.3rem);color:var(--text-soft);margin:2.2rem 0;line-height:1.9;max-width:42ch;}
+.h-orn{display:flex;align-items:center;gap:1.2rem;margin:2.2rem 0;}
+.h-orn-line{width:55px;height:1px;background:linear-gradient(to right,transparent,var(--teal));}
+.h-orn-line.r{background:linear-gradient(to left,transparent,var(--teal));}
+.h-btns{display:flex;gap:1.5rem;}
+.btn-teal{padding:.9rem 2.2rem;background:var(--teal-deep);color:#fff;border:none;border-radius:50px;font-family:'Nunito',sans-serif;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;cursor:default;}
+.btn-outline{padding:.9rem 2.2rem;background:transparent;color:var(--rose-deep);border:1.5px solid var(--rose);border-radius:50px;font-family:'Nunito',sans-serif;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;cursor:default;}
+/* Galerie bento */
+#galerie{background:var(--ivory);}
+.bento{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:200px;gap:6px;margin-top:3rem;}
+.g{border-radius:6px;overflow:hidden;position:relative;}
+.g img{width:100%;height:100%;object-fit:cover;display:block;}
+.g:nth-child(1),.g:nth-child(6){grid-column:span 2;}
+/* About */
+#apropos{background:var(--ivory);display:grid;grid-template-columns:1fr 1fr;gap:6rem;}
+.ab-vis{position:relative;display:flex;align-items:center;justify-content:center;}
+.ab-frame{width:360px;height:420px;border-radius:24px;overflow:hidden;position:relative;background:rgba(75,191,196,.1);}
+.ab-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.ab-quote{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.38rem;font-weight:300;color:var(--rose-deep);line-height:1.7;margin:2rem 0;padding-left:1.5rem;border-left:2px solid rgba(75,191,196,.4);}
+.ab-body{font-size:.87rem;font-weight:300;line-height:2.1;color:var(--text-soft);}
+.ab-sig{font-family:'Playfair Display',serif;font-style:italic;font-size:1.95rem;color:var(--rose-deep);margin-top:2.5rem;}
+/* Collections */
+#collections{background:linear-gradient(180deg,rgba(207,240,241,.25),rgba(253,250,247,.9));}
+.coll-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:4rem;}
+.coll-card{background:var(--white);border-radius:20px;overflow:hidden;box-shadow:0 8px 30px rgba(42,157,163,.08);border:1px solid rgba(75,191,196,.12);}
+.coll-img{height:280px;overflow:hidden;position:relative;}
+.coll-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.coll-body{padding:1.8rem 1.6rem 2rem;}
+.coll-tag{font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--teal-deep);margin-bottom:.6rem;}
+.coll-name{font-family:'Playfair Display',serif;font-style:italic;font-size:1.3rem;color:var(--dark);margin-bottom:.8rem;}
+.coll-desc{font-size:.78rem;font-weight:300;line-height:1.8;color:var(--text-soft);margin-bottom:1.2rem;}
+.coll-link{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--rose-deep);}
+/* Collections pages */
+.cp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:2rem;}
+.pc{background:var(--white);border-radius:14px;overflow:hidden;box-shadow:0 5px 22px rgba(42,157,163,.07);}
+.pc-img{height:200px;overflow:hidden;position:relative;}
+.pc-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.pc-body{padding:1.3rem;}
+.pc-name{font-family:'Playfair Display',serif;font-style:italic;font-size:.98rem;color:var(--dark);margin-bottom:.45rem;}
+.pc-desc{font-size:.76rem;font-weight:300;color:var(--text-soft);line-height:1.7;}
+.cp-pieces-title{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;color:var(--dark);text-align:center;margin:3rem 0 1rem;}
+.cp-pieces-title em{font-style:italic;color:var(--rose-deep);}
+/* Mon Univers */
+#univers{background:linear-gradient(135deg,rgba(207,240,241,.2),rgba(249,237,241,.2));}
+.univ-quote{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(1.08rem,2.4vw,1.65rem);font-weight:300;color:var(--text);line-height:1.88;max-width:72ch;margin:3rem auto;}
+/* Contact */
+#contact{display:grid;grid-template-columns:1fr 1fr;gap:6rem;}
+.c-tagline{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.02rem;color:var(--text-soft);line-height:2;margin:1.7rem 0 2.8rem;}
+.c-lbl{font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--teal-deep);margin-bottom:.45rem;}
+.c-val{font-size:.95rem;color:var(--dark);font-weight:300;}
+/* Section nav tabs */
+.section-nav{position:sticky;top:52px;z-index:500;background:rgba(253,250,247,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:.6rem 5rem;display:flex;gap:.5rem;flex-wrap:wrap;}
+.snav-btn{padding:.4rem .9rem;border-radius:20px;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border:1.5px solid var(--border);background:none;font-family:'Nunito',sans-serif;color:var(--text-soft);transition:all .2s;}
+.snav-btn:hover,.snav-btn.active{background:var(--teal-deep);color:#fff;border-color:var(--teal-deep);}
 </style>
 </head>
 <body>
+
+<!-- LOGIN -->
 <div id="login">
   <div class="login-box">
     <div class="login-logo">Sara <span>Céramique</span></div>
-    <div class="login-sub">Panneau d'administration</div>
-    <button class="btn" id="google-btn" onclick="doLogin()" style="display:flex;align-items:center;justify-content:center;gap:.8rem;background:#fff;color:#3c4043;border:1.5px solid #dadce0;font-size:.85rem;letter-spacing:.05em;text-transform:none;padding:.9rem 1.5rem;margin-top:.5rem;">
+    <div class="login-sub">Éditeur du site</div>
+    <div class="login-sub2">Connecte-toi avec ton compte Google<br>pour accéder à l'éditeur visuel</div>
+    <button class="google-btn" id="g-btn" onclick="doLogin()">
       <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.7 2.5 30.2 0 24 0 14.6 0 6.6 5.4 2.6 13.3l7.8 6C12.3 13 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17z"/><path fill="#FBBC05" d="M10.4 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.8-6A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.7l7.8-6z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.6 2.3-7.7 2.3-6.3 0-11.6-4.2-13.6-10l-7.8 6C6.6 42.6 14.6 48 24 48z"/></svg>
       Se connecter avec Google
     </button>
-    <div class="err" id="l-err">Connexion échouée — vérifiez que votre compte est autorisé</div>
+    <div class="login-err" id="l-err">Connexion échouée — vérifiez que votre compte est autorisé</div>
   </div>
 </div>
-<div id="app">
-  <div class="sidebar">
-    <div class="sb-logo">Sara <span>Céramique</span><span class="sb-badge">Administration</span><span class="sb-live">Temps réel · Firebase</span></div>
-    <nav>
-      <div class="nav-item active" data-s="dashboard" onclick="showS(this)"><span>🏠</span><span>Tableau de bord</span></div>
-      <div class="nav-item" data-s="collections" onclick="showS(this)"><span>✦</span><span>Collections</span></div>
-      <div class="nav-item" data-s="textes" onclick="showS(this)"><span>✏️</span><span>Textes</span></div>
-      <div class="nav-item" data-s="photos" onclick="showS(this)"><span>🖼️</span><span>Photos galerie</span></div>
-      <div class="nav-item" data-s="contact" onclick="showS(this)"><span>📍</span><span>Contact</span></div>
-      <div class="nav-item" data-s="couleurs" onclick="showS(this)"><span>🎨</span><span>Couleurs</span></div>
-    </nav>
-    <button class="sb-out" onclick="doLogout()">Déconnexion</button>
-  </div>
-  <div class="main">
-    <div class="section active" id="s-dashboard">
-      <div class="page-ttl">Tableau de bord</div>
-      <div class="page-sub">Bienvenue Sara ✦ Toutes les modifications s'appliquent instantanément.</div>
-      <div class="stats-grid">
-        <div class="stat"><div class="stat-n" id="st-items">—</div><div class="stat-l">Pièces total</div></div>
-        <div class="stat"><div class="stat-n">3</div><div class="stat-l">Collections</div></div>
-        <div class="stat"><div class="stat-n" id="st-fb" style="font-size:1.2rem;">⬤</div><div class="stat-l">Firebase</div></div>
-      </div>
-      <div class="card" style="border:2px solid var(--teal);">
-        <div class="card-ttl">✦ Comment ça marche</div>
-        <div style="font-size:.82rem;line-height:2;color:var(--soft);">
-          <p>1. <strong style="color:var(--dark);">Modifie</strong> n'importe quelle section</p>
-          <p>2. <strong style="color:var(--dark);">Clique "Enregistrer"</strong> → envoyé à Firebase</p>
-          <p>3. <strong style="color:var(--dark);">Le site se met à jour instantanément</strong> pour tous les visiteurs</p>
-        </div>
-      </div>
-    </div>
-    <div class="section" id="s-collections">
-      <div class="page-ttl">Collections & Pièces</div>
-      <div class="page-sub">Modifications instantanées sur le site</div>
-      <div class="tabs">
-        <button class="tab active" onclick="switchColl(this,'corolles')">🌸 Jardin Enchanté</button>
-        <button class="tab" onclick="switchColl(this,'mer')">🌊 Trésors Marins</button>
-        <button class="tab" onclick="switchColl(this,'unique')">✦ Pièces Uniques</button>
-      </div>
-      <div class="card">
-        <div class="card-ttl" id="coll-ttl">Jardin Enchanté</div>
-        <div class="items-list" id="items-list"><div style="padding:1.5rem;text-align:center;color:var(--soft);">Chargement…</div></div>
-        <div style="margin-top:1.2rem;"><button class="btn btn-sm" onclick="openAdd()">+ Ajouter une pièce</button></div>
-      </div>
-    </div>
-    <div class="section" id="s-textes">
-      <div class="page-ttl">Textes du site</div>
-      <div class="page-sub">Mise à jour instantanée</div>
-      <div class="card"><div class="card-ttl">Page d'accueil</div>
-        <div class="field"><label>Titre principal</label><input id="t-hero-title" type="text"/></div>
-        <div class="field"><label>Sous-titre</label><input id="t-hero-sub" type="text"/></div>
-        <div class="field"><label>Bouton principal</label><input id="t-hero-btn1" type="text"/></div>
-        <div class="field"><label>Bouton secondaire</label><input id="t-hero-btn2" type="text"/></div>
-      </div>
-      <div class="card"><div class="card-ttl">À propos</div>
-        <div class="field"><label>Titre</label><input id="t-ab-ttl" type="text"/></div>
-        <div class="field"><label>Citation</label><textarea id="t-ab-quote"></textarea></div>
-        <div class="field"><label>Texte principal</label><textarea id="t-ab-body" style="min-height:120px;"></textarea></div>
-      </div>
-      <div class="card"><div class="card-ttl">Collections — descriptions</div>
-        <div class="field"><label>Jardin Enchanté</label><textarea id="t-coll-corolles"></textarea></div>
-        <div class="field"><label>Trésors Marins</label><textarea id="t-coll-mer"></textarea></div>
-        <div class="field"><label>Pièces Uniques</label><textarea id="t-coll-unique"></textarea></div>
-      </div>
-      <div class="card"><div class="card-ttl">Mon Univers & Contact</div>
-        <div class="field"><label>Citation Mon Univers</label><textarea id="t-univ-quote" style="min-height:100px;"></textarea></div>
-        <div class="field"><label>Tagline Contact</label><textarea id="t-contact-tag"></textarea></div>
-      </div>
-      <div class="card"><div class="card-ttl">Boutique</div>
-        <div class="field"><label>Titre</label><input id="t-boutique-ttl" type="text"/></div>
-        <div class="field"><label>Sous-titre</label><input id="t-boutique-sub" type="text"/></div>
-        <div class="field"><label>Description</label><textarea id="t-boutique-desc"></textarea></div>
-      </div>
-      <div class="btn-row"><button class="btn" onclick="saveTextes()">Enregistrer tous les textes ✦</button></div>
-    </div>
-    <div class="section" id="s-photos">
-      <div class="page-ttl">Photos de la galerie</div>
-      <div class="page-sub">Chemins des photos dans le dossier <code style="background:rgba(75,191,196,.1);padding:.1rem .4rem;border-radius:4px;">images/</code></div>
-      <div class="card"><div class="card-ttl">8 photos de la galerie</div>
-        <div class="row2" id="gal-fields"></div>
-        <div class="btn-row" style="margin-top:1rem;"><button class="btn" onclick="saveGalerie()">Enregistrer les photos ✦</button></div>
-      </div>
-      <div class="card"><div class="card-ttl">Photo portrait (À propos)</div>
-        <div class="field"><label>Chemin du fichier</label><input id="ph-portrait" type="text" placeholder="images/portrait.JPG"/></div>
-        <div class="btn-row"><button class="btn" onclick="savePortrait()">Enregistrer ✦</button></div>
-      </div>
-    </div>
-    <div class="section" id="s-contact">
-      <div class="page-ttl">Contact</div>
-      <div class="page-sub">Coordonnées affichées sur le site</div>
-      <div class="card"><div class="card-ttl">Coordonnées</div>
-        <div class="row2">
-          <div class="field"><label>Email</label><input id="c-email" type="email"/></div>
-          <div class="field"><label>Instagram</label><input id="c-ig" type="text"/></div>
-        </div>
-        <div class="field"><label>URL Instagram</label><input id="c-ig-url" type="text"/></div>
-        <div class="field"><label>Adresse atelier</label><input id="c-adresse" type="text"/></div>
-        <div class="field"><label>Lien Google Maps</label><input id="c-maps" type="text"/></div>
-      </div>
-      <div class="card"><div class="card-ttl">Boutique</div>
-        <div class="field"><label>Texte newsletter</label><input id="c-newsletter" type="text"/></div>
-      </div>
-      <div class="btn-row"><button class="btn" onclick="saveContact()">Enregistrer ✦</button></div>
-    </div>
-    <div class="section" id="s-couleurs">
-      <div class="page-ttl">Couleurs</div>
-      <div class="page-sub">La palette s'applique instantanément sur le site</div>
-      <div class="card"><div class="card-ttl">Palette principale</div>
-        <div class="row3">
-          <div class="field"><label>Teal principal</label><div class="clr-row"><input type="color" id="col-teal" oninput="syncClr(this)"/><input type="text" id="col-teal-t" style="flex:1;" oninput="syncClrTxt(this)"/></div></div>
-          <div class="field"><label>Teal foncé</label><div class="clr-row"><input type="color" id="col-teal-deep" oninput="syncClr(this)"/><input type="text" id="col-teal-deep-t" style="flex:1;" oninput="syncClrTxt(this)"/></div></div>
-          <div class="field"><label>Rose accent</label><div class="clr-row"><input type="color" id="col-rose" oninput="syncClr(this)"/><input type="text" id="col-rose-t" style="flex:1;" oninput="syncClrTxt(this)"/></div></div>
-        </div>
-        <div class="row3">
-          <div class="field"><label>Fond ivoire</label><div class="clr-row"><input type="color" id="col-ivory" oninput="syncClr(this)"/><input type="text" id="col-ivory-t" style="flex:1;" oninput="syncClrTxt(this)"/></div></div>
-          <div class="field"><label>Texte foncé</label><div class="clr-row"><input type="color" id="col-dark" oninput="syncClr(this)"/><input type="text" id="col-dark-t" style="flex:1;" oninput="syncClrTxt(this)"/></div></div>
-          <div class="field"><label>Or</label><div class="clr-row"><input type="color" id="col-gold" oninput="syncClr(this)"/><input type="text" id="col-gold-t" style="flex:1;" oninput="syncClrTxt(this)"/></div></div>
-        </div>
-        <div class="btn-row"><button class="btn" onclick="saveCouleurs()">Enregistrer les couleurs ✦</button></div>
-      </div>
+
+<!-- ADMIN BAR -->
+<div id="admin-bar" style="display:none;">
+  <div class="ab-logo">Sara <span>Céramique</span></div>
+  <div class="ab-badge">Éditeur visuel</div>
+  <div class="ab-live">En ligne</div>
+  <div class="ab-spacer"></div>
+  <div class="ab-hint">Cliquez sur un texte ou une image pour modifier</div>
+  <button class="ab-save-all" onclick="saveAll()">💾 Tout enregistrer</button>
+  <a href="index.html" target="_blank" style="padding:.45rem 1rem;background:none;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.15);border-radius:8px;font-size:.68rem;text-decoration:none;letter-spacing:.1em;text-transform:uppercase;">Voir le site ↗</a>
+  <button class="ab-out" onclick="doLogout()">Déconnexion</button>
+</div>
+
+<!-- SECTION NAV -->
+<div class="section-nav" id="section-nav" style="display:none;">
+  <button class="snav-btn active" onclick="scrollTo2('home')">Accueil</button>
+  <button class="snav-btn" onclick="scrollTo2('galerie')">Galerie</button>
+  <button class="snav-btn" onclick="scrollTo2('apropos')">À propos</button>
+  <button class="snav-btn" onclick="scrollTo2('collections')">Collections</button>
+  <button class="snav-btn" onclick="scrollTo2('corolles')">Jardin Enchanté</button>
+  <button class="snav-btn" onclick="scrollTo2('mer')">Trésors Marins</button>
+  <button class="snav-btn" onclick="scrollTo2('unique')">Pièces Uniques</button>
+  <button class="snav-btn" onclick="scrollTo2('univers')">Mon Univers</button>
+  <button class="snav-btn" onclick="scrollTo2('contact')">Contact</button>
+</div>
+
+<!-- CONTENU DU SITE ÉDITABLE -->
+<div id="site-content" style="display:none;">
+
+<!-- NAV (décorative) -->
+<nav>
+  <div class="nav-logo">Sara <span>Céramique</span></div>
+  <ul class="nav-links">
+    <li><a>À Propos</a></li>
+    <li><a>Galerie</a></li>
+    <li><a>Collections</a></li>
+    <li><a>Boutique <span class="nbadge">Bientôt</span></a></li>
+    <li><a>Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div id="home" style="min-height:100vh;display:flex;align-items:center;background:linear-gradient(135deg,rgba(207,240,241,.35),rgba(253,250,247,.8),rgba(249,237,241,.35));">
+  <div class="h-inner">
+    <p class="h-tag">Céramiste · Côte d'Azur · Monde Enchanté</p>
+    <h1 class="h-title" contenteditable="true" data-key="heroTitle" spellcheck="false">Sara Céramique<em>Petits Mondes Enchantés</em></h1>
+    <p class="h-tagline" contenteditable="true" data-key="heroTagline" spellcheck="false">Des formes nées des fleurs, des forêts et des rêves.<br><strong>Une corolle devient tasse. Un pétale devient pendentif.</strong><br>La magie entre dans les gestes du quotidien.</p>
+    <div class="h-orn"><div class="h-orn-line"></div><span style="color:var(--teal);animation:none;">✿</span><div class="h-orn-line r"></div></div>
+    <div class="h-btns">
+      <button class="btn-teal" contenteditable="true" data-key="heroBtn1" spellcheck="false">Découvrir l'atelier</button>
+      <button class="btn-outline" contenteditable="true" data-key="heroBtn2" spellcheck="false">Commander une pièce</button>
     </div>
   </div>
 </div>
+
+<!-- GALERIE -->
+<section id="galerie" style="background:var(--ivory);">
+  <div style="text-align:center;">
+    <p class="s-lbl no-flower" style="justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="4"/></svg> Galerie</p>
+    <h2 class="s-ttl" contenteditable="true" data-key="galerieTtl" spellcheck="false">Fleurs de <em>terre cuite</em></h2>
+  </div>
+  <div class="bento" id="gal-bento" style="margin-top:3rem;"></div>
+  <button class="add-item-btn" onclick="addGalPhoto()">+ Ajouter une photo à la galerie</button>
+</section>
+
+<!-- À PROPOS -->
+<section id="apropos" style="display:grid;grid-template-columns:1fr 1fr;gap:6rem;">
+  <div>
+    <div class="ab-frame editable-img" onclick="changeImg('portrait')" id="portrait-wrap">
+      <img id="portrait-img" src="images/portrait.JPG" onerror="this.style.display='none'" alt="Portrait"/>
+    </div>
+  </div>
+  <div>
+    <p class="s-lbl">À propos</p>
+    <h2 class="s-ttl" contenteditable="true" data-key="abTtl" spellcheck="false">De la terre à la <em>magie</em></h2>
+    <blockquote class="ab-quote" contenteditable="true" data-key="abQuote" spellcheck="false">J'aime imaginer que nous sommes de petits êtres miniatures, transformant les éléments naturels en objets du quotidien.</blockquote>
+    <p class="ab-body" contenteditable="true" data-key="abBody" spellcheck="false">Mon univers naît de la rencontre entre la nature et l'imaginaire. Je m'inspire du vivant, des fleurs, des formes organiques et des trésors que la nature nous offre. Une corolle devient une tasse, un coquillage devient coupelle, un pétale devient pendentif.<br><br>À travers mes créations, je cherche à faire entrer un peu de magie dans les gestes simples de chaque jour.</p>
+    <div class="ab-sig" contenteditable="true" data-key="abSig" spellcheck="false">Sara Mahjoub</div>
+  </div>
+</section>
+
+<!-- COLLECTIONS -->
+<section id="collections" style="background:linear-gradient(180deg,rgba(207,240,241,.25),rgba(253,250,247,.9));">
+  <div style="text-align:center;">
+    <p class="s-lbl" style="justify-content:center;">Collections</p>
+    <h2 class="s-ttl" contenteditable="true" data-key="collTtl" spellcheck="false">Collections</h2>
+  </div>
+  <div class="coll-grid">
+    <div class="coll-card">
+      <div class="coll-img"><img class="editable-img" onclick="changeImg('coll-corolles')" id="img-coll-corolles" src="images/mug2.JPG" alt=""/></div>
+      <div class="coll-body">
+        <p class="coll-tag">Collection</p>
+        <h3 class="coll-name">Jardin Enchanté</h3>
+        <p class="coll-desc" contenteditable="true" data-key="collCorolles" spellcheck="false">Boire dans une fleur. Des tasses et mugs aux bords pétales, pour transformer chaque thé en rituel enchanté.</p>
+        <span class="coll-link">Découvrir →</span>
+      </div>
+    </div>
+    <div class="coll-card">
+      <div class="coll-img"><img class="editable-img" onclick="changeImg('coll-mer')" id="img-coll-mer" src="images/coupe.JPG" alt=""/></div>
+      <div class="coll-body">
+        <p class="coll-tag">Collection</p>
+        <h3 class="coll-name">Trésors Marins</h3>
+        <p class="coll-desc" contenteditable="true" data-key="collMer" spellcheck="false">Coquillages devenus coupelles, vagues sculptées dans l'argile. La mer réinterprétée avec des yeux de fée.</p>
+        <span class="coll-link">Découvrir →</span>
+      </div>
+    </div>
+    <div class="coll-card">
+      <div class="coll-img"><img class="editable-img" onclick="changeImg('coll-unique')" id="img-coll-unique" src="images/lampadaire.JPG" alt=""/></div>
+      <div class="coll-body">
+        <p class="coll-tag">Sur commande</p>
+        <h3 class="coll-name">Pièces Uniques</h3>
+        <p class="coll-desc" contenteditable="true" data-key="collUnique" spellcheck="false">Lampadaires sculpturaux, cadeaux précieux, objets sur-mesure nés d'un désir particulier.</p>
+        <span class="coll-link">Découvrir →</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JARDIN ENCHANTÉ -->
+<section id="corolles" style="background:var(--ivory);">
+  <div style="text-align:center;margin-bottom:1rem;">
+    <p class="s-lbl" style="justify-content:center;">✿ Jardin Enchanté</p>
+    <h2 class="cp-pieces-title">Les pièces de la collection <em>Jardin Enchanté</em></h2>
+  </div>
+  <div class="cp-grid" id="grid-corolles"></div>
+  <button class="add-item-btn" onclick="openAddItem('corolles')">+ Ajouter une pièce à Jardin Enchanté</button>
+</section>
+
+<!-- TRÉSORS MARINS -->
+<section id="mer" style="background:linear-gradient(180deg,rgba(207,240,241,.15),rgba(253,250,247,.9));">
+  <div style="text-align:center;margin-bottom:1rem;">
+    <p class="s-lbl" style="justify-content:center;">🌊 Trésors Marins</p>
+    <h2 class="cp-pieces-title">Les pièces de la collection <em>Trésors Marins</em></h2>
+  </div>
+  <div class="cp-grid" id="grid-mer"></div>
+  <button class="add-item-btn" onclick="openAddItem('mer')">+ Ajouter une pièce à Trésors Marins</button>
+</section>
+
+<!-- PIÈCES UNIQUES -->
+<section id="unique" style="background:var(--ivory);">
+  <div style="text-align:center;margin-bottom:1rem;">
+    <p class="s-lbl" style="justify-content:center;">✦ Pièces Uniques</p>
+    <h2 class="cp-pieces-title">Les pièces de la collection <em>Pièces Uniques</em></h2>
+  </div>
+  <div class="cp-grid" id="grid-unique"></div>
+  <button class="add-item-btn" onclick="openAddItem('unique')">+ Ajouter une pièce à Pièces Uniques</button>
+</section>
+
+<!-- MON UNIVERS -->
+<section id="univers" style="text-align:center;background:linear-gradient(135deg,rgba(207,240,241,.2),rgba(249,237,241,.2));">
+  <p class="s-lbl" style="justify-content:center;">Mon Univers</p>
+  <h2 class="s-ttl" style="text-align:center;" contenteditable="true" data-key="univTtl" spellcheck="false">Mon <em>Univers</em></h2>
+  <blockquote class="univ-quote" contenteditable="true" data-key="univQuote" spellcheck="false">"À travers mes créations, je cherche à faire entrer un peu de magie dans les gestes simples de chaque jour. Adopter l'une de mes tasses, c'est devenir une fée le temps d'un instant, buvant dans une jolie fleur fraîchement cueillie."</blockquote>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="display:grid;grid-template-columns:1fr 1fr;gap:6rem;">
+  <div>
+    <p class="s-lbl no-flower"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Contact</p>
+    <h2 class="s-ttl">Rêvons <em>ensemble</em></h2>
+    <p class="c-tagline" contenteditable="true" data-key="contactTag" spellcheck="false">Commande sur-mesure, acquisition d'une pièce, cours de céramique — toutes les lettres de fées sont bienvenues.</p>
+    <div style="display:flex;flex-direction:column;gap:1.5rem;margin-top:2rem;">
+      <div><p class="c-lbl">Atelier</p><p class="c-val" contenteditable="true" data-key="contactAdresse" spellcheck="false">32 boulevard d'Aguillon, 06600 Antibes</p></div>
+      <div><p class="c-lbl">Email</p><p class="c-val" contenteditable="true" data-key="contactEmail" spellcheck="false">saraceramique06@gmail.com</p></div>
+      <div><p class="c-lbl">Instagram</p><p class="c-val" contenteditable="true" data-key="contactIg" spellcheck="false">@saraceramique</p></div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:center;background:rgba(75,191,196,.04);border-radius:20px;padding:3rem;border:1px dashed rgba(75,191,196,.2);">
+    <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:var(--text-soft);text-align:center;">Le formulaire de contact<br>est disponible sur le site</p>
+  </div>
+</section>
+
+</div><!-- /site-content -->
+
+<!-- MODAL PIÈCE -->
 <div class="modal-ov" id="item-modal">
   <div class="modal">
-    <div class="modal-ttl" id="modal-ttl">Ajouter une pièce</div>
-    <div class="field"><label>Nom *</label><input id="i-name" type="text" placeholder="Ex: Tasses Aurore"/></div>
-    <div class="field"><label>Description</label><textarea id="i-desc"></textarea></div>
-    <div class="field"><label>Photo 1</label><input id="i-img1" type="text" placeholder="images/mug.JPG"/></div>
-    <div class="field"><label>Photo 2</label><input id="i-img2" type="text"/></div>
-    <div class="field"><label>Photo 3</label><input id="i-img3" type="text"/></div>
+    <div class="modal-ttl" id="item-modal-ttl">Ajouter une pièce</div>
+    <div class="mfield"><label>Nom *</label><input id="i-name" type="text" placeholder="Ex: Tasses Aurore"/></div>
+    <div class="mfield"><label>Description</label><textarea id="i-desc" placeholder="Description courte…"></textarea></div>
+    <div class="mfield"><label>Photo 1 (chemin dans images/)</label><input id="i-img1" type="text" placeholder="images/mug.JPG"/></div>
+    <div class="mfield"><label>Photo 2 — optionnel</label><input id="i-img2" type="text"/></div>
+    <div class="mfield"><label>Photo 3 — optionnel</label><input id="i-img3" type="text"/></div>
+    <input type="hidden" id="i-coll"/>
     <input type="hidden" id="i-edit-id"/>
-    <div class="btn-row" style="margin-top:1.5rem;">
-      <button class="btn btn-sm" onclick="saveItem()">Enregistrer ✦</button>
-      <button class="btn btn-sm btn-sec" onclick="closeModal()">Annuler</button>
+    <div class="mbtn-row">
+      <button class="mbtn mbtn-p" onclick="saveItem()">Enregistrer ✦</button>
+      <button class="mbtn mbtn-s" onclick="closeItemModal()">Annuler</button>
     </div>
   </div>
 </div>
-<div class="toast" id="toast"></div>
+
+<!-- MODAL IMAGE -->
+<div class="modal-ov" id="img-modal">
+  <div class="modal">
+    <div class="modal-ttl">Changer la photo</div>
+    <div class="mfield">
+      <label>Chemin du fichier</label>
+      <input id="img-path" type="text" placeholder="images/maphoto.JPG"/>
+      <p style="font-size:.72rem;color:var(--text-soft);margin-top:.5rem;">Le fichier doit être dans votre dossier <code>images/</code> sur GitHub</p>
+    </div>
+    <input type="hidden" id="img-target"/>
+    <div class="mbtn-row">
+      <button class="mbtn mbtn-p" onclick="saveImg()">Appliquer ✦</button>
+      <button class="mbtn mbtn-s" onclick="closeImgModal()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import{getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import{getFirestore,doc,getDoc,setDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,query,orderBy}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-const cfg={apiKey:"AIzaSyBk6Kh6jBG3slID3G2cuUk0KE59cCIIfRM",authDomain:"sara-ceramique.firebaseapp.com",projectId:"sara-ceramique",storageBucket:"sara-ceramique.firebasestorage.app",messagingSenderId:"948372418186",appId:"1:948372418186:web:7f9dea6726c43536ebc773"};
-const fb=initializeApp(cfg);const auth=getAuth(fb);const db=getFirestore(fb);
-let curColl='corolles';
-const CN={corolles:'Jardin Enchanté',mer:'Trésors Marins',unique:'Pièces Uniques'};
-const CE={corolles:'🌸',mer:'🌊',unique:'✦'};
+import{getFirestore,doc,getDoc,setDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,onSnapshot,query,orderBy}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const fb=initializeApp({apiKey:"AIzaSyBk6Kh6jBG3slID3G2cuUk0KE59cCIIfRM",authDomain:"sara-ceramique.firebaseapp.com",projectId:"sara-ceramique",storageBucket:"sara-ceramique.firebasestorage.app",messagingSenderId:"948372418186",appId:"1:948372418186:web:7f9dea6726c43536ebc773"});
+const auth=getAuth(fb);const db=getFirestore(fb);
+
+// ── AUTH ──
 window.doLogin=async()=>{
-  const btn=document.getElementById('google-btn');
-  btn.disabled=true; btn.textContent='Connexion…';
-  try{
-    const provider=new GoogleAuthProvider();
-    await signInWithPopup(auth,provider);
-  }catch(e){
-    document.getElementById('l-err').style.display='block';
-    btn.disabled=false;btn.innerHTML='<svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.7 2.5 30.2 0 24 0 14.6 0 6.6 5.4 2.6 13.3l7.8 6C12.3 13 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17z"/><path fill="#FBBC05" d="M10.4 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.8-6A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.7l7.8-6z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.6 2.3-7.7 2.3-6.3 0-11.6-4.2-13.6-10l-7.8 6C6.6 42.6 14.6 48 24 48z"/></svg> Se connecter avec Google';
-  }
+  const btn=document.getElementById('g-btn');
+  btn.disabled=true;btn.textContent='Connexion…';
+  try{await signInWithPopup(auth,new GoogleAuthProvider());}
+  catch(e){document.getElementById('l-err').style.display='block';btn.disabled=false;btn.innerHTML='<svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.7 2.5 30.2 0 24 0 14.6 0 6.6 5.4 2.6 13.3l7.8 6C12.3 13 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17z"/><path fill="#FBBC05" d="M10.4 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.8-6A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.7l7.8-6z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.6 2.3-7.7 2.3-6.3 0-11.6-4.2-13.6-10l-7.8 6C6.6 42.6 14.6 48 24 48z"/></svg> Se connecter avec Google';}
 };
 window.doLogout=()=>signOut(auth);
 onAuthStateChanged(auth,u=>{
-  if(u){const l=document.getElementById('login');l.style.opacity='0';setTimeout(()=>{l.style.display='none';document.getElementById('app').style.display='block';init();},400);}
-  else{const l=document.getElementById('login');l.style.display='flex';l.style.opacity='1';document.getElementById('app').style.display='none';}
+  if(u){
+    document.getElementById('login').style.opacity='0';
+    setTimeout(()=>{
+      document.getElementById('login').style.display='none';
+      document.getElementById('admin-bar').style.display='flex';
+      document.getElementById('section-nav').style.display='flex';
+      document.getElementById('site-content').style.display='block';
+      loadAll();
+    },400);
+  } else {
+    document.getElementById('login').style.display='flex';
+    document.getElementById('login').style.opacity='1';
+    ['admin-bar','section-nav','site-content'].forEach(id=>document.getElementById(id).style.display='none');
+  }
 });
-async function init(){
-  document.getElementById('st-fb').style.color='#4bbfc4';
-  await Promise.all([loadTextes(),loadGalerie(),loadContact(),loadCouleurs()]);
-  await renderItems();
+
+// ── TOAST ──
+window.toast=(msg,type='')=>{const t=document.getElementById('toast');t.textContent=msg;t.className='show '+(type==='err'?'err':'');setTimeout(()=>t.className='',3200);};
+document.getElementById('toast').style.cssText='position:fixed;bottom:2rem;right:2rem;background:var(--dark);color:#fff;padding:.8rem 1.4rem;border-radius:10px;font-size:.8rem;transform:translateY(80px);opacity:0;transition:all .35s;z-index:9999;border-left:3px solid var(--teal);';
+const styleEl=document.createElement('style');styleEl.textContent='#toast.show{transform:translateY(0)!important;opacity:1!important;}#toast.err{border-left-color:var(--rose-deep)!important;}';document.head.appendChild(styleEl);
+
+// ── NAVIGATION ──
+window.scrollTo2=(id)=>{
+  document.querySelectorAll('.snav-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  const el=document.getElementById(id);
+  if(el){const y=el.getBoundingClientRect().top+window.scrollY-110;window.scrollTo({top:y,behavior:'smooth'});}
+};
+
+// ── LOAD ALL ──
+async function loadAll(){
+  await Promise.all([loadTextes(),loadGalerie(),loadImages(),loadCollections(),loadContact()]);
 }
-window.toast=(msg,type='')=>{const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';setTimeout(()=>t.className='toast',3000);};
-window.showS=(el)=>{const id=el.dataset.s;document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById('s-'+id).classList.add('active');el.classList.add('active');};
-window.switchColl=(el,c)=>{document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');curColl=c;document.getElementById('coll-ttl').textContent=CN[c];renderItems();};
-async function renderItems(){
-  const list=document.getElementById('items-list');
-  list.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--soft);">Chargement…</div>';
+
+// ── TEXTES ──
+async function loadTextes(){
   try{
-    const q=query(collection(db,'collections',curColl,'pieces'),orderBy('order'));
-    const snap=await getDocs(q);
-    if(snap.empty){list.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--soft);font-style:italic;">Aucune pièce</div>';updStats();return;}
-    const items=[];snap.forEach(d=>items.push({id:d.id,...d.data()}));
-    list.innerHTML=items.map((item,i)=>`<div class="item-row">
-      <div class="item-ph">${item.imgs?.[0]?`<img src="${item.imgs[0]}" onerror="this.parentElement.innerHTML='${CE[curColl]}'"/>`:`${CE[curColl]}`}</div>
-      <div class="item-info"><div class="item-name">${item.name||'—'}</div><div class="item-desc">${item.desc||'—'}</div></div>
-      <div class="item-acts">
-        ${i>0?`<button class="ico-btn up" onclick="moveItem('${item.id}',${item.order},-1)">↑</button>`:''}
-        ${i<items.length-1?`<button class="ico-btn dn" onclick="moveItem('${item.id}',${item.order},1)">↓</button>`:''}
-        <button class="ico-btn edit" onclick="openEdit('${item.id}',\`${(item.name||'').replace(/`/g,"'")}\`,\`${(item.desc||'').replace(/`/g,"'")}\`,'${(item.imgs||[]).join(',')}')">✏️</button>
-        <button class="ico-btn del" onclick="delItem('${item.id}')">🗑️</button>
-      </div></div>`).join('');
-    updStats();
-  }catch(e){list.innerHTML='<div style="color:#c05050;padding:1rem;">Erreur: '+e.message+'</div>';}
+    const snap=await getDoc(doc(db,'site','textes'));
+    if(!snap.exists())return;
+    const d=snap.data();
+    document.querySelectorAll('[data-key]').forEach(el=>{
+      const k=el.dataset.key;
+      if(d[k]!==undefined) el.innerHTML=d[k];
+    });
+  }catch(e){}
 }
-function updStats(){let t=0;['corolles','mer','unique'].forEach(async c=>{const s=await getDocs(collection(db,'collections',c,'pieces'));t+=s.size;document.getElementById('st-items').textContent=t;});}
-window.openAdd=()=>{document.getElementById('modal-ttl').textContent='Ajouter une pièce';['i-name','i-desc','i-img1','i-img2','i-img3'].forEach(id=>document.getElementById(id).value='');document.getElementById('i-edit-id').value='';document.getElementById('item-modal').classList.add('open');};
-window.openEdit=(id,name,desc,imgs)=>{document.getElementById('modal-ttl').textContent='Modifier';document.getElementById('i-name').value=name;document.getElementById('i-desc').value=desc;const a=imgs.split(',');document.getElementById('i-img1').value=a[0]||'';document.getElementById('i-img2').value=a[1]||'';document.getElementById('i-img3').value=a[2]||'';document.getElementById('i-edit-id').value=id;document.getElementById('item-modal').classList.add('open');};
-window.closeModal=()=>document.getElementById('item-modal').classList.remove('open');
+
+window.saveAll=async()=>{
+  // Collecter tous les contenteditable
+  const textes={};
+  document.querySelectorAll('[data-key]').forEach(el=>{
+    textes[el.dataset.key]=el.innerHTML;
+  });
+  // Contact séparé
+  const contact={
+    email: textes.contactEmail||'',
+    instagram: textes.contactIg||'',
+    adresse: textes.contactAdresse||'',
+  };
+  delete textes.contactEmail; delete textes.contactIg; delete textes.contactAdresse;
+  try{
+    await setDoc(doc(db,'site','textes'),textes,{merge:true});
+    await setDoc(doc(db,'site','contact'),contact,{merge:true});
+    toast('✦ Toutes les modifications enregistrées !');
+  }catch(e){toast('Erreur: '+e.message,'err');}
+};
+
+// ── GALERIE ──
+async function loadGalerie(){
+  try{
+    const snap=await getDoc(doc(db,'site','galerie'));
+    const imgs=snap.exists()?(snap.data().imgs||[]):['images/mug.JPG','images/coupe.JPG','images/fiole.JPG','images/mug2.JPG','images/coupe2.JPG','images/lampadaire.JPG','images/mug.JPG','images/coupe.JPG'];
+    renderGalerie(imgs);
+  }catch(e){renderGalerie(['images/mug.JPG','images/coupe.JPG','images/fiole.JPG','images/mug2.JPG','images/coupe2.JPG','images/lampadaire.JPG','images/mug.JPG','images/coupe.JPG']);}
+}
+
+let galImgs=[];
+function renderGalerie(imgs){
+  galImgs=[...imgs];
+  const bento=document.getElementById('gal-bento');
+  bento.innerHTML=imgs.map((src,i)=>`
+    <div class="g" style="${i===0||i===5?'grid-column:span 2':''};position:relative;">
+      <img src="${src}" style="width:100%;height:100%;object-fit:cover;" onerror="this.src=''"/>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(26,53,53,0);transition:background .2s;cursor:pointer;"
+        onmouseenter="this.style.background='rgba(26,53,53,.5)';this.querySelector('.g-actions').style.opacity='1'"
+        onmouseleave="this.style.background='rgba(26,53,53,0)';this.querySelector('.g-actions').style.opacity='0'">
+        <div class="g-actions" style="opacity:0;display:flex;gap:.5rem;transition:opacity .2s;">
+          <button onclick="changeGalPhoto(${i})" style="padding:.5rem 1rem;background:var(--white);border:none;border-radius:8px;font-size:.68rem;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer</button>
+          <button onclick="removeGalPhoto(${i})" style="padding:.5rem .8rem;background:#c05050;color:#fff;border:none;border-radius:8px;font-size:.68rem;cursor:pointer;">✕</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+window.addGalPhoto=()=>{
+  const path=prompt('Chemin de la photo (ex: images/maphoto.JPG) :');
+  if(!path)return;
+  galImgs.push(path);
+  saveGalerie();
+};
+window.changeGalPhoto=(i)=>{
+  const path=prompt('Nouveau chemin (ex: images/maphoto.JPG) :',galImgs[i]);
+  if(!path)return;
+  galImgs[i]=path;
+  saveGalerie();
+};
+window.removeGalPhoto=(i)=>{
+  if(!confirm('Supprimer cette photo de la galerie ?'))return;
+  galImgs.splice(i,1);
+  saveGalerie();
+};
+async function saveGalerie(){
+  await setDoc(doc(db,'site','galerie'),{imgs:galImgs});
+  renderGalerie(galImgs);
+  toast('Galerie mise à jour ✦');
+}
+
+// ── IMAGES ──
+async function loadImages(){
+  try{
+    const snap=await getDoc(doc(db,'site','images'));
+    if(!snap.exists())return;
+    const d=snap.data();
+    if(d.portrait){const img=document.getElementById('portrait-img');if(img)img.src=d.portrait;}
+    if(d['coll-corolles']){const img=document.getElementById('img-coll-corolles');if(img)img.src=d['coll-corolles'];}
+    if(d['coll-mer']){const img=document.getElementById('img-coll-mer');if(img)img.src=d['coll-mer'];}
+    if(d['coll-unique']){const img=document.getElementById('img-coll-unique');if(img)img.src=d['coll-unique'];}
+  }catch(e){}
+}
+
+window.changeImg=(target)=>{
+  document.getElementById('img-target').value=target;
+  const imgMap={'portrait':'images/portrait.JPG','coll-corolles':'images/mug2.JPG','coll-mer':'images/coupe.JPG','coll-unique':'images/lampadaire.JPG'};
+  document.getElementById('img-path').value=imgMap[target]||'';
+  document.getElementById('img-modal').classList.add('open');
+};
+window.closeImgModal=()=>document.getElementById('img-modal').classList.remove('open');
+window.saveImg=async()=>{
+  const target=document.getElementById('img-target').value;
+  const path=document.getElementById('img-path').value.trim();
+  if(!path){toast('Chemin vide','err');return;}
+  const updates={};updates[target]=path;
+  await setDoc(doc(db,'site','images'),updates,{merge:true});
+  // Mettre à jour l'aperçu
+  const elMap={'portrait':'portrait-img','coll-corolles':'img-coll-corolles','coll-mer':'img-coll-mer','coll-unique':'img-coll-unique'};
+  const imgEl=document.getElementById(elMap[target]);
+  if(imgEl)imgEl.src=path;
+  closeImgModal();
+  toast('Photo mise à jour ✦');
+};
+
+// ── COLLECTIONS ──
+async function loadCollections(){
+  await Promise.all(['corolles','mer','unique'].map(c=>loadColl(c)));
+}
+async function loadColl(coll){
+  try{
+    const q=query(collection(db,'collections',coll,'pieces'),orderBy('order'));
+    const snap=await getDocs(q);
+    const items=[];snap.forEach(d=>items.push({id:d.id,...d.data()}));
+    renderColl(coll,items);
+  }catch(e){renderColl(coll,[]);}
+}
+
+function renderColl(coll,items){
+  const grid=document.getElementById('grid-'+coll);
+  if(!grid)return;
+  grid.innerHTML=items.map(item=>`
+    <div class="pc">
+      <div class="pc-img"><img src="${(item.imgs||[])[0]||''}" onerror="this.parentElement.style.background='rgba(75,191,196,.1)'" style="width:100%;height:100%;object-fit:cover;"/></div>
+      <div class="pc-body">
+        <p class="pc-name">${item.name||''}</p>
+        <p class="pc-desc">${item.desc||''}</p>
+      </div>
+      <div class="pc-edit-overlay">
+        <button class="pc-edit-btn" onclick="openEditItem('${coll}','${item.id}',\`${(item.name||'').replace(/`/g,"'")}\`,\`${(item.desc||'').replace(/`/g,"'")}\`,'${(item.imgs||[]).join(',')}')">✏️</button>
+        <button class="pc-edit-btn del" onclick="delItem('${coll}','${item.id}')">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+
+window.openAddItem=(coll)=>{
+  document.getElementById('item-modal-ttl').textContent='Ajouter une pièce';
+  ['i-name','i-desc','i-img1','i-img2','i-img3'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('i-coll').value=coll;
+  document.getElementById('i-edit-id').value='';
+  document.getElementById('item-modal').classList.add('open');
+};
+window.openEditItem=(coll,id,name,desc,imgs)=>{
+  document.getElementById('item-modal-ttl').textContent='Modifier la pièce';
+  document.getElementById('i-name').value=name;
+  document.getElementById('i-desc').value=desc;
+  const a=imgs.split(',');
+  document.getElementById('i-img1').value=a[0]||'';
+  document.getElementById('i-img2').value=a[1]||'';
+  document.getElementById('i-img3').value=a[2]||'';
+  document.getElementById('i-coll').value=coll;
+  document.getElementById('i-edit-id').value=id;
+  document.getElementById('item-modal').classList.add('open');
+};
+window.closeItemModal=()=>document.getElementById('item-modal').classList.remove('open');
 window.saveItem=async()=>{
   const name=document.getElementById('i-name').value.trim();
   if(!name){toast('Nom obligatoire','err');return;}
+  const coll=document.getElementById('i-coll').value;
   const imgs=['i-img1','i-img2','i-img3'].map(id=>document.getElementById(id).value.trim()).filter(Boolean);
   const data={name,desc:document.getElementById('i-desc').value.trim(),imgs,order:Date.now()};
   const eid=document.getElementById('i-edit-id').value;
-  try{if(eid){await updateDoc(doc(db,'collections',curColl,'pieces',eid),data);toast('Modifié ✦');}else{await addDoc(collection(db,'collections',curColl,'pieces'),data);toast('Ajouté ✦');}closeModal();renderItems();}
-  catch(e){toast('Erreur: '+e.message,'err');}
+  try{
+    if(eid) await updateDoc(doc(db,'collections',coll,'pieces',eid),data);
+    else await addDoc(collection(db,'collections',coll,'pieces'),data);
+    closeItemModal();
+    await loadColl(coll);
+    toast('Pièce '+(eid?'modifiée':'ajoutée')+' ✦');
+  }catch(e){toast('Erreur: '+e.message,'err');}
 };
-window.delItem=async(id)=>{if(!confirm('Supprimer ?'))return;await deleteDoc(doc(db,'collections',curColl,'pieces',id));toast('Supprimé');renderItems();};
-window.moveItem=async(id,order,dir)=>{await updateDoc(doc(db,'collections',curColl,'pieces',id),{order:order+dir*1000});renderItems();};
-const v=id=>document.getElementById(id)?.value?.trim()||'';
-async function loadTextes(){try{const s=await getDoc(doc(db,'site','textes'));if(!s.exists())return;const d=s.data();const m={'t-hero-title':d.heroTitle,'t-hero-sub':d.heroSub,'t-hero-btn1':d.heroBtn1,'t-hero-btn2':d.heroBtn2,'t-ab-ttl':d.abTtl,'t-ab-quote':d.abQuote,'t-ab-body':d.abBody,'t-coll-corolles':d.collCorolles,'t-coll-mer':d.collMer,'t-coll-unique':d.collUnique,'t-univ-quote':d.univQuote,'t-contact-tag':d.contactTag,'t-boutique-ttl':d.boutiqueTtl,'t-boutique-sub':d.boutiqueSub,'t-boutique-desc':d.boutiqueDesc};Object.entries(m).forEach(([id,val])=>{if(val&&document.getElementById(id))document.getElementById(id).value=val;});}catch(e){}}
-window.saveTextes=async()=>{try{await setDoc(doc(db,'site','textes'),{heroTitle:v('t-hero-title'),heroSub:v('t-hero-sub'),heroBtn1:v('t-hero-btn1'),heroBtn2:v('t-hero-btn2'),abTtl:v('t-ab-ttl'),abQuote:v('t-ab-quote'),abBody:v('t-ab-body'),collCorolles:v('t-coll-corolles'),collMer:v('t-coll-mer'),collUnique:v('t-coll-unique'),univQuote:v('t-univ-quote'),contactTag:v('t-contact-tag'),boutiqueTtl:v('t-boutique-ttl'),boutiqueSub:v('t-boutique-sub'),boutiqueDesc:v('t-boutique-desc')});toast('Textes enregistrés ✦');}catch(e){toast('Erreur: '+e.message,'err');}};
-async function loadGalerie(){try{const s=await getDoc(doc(db,'site','galerie'));const imgs=s.exists()?(s.data().imgs||[]):Array(8).fill('');document.getElementById('gal-fields').innerHTML=imgs.map((src,i)=>`<div class="field"><label>Photo ${i+1}</label><input id="gal-${i}" type="text" value="${src}" placeholder="images/photo.JPG"/></div>`).join('');const s2=await getDoc(doc(db,'site','general'));if(s2.exists()&&s2.data().portrait)document.getElementById('ph-portrait').value=s2.data().portrait;}catch(e){document.getElementById('gal-fields').innerHTML=Array(8).fill(0).map((_, i)=>`<div class="field"><label>Photo ${i+1}</label><input id="gal-${i}" type="text" placeholder="images/photo.JPG"/></div>`).join('');}}
-window.saveGalerie=async()=>{const imgs=Array.from({length:8},(_,i)=>document.getElementById('gal-'+i)?.value?.trim()||'');await setDoc(doc(db,'site','galerie'),{imgs});toast('Photos enregistrées ✦');};
-window.savePortrait=async()=>{await setDoc(doc(db,'site','general'),{portrait:v('ph-portrait')},{merge:true});toast('Portrait enregistré ✦');};
-async function loadContact(){try{const s=await getDoc(doc(db,'site','contact'));if(!s.exists())return;const d=s.data();const m={'c-email':d.email,'c-ig':d.instagram,'c-ig-url':d.instagramUrl,'c-adresse':d.adresse,'c-maps':d.maps,'c-newsletter':d.newsletterTxt};Object.entries(m).forEach(([id,val])=>{if(val&&document.getElementById(id))document.getElementById(id).value=val;});}catch(e){}}
-window.saveContact=async()=>{await setDoc(doc(db,'site','contact'),{email:v('c-email'),instagram:v('c-ig'),instagramUrl:v('c-ig-url'),adresse:v('c-adresse'),maps:v('c-maps'),newsletterTxt:v('c-newsletter')});toast('Enregistré ✦');};
-const DEF_COLS={teal:'#4bbfc4',tealDeep:'#2a9da3',rose:'#e8a0b4',ivory:'#faf8f5',dark:'#1a3535',gold:'#e8c97a'};
-async function loadCouleurs(){try{const s=await getDoc(doc(db,'site','couleurs'));const d=s.exists()?s.data():DEF_COLS;const m={'col-teal':d.teal||DEF_COLS.teal,'col-teal-deep':d.tealDeep||DEF_COLS.tealDeep,'col-rose':d.rose||DEF_COLS.rose,'col-ivory':d.ivory||DEF_COLS.ivory,'col-dark':d.dark||DEF_COLS.dark,'col-gold':d.gold||DEF_COLS.gold};Object.entries(m).forEach(([id,val])=>{const el=document.getElementById(id);const t=document.getElementById(id+'-t');if(el)el.value=val;if(t)t.value=val;});}catch(e){}}
-window.saveCouleurs=async()=>{await setDoc(doc(db,'site','couleurs'),{teal:document.getElementById('col-teal').value,tealDeep:document.getElementById('col-teal-deep').value,rose:document.getElementById('col-rose').value,ivory:document.getElementById('col-ivory').value,dark:document.getElementById('col-dark').value,gold:document.getElementById('col-gold').value});toast('Couleurs enregistrées ✦');};
-window.syncClr=el=>{const t=document.getElementById(el.id+'-t');if(t)t.value=el.value;};
-window.syncClrTxt=el=>{const c=document.getElementById(el.id.replace('-t',''));if(c&&/^#[0-9a-f]{6}$/i.test(el.value))c.value=el.value;};
-document.getElementById('item-modal').addEventListener('click',e=>{if(e.target.id==='item-modal')closeModal();});
+window.delItem=async(coll,id)=>{
+  if(!confirm('Supprimer cette pièce ?'))return;
+  await deleteDoc(doc(db,'collections',coll,'pieces',id));
+  await loadColl(coll);
+  toast('Pièce supprimée');
+};
+
+// ── CONTACT ──
+async function loadContact(){
+  try{
+    const snap=await getDoc(doc(db,'site','contact'));
+    if(!snap.exists())return;
+    const d=snap.data();
+    const map={'contactEmail':d.email,'contactIg':d.instagram,'contactAdresse':d.adresse};
+    Object.entries(map).forEach(([k,v])=>{if(v){const el=document.querySelector(`[data-key="${k}"]`);if(el)el.textContent=v;}});
+  }catch(e){}
+}
+
+// Fermer modals au clic extérieur
+['item-modal','img-modal'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',e=>{if(e.target.id===id)e.target.classList.remove('open');});
+});
 </script>
 </body>
 </html>

@@ -70,8 +70,19 @@ onSnapshot(doc(db,'site','galerie'),snap=>{
   setTimeout(()=>window.rebuildBento&&window.rebuildBento(), 300);
 });
 
-// Portrait
-onSnapshot(doc(db,'site','general'),snap=>{
+// Images (photos de couverture collections, hero pages)
+onSnapshot(doc(db,'site','images'),snap=>{
+  if(!snap.exists())return;
+  const d=snap.data();
+  // Photos de couverture des cartes collections
+  const collMap={'coll-corolles':'.coll-card[data-coll=corolles] .coll-img img','coll-mer':'.coll-card[data-coll=mer] .coll-img img','coll-unique':'.coll-card[data-coll=unique] .coll-img img'};
+  Object.entries(collMap).forEach(([k,sel])=>{if(d[k]){const el=document.querySelector(sel);if(el)el.src=d[k];}});
+  // Photos hero des pages collection
+  const heroMap={'cp-corolles-hero':'#page-corolles .cp-hero-img img','cp-mer-hero':'#page-mer .cp-hero-img img','cp-unique-hero':'#page-unique .cp-hero-img img'};
+  Object.entries(heroMap).forEach(([k,sel])=>{if(d[k]){const el=document.querySelector(sel);if(el)el.src=d[k];}});
+});
+
+
   if(!snap.exists())return;
   const d=snap.data();
   if(d.portrait){const img=document.querySelector('.ab-frame img');if(img)img.src=d.portrait;}
@@ -719,7 +730,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
         <span style="font-size:.62rem;letter-spacing:.17em;text-transform:uppercase;">Votre portrait</span>
       </div>
-      <img src="images/portrait.JPG" alt="Sara Mahjoub" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none'"/>
+      <img src="images/portrait.JPG" alt="Sara Mahjoub" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.opacity='0'"/>
     </div>
   </div>
   <div class="reveal">

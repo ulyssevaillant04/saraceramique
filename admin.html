@@ -555,6 +555,49 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
     <div class="mbrow"><button class="mbp" onclick="savePc()">Enregistrer ✦</button><button class="mbs" onclick="closeMov('m-pc')">Annuler</button></div>
   </div>
 </div>
+<!-- MODAL UPLOAD GITHUB -->
+<div class="mov" id="m-upload">
+  <div class="mbox">
+    <div class="mttl">Ajouter une photo</div>
+    <div id="upload-github-ok" style="display:none;">
+      <div style="background:rgba(75,191,196,.08);border:1px solid rgba(75,191,196,.2);border-radius:10px;padding:1rem;margin-bottom:1rem;font-size:.78rem;color:var(--text-soft);">
+        ✦ Upload GitHub actif — les photos seront envoyées directement sur votre site
+      </div>
+    </div>
+    <div id="upload-github-setup" style="margin-bottom:1rem;">
+      <div style="background:rgba(232,160,180,.08);border:1px solid rgba(232,160,180,.2);border-radius:10px;padding:1rem;margin-bottom:.8rem;font-size:.75rem;color:var(--text-soft);line-height:1.7;">
+        <strong style="color:var(--dark);">Pour uploader des photos directement :</strong><br>
+        1. Va sur <a href="https://github.com/settings/tokens" target="_blank" style="color:var(--teal-deep);">github.com/settings/tokens</a><br>
+        2. "Generate new token (classic)" → coche <strong>repo</strong> → génère<br>
+        3. Colle le token ci-dessous (il sera sauvegardé dans ce navigateur)
+      </div>
+      <div class="mf">
+        <label>Token GitHub (optionnel)</label>
+        <input id="gh-token" type="password" placeholder="ghp_xxxxxxxxxxxx"/>
+      </div>
+      <div class="mf">
+        <label>Dépôt GitHub (ex: ulyssevaillant04/saraceramique)</label>
+        <input id="gh-repo" placeholder="ulyssevaillant04/saraceramique"/>
+      </div>
+      <button class="mbp" onclick="saveGhConfig()" style="width:100%;margin-bottom:1rem;">Sauvegarder la configuration</button>
+    </div>
+    <div class="mf">
+      <label>Choisir une photo depuis votre ordinateur</label>
+      <input type="file" id="upload-file" accept="image/*" onchange="previewUpload(this)" style="padding:.5rem;border-radius:8px;border:1.5px dashed rgba(75,191,196,.3);width:100%;cursor:pointer;"/>
+      <img id="upload-preview" style="width:100%;max-height:180px;object-fit:contain;border-radius:8px;margin-top:.5rem;display:none;"/>
+    </div>
+    <div class="mf" id="upload-manual-wrap">
+      <label>— ou — entrer un chemin manuel</label>
+      <input id="upload-manual" placeholder="images/maphoto.JPG"/>
+    </div>
+    <div class="mbrow">
+      <button class="mbp" onclick="applyUpload()">Appliquer ✦</button>
+      <button class="mbs" onclick="closeMov('m-upload')">Annuler</button>
+    </div>
+    <div id="upload-status" style="font-size:.75rem;color:var(--teal-deep);margin-top:.75rem;display:none;"></div>
+  </div>
+</div>
+
 <div class="mov" id="m-img">
   <div class="mbox">
     <div class="mttl">Changer la photo</div>
@@ -588,7 +631,7 @@ const auth=getAuth(fb);const db=getFirestore(fb);
 window.doLogin=async()=>{const b=document.getElementById('gbtn');b.disabled=true;b.textContent='…';try{await signInWithPopup(auth,new GoogleAuthProvider());}catch(e){document.getElementById('lerr').style.display='block';b.disabled=false;b.textContent='Se connecter avec Google';}};
 window.doLogout=()=>signOut(auth);
 onAuthStateChanged(auth,u=>{
-  if(u){const l=document.getElementById('login');l.style.opacity='0';setTimeout(()=>{l.style.display='none';document.getElementById('abar').style.display='flex';document.getElementById('snav').style.display='flex';document.querySelectorAll('.pg,.pg *').forEach(el=>el.style.marginTop='');document.getElementById('pg-home').style.display='block';loadAll();},400);}
+  if(u){const l=document.getElementById('login');l.style.opacity='0';setTimeout(()=>{l.style.display='none';document.getElementById('abar').style.display='flex';document.getElementById('snav').style.display='flex';document.querySelectorAll('.pg,.pg *').forEach(el=>el.style.marginTop='');document.querySelectorAll('.pg').forEach(p=>p.style.display='none');const ph=document.getElementById('pg-home');ph.classList.add('act');ph.style.display='block';loadAll();},400);}
   else{document.getElementById('login').style.display='flex';document.getElementById('login').style.opacity='1';['abar','snav'].forEach(id=>document.getElementById(id).style.display='none');}
 });
 
@@ -597,9 +640,10 @@ const toast=(m,t='')=>{const el=document.getElementById('toast');el.textContent=
 
 // ── PAGES ──
 window.goPage=(id,btn)=>{
-  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('act'));
-  document.getElementById('pg-'+id).classList.add('act');
-  if(btn){document.querySelectorAll('.sn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+  document.querySelectorAll('.pg').forEach(p=>{p.classList.remove('act');p.style.display='none';});
+  const pg=document.getElementById('pg-'+id);
+  pg.classList.add('act');pg.style.display='block';
+  if(btn){document.querySelectorAll('.sn').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');}
   window.scrollTo(0,0);
 };
 
@@ -637,16 +681,24 @@ async function loadGalerie(){
 }
 function renderGal(){
   const b=document.getElementById('gal-bento');
-  b.innerHTML=galImgs.map((src,i)=>`<div class="g del-wrap" style="">
-    <img src="${src}" onerror="this.src=''"/>
-    <div class="g-ov"></div>
-    <button class="del-x" onclick="delGalPh(${i},event)" style="opacity:0;transition:opacity .2s;">✕</button>
-    <div style="position:absolute;inset:0;cursor:pointer;" onmouseenter="this.previousElementSibling.style.opacity=1;this.parentElement.querySelector('.g-ov').style.opacity=1;" onmouseleave="this.previousElementSibling.style.opacity=0;this.parentElement.querySelector('.g-ov').style.opacity=0;" onclick="chGalPh(${i})"></div>
+  b.innerHTML=galImgs.map((src,i)=>`<div class="g" style="position:relative;overflow:hidden;border-radius:6px;">
+    <img src="${src}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.src=''"/>
+    <div class="g-ov" style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(42,157,163,.5),rgba(232,160,180,.4));opacity:0;transition:opacity .3s;z-index:2;"></div>
+    <div class="gal-actions" style="position:absolute;inset:0;z-index:5;opacity:0;transition:opacity .2s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;">
+      <div style="display:flex;gap:.4rem;">
+        ${i>0?`<button onclick="moveGal(${i},-1,event)" style="padding:.3rem .6rem;background:rgba(253,250,247,.9);border:none;border-radius:6px;cursor:pointer;font-size:.75rem;" title="Déplacer à gauche">←</button>`:''}
+        <button onclick="chGalPh(${i},event)" style="padding:.3rem .8rem;background:rgba(253,250,247,.9);border:none;border-radius:6px;cursor:pointer;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer</button>
+        ${i<galImgs.length-1?`<button onclick="moveGal(${i},1,event)" style="padding:.3rem .6rem;background:rgba(253,250,247,.9);border:none;border-radius:6px;cursor:pointer;font-size:.75rem;" title="Déplacer à droite">→</button>`:''}
+      </div>
+      <button onclick="delGalPh(${i},event)" style="padding:.25rem .7rem;background:rgba(192,50,50,.9);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;font-family:'Nunito',sans-serif;">✕ Supprimer</button>
+    </div>
+    <div style="position:absolute;inset:0;z-index:3;cursor:pointer;" onmouseenter="this.parentElement.querySelector('.gal-actions').style.opacity=1;this.parentElement.querySelector('.g-ov').style.opacity=1;" onmouseleave="this.parentElement.querySelector('.gal-actions').style.opacity=0;this.parentElement.querySelector('.g-ov').style.opacity=0;"></div>
   </div>`).join('');
 }
-window.addGalPhoto=()=>{const p=prompt('Chemin de la photo (ex: images/maphoto.JPG) :');if(!p)return;galImgs.push(p);saveGal();};
-window.chGalPh=i=>{const p=prompt('Nouveau chemin :',galImgs[i]);if(!p)return;galImgs[i]=p;saveGal();};
+window.addGalPhoto=()=>{openUpload(path=>{galImgs.push(path);saveGal();});};
+window.chGalPh=(i,e)=>{e&&e.stopPropagation();openUpload(path=>{galImgs[i]=path;saveGal();},galImgs[i]);};
 window.delGalPh=(i,e)=>{e.stopPropagation();if(!confirm('Supprimer cette photo ?'))return;galImgs.splice(i,1);saveGal();};
+window.moveGal=(i,dir,e)=>{e.stopPropagation();const j=i+dir;if(j<0||j>=galImgs.length)return;[galImgs[i],galImgs[j]]=[galImgs[j],galImgs[i]];saveGal();};
 async function saveGal(){await setDoc(doc(db,'site','galerie'),{imgs:galImgs});renderGal();toast('Galerie mise à jour ✦');}
 
 // ── IMAGES ──
@@ -655,7 +707,7 @@ async function loadImages(){
   const m={'portrait':'portrait-img','coll-corolles':'img-coll-corolles','coll-mer':'img-coll-mer','coll-unique':'img-coll-unique','cp-corolles-hero':'img-cp-corolles-hero','cp-mer-hero':'img-cp-mer-hero','cp-unique-hero':'img-cp-unique-hero'};
   Object.entries(m).forEach(([k,id])=>{if(d[k]){const el=document.getElementById(id);if(el)el.src=d[k];}});}catch(e){}
 }
-window.changeImg=t=>{document.getElementById('img-target').value=t;document.getElementById('img-path').value='';document.getElementById('m-img').classList.add('open');};
+window.changeImg=t=>{openUpload(async path=>{const u={};u[t]=path;await setDoc(doc(db,'site','images'),u,{merge:true});const m={'portrait':'portrait-img','coll-corolles':'img-coll-corolles','coll-mer':'img-coll-mer','coll-unique':'img-coll-unique','cp-corolles-hero':'img-cp-corolles-hero','cp-mer-hero':'img-cp-mer-hero','cp-unique-hero':'img-cp-unique-hero'};const el=document.getElementById(m[t]);if(el)el.src=path;toast('Photo mise à jour ✦');});};
 window.saveImg=async()=>{
   const t=document.getElementById('img-target').value;const p=document.getElementById('img-path').value.trim();
   if(!p){toast('Chemin vide','e');return;}
@@ -673,20 +725,30 @@ async function loadColl(coll){
 }
 function renderColl(coll,items){
   const g=document.getElementById('grid-'+coll);if(!g)return;
-  g.innerHTML=items.map(item=>{
+  g.innerHTML=items.map((item,idx)=>{
     const imgs=item.imgs||[];
     return`<div class="pc">
-      <div class="pc-img">
-        <img src="${imgs[0]||''}" onerror="this.parentElement.style.background='rgba(75,191,196,.1)'"/>
-        ${imgs.map((src,pi)=>`<button class="pdel" style="top:${.3+pi*.5}rem;" onclick="delPcPhoto('${coll}','${item.id}',${pi},event)" title="Retirer cette photo">✕</button>`).join('')}
+      <div class="pc-img" style="position:relative;">
+        <img src="${imgs[0]||''}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" onerror="this.parentElement.style.background='rgba(75,191,196,.1)'"/>
+        <div style="position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-start;padding:.4rem;gap:.3rem;opacity:0;transition:opacity .2s;" class="pc-photo-acts">
+          <button onclick="openUpload(path=>{replPcPhoto('${coll}','${item.id}',0,path)},event)" style="padding:.25rem .5rem;background:rgba(253,250,247,.92);border:none;border-radius:5px;cursor:pointer;font-size:.65rem;">📷</button>
+          ${imgs.length>1?imgs.slice(1).map((_,pi)=>`<button onclick="delPcPhoto('${coll}','${item.id}',${pi+1},event)" style="padding:.25rem .5rem;background:rgba(192,50,50,.88);color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:.65rem;">✕ p${pi+2}</button>`).join(''):''}
+        </div>
       </div>
       <div class="pc-body"><p class="pc-name">${item.name||''}</p><p class="pc-desc">${item.desc||''}</p></div>
       <div class="pc-acts">
+        ${idx>0?`<button class="pc-act" onclick="movePc('${coll}','${item.id}',${item.order},-1)" title="Déplacer avant">←</button>`:''}
+        ${idx<items.length-1?`<button class="pc-act" onclick="movePc('${coll}','${item.id}',${item.order},1)" title="Déplacer après">→</button>`:''}
         <button class="pc-act" onclick="openEditPc('${coll}','${item.id}',\`${(item.name||'').replace(/`/g,"'")}\`,\`${(item.desc||'').replace(/`/g,"'")}\`,'${imgs.join(',')}')">✏️</button>
         <button class="pc-act d" onclick="delPc('${coll}','${item.id}')">🗑️</button>
       </div>
     </div>`;
   }).join('');
+  // Hover sur pc-photo-acts
+  g.querySelectorAll('.pc-img').forEach(el=>{
+    el.addEventListener('mouseenter',()=>el.querySelector('.pc-photo-acts').style.opacity='1');
+    el.addEventListener('mouseleave',()=>el.querySelector('.pc-photo-acts').style.opacity='0');
+  });
 }
 window.openAddPc=coll=>{document.getElementById('m-pc-ttl').textContent='Ajouter une pièce';['pc-name','pc-desc','pc-img1','pc-img2','pc-img3'].forEach(id=>document.getElementById(id).value='');document.getElementById('pc-coll').value=coll;document.getElementById('pc-id').value='';document.getElementById('m-pc').classList.add('open');};
 window.openEditPc=(coll,id,name,desc,imgs)=>{document.getElementById('m-pc-ttl').textContent='Modifier';document.getElementById('pc-name').value=name;document.getElementById('pc-desc').value=desc;const a=imgs.split(',');document.getElementById('pc-img1').value=a[0]||'';document.getElementById('pc-img2').value=a[1]||'';document.getElementById('pc-img3').value=a[2]||'';document.getElementById('pc-coll').value=coll;document.getElementById('pc-id').value=id;document.getElementById('m-pc').classList.add('open');};
@@ -700,6 +762,7 @@ window.savePc=async()=>{
 };
 window.delPc=async(coll,id)=>{if(!confirm('Supprimer ?'))return;await deleteDoc(doc(db,'collections',coll,'pieces',id));await loadColl(coll);toast('Supprimé');};
 window.delPcPhoto=async(coll,id,pi,e)=>{e.stopPropagation();if(!confirm('Retirer cette photo ?'))return;const s=await getDoc(doc(db,'collections',coll,'pieces',id));if(!s.exists())return;const imgs=[...(s.data().imgs||[])];imgs.splice(pi,1);await updateDoc(doc(db,'collections',coll,'pieces',id),{imgs});await loadColl(coll);toast('Photo retirée ✦');};
+window.replPcPhoto=async(coll,id,pi,path)=>{const s=await getDoc(doc(db,'collections',coll,'pieces',id));if(!s.exists())return;const imgs=[...(s.data().imgs||[])];imgs[pi]=path;await updateDoc(doc(db,'collections',coll,'pieces',id),{imgs});await loadColl(coll);toast('Photo remplacée ✦');};
 
 // ── COLLECTIONS FIXES : masquer/afficher ──
 window.delFixedColl=(coll,e)=>{e.stopPropagation();if(!confirm(`Masquer la collection "${coll}" de l'accueil ? (Les pièces ne sont pas supprimées)`))return;const wrap=e.target.closest('.del-wrap');if(wrap)wrap.style.display='none';toast('Collection masquée — rechargez pour la rétablir');};
@@ -720,7 +783,110 @@ window.saveNewColl=async()=>{
 };
 window.delDynColl=async(id,name,e)=>{e.stopPropagation();if(!confirm(`Supprimer la collection "${name}" ?`))return;await deleteDoc(doc(db,'site','extraCollections',id));await loadDynColls();toast('Collection supprimée');};
 
-// ── BOUTIQUE ──
+// ── GITHUB UPLOAD ──
+let ghToken=localStorage.getItem('gh-token')||'';
+let ghRepo=localStorage.getItem('gh-repo')||'ulyssevaillant04/saraceramique';
+let uploadCallback=null;
+
+function initUploadUI(){
+  if(ghToken&&ghRepo){
+    document.getElementById('upload-github-ok').style.display='block';
+    document.getElementById('upload-github-setup').style.display='none';
+  } else {
+    document.getElementById('upload-github-ok').style.display='none';
+    document.getElementById('upload-github-setup').style.display='block';
+    document.getElementById('gh-token').value=ghToken;
+    document.getElementById('gh-repo').value=ghRepo;
+  }
+}
+window.saveGhConfig=()=>{
+  ghToken=document.getElementById('gh-token').value.trim();
+  ghRepo=document.getElementById('gh-repo').value.trim();
+  localStorage.setItem('gh-token',ghToken);
+  localStorage.setItem('gh-repo',ghRepo);
+  initUploadUI();
+  toast('Configuration GitHub sauvegardée ✦');
+};
+window.previewUpload=el=>{
+  const f=el.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{const img=document.getElementById('upload-preview');img.src=e.target.result;img.style.display='block';};
+  r.readAsDataURL(f);
+};
+window.openUpload=cb=>{
+  uploadCallback=cb;
+  document.getElementById('upload-file').value='';
+  document.getElementById('upload-preview').style.display='none';
+  document.getElementById('upload-manual').value='';
+  document.getElementById('upload-status').style.display='none';
+  initUploadUI();
+  document.getElementById('m-upload').classList.add('open');
+};
+window.applyUpload=async()=>{
+  const file=document.getElementById('upload-file').files[0];
+  const manual=document.getElementById('upload-manual').value.trim();
+  const status=document.getElementById('upload-status');
+  if(!file&&!manual){toast('Choisissez une photo ou entrez un chemin','e');return;}
+  if(file&&ghToken&&ghRepo){
+    // Upload via GitHub API
+    status.style.display='block';status.textContent='Upload en cours…';
+    try{
+      const name=file.name.replace(/\s+/g,'-');
+      const path='images/'+name;
+      const reader=new FileReader();
+      reader.onload=async e=>{
+        const b64=e.target.result.split(',')[1];
+        // Vérifier si le fichier existe déjà (pour avoir son SHA)
+        let sha='';
+        try{
+          const check=await fetch(`https://api.github.com/repos/${ghRepo}/contents/${path}`,{headers:{'Authorization':'token '+ghToken,'Accept':'application/vnd.github.v3+json'}});
+          if(check.ok){const d=await check.json();sha=d.sha||'';}
+        }catch(e2){}
+        const body={message:`Upload ${name} via admin Sara Céramique`,content:b64};
+        if(sha)body.sha=sha;
+        const res=await fetch(`https://api.github.com/repos/${ghRepo}/contents/${path}`,{method:'PUT',headers:{'Authorization':'token '+ghToken,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(body)});
+        if(res.ok){
+          status.textContent='✦ Uploadé avec succès !';
+          closeMov('m-upload');
+          if(uploadCallback)uploadCallback(path);
+          uploadCallback=null;
+          toast('Photo uploadée et appliquée ✦');
+        } else {
+          const err=await res.json();
+          status.textContent='Erreur: '+(err.message||res.status);
+          status.style.color='var(--rose-deep)';
+        }
+      };
+      reader.readAsDataURL(file);
+    }catch(e){status.textContent='Erreur: '+e.message;status.style.color='var(--rose-deep)';}
+  } else if(file&&(!ghToken||!ghRepo)){
+    // Pas de config GitHub — utiliser URL objet local (temporaire)
+    const url=URL.createObjectURL(file);
+    closeMov('m-upload');
+    toast('⚠ Sans token GitHub, la photo ne sera visible que localement','e');
+    if(uploadCallback)uploadCallback(url);
+    uploadCallback=null;
+  } else if(manual){
+    closeMov('m-upload');
+    if(uploadCallback)uploadCallback(manual);
+    uploadCallback=null;
+  }
+};
+
+// ── RÉORDONNAGE PIÈCES ──
+window.movePc=async(coll,id,order,dir)=>{
+  const snap=await getDocs(query(collection(db,'collections',coll,'pieces'),orderBy('order')));
+  const items=[];snap.forEach(d=>items.push({id:d.id,...d.data()}));
+  const idx=items.findIndex(i=>i.id===id);
+  const j=idx+dir;if(j<0||j>=items.length)return;
+  // Swap orders
+  const o1=items[idx].order,o2=items[j].order;
+  await updateDoc(doc(db,'collections',coll,'pieces',items[idx].id),{order:o2});
+  await updateDoc(doc(db,'collections',coll,'pieces',items[j].id),{order:o1});
+  await loadColl(coll);
+  toast('Ordre mis à jour ✦');
+};
+
 let bCards=[];
 async function loadBoutique(){
   try{const s=await getDoc(doc(db,'site','boutique'));bCards=s.exists()?(s.data().cards||[]):['images/mug.JPG','images/coupe.JPG','images/fiole.JPG','images/lampadaire.JPG'];}
@@ -731,7 +897,7 @@ function renderBCards(){
   const g=document.getElementById('b-preview-grid');
   g.innerHTML=bCards.map((src,i)=>`<div class="del-wrap b-card"><img src="${src}" onerror="this.src=''"/><div class="b-lock"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div><button class="del-x" onclick="delBCard(${i},event)">✕</button></div>`).join('');
 }
-window.addBCard=()=>{const p=prompt('Chemin de la photo :');if(!p)return;bCards.push(p);saveBCards();};
+window.addBCard=()=>{openUpload(path=>{bCards.push(path);saveBCards();});};
 window.delBCard=(i,e)=>{e.stopPropagation();if(!confirm('Supprimer cette photo ?'))return;bCards.splice(i,1);saveBCards();};
 async function saveBCards(){await setDoc(doc(db,'site','boutique'),{cards:bCards},{merge:true});renderBCards();toast('Boutique mise à jour ✦');}
 </script>

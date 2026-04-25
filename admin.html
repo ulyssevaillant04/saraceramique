@@ -783,7 +783,21 @@ async function loadImages(){
   const m={'portrait':'portrait-img','coll-corolles':'img-coll-corolles','coll-mer':'img-coll-mer','coll-unique':'img-coll-unique','cp-corolles-hero':'img-cp-corolles-hero','cp-mer-hero':'img-cp-mer-hero','cp-unique-hero':'img-cp-unique-hero'};
   Object.entries(m).forEach(([k,id])=>{if(d[k]){const el=document.getElementById(id);if(el)el.src=d[k];}});}catch(e){}
 }
-window.changeImg=t=>{openUpload(async path=>{const u={};u[t]=path;await setDoc(doc(db,'site','images'),u,{merge:true});const m={'portrait':'portrait-img','coll-corolles':'img-coll-corolles','coll-mer':'img-coll-mer','coll-unique':'img-coll-unique','cp-corolles-hero':'img-cp-corolles-hero','cp-mer-hero':'img-cp-mer-hero','cp-unique-hero':'img-cp-unique-hero'};const el=document.getElementById(m[t]);if(el)el.src=path;toast('Photo mise à jour ✦');});};
+window.changeImg=async t=>{
+  openUpload(async path=>{
+    // Portrait → site/general (lu par index.html)
+    if(t==='portrait'){
+      await setDoc(doc(db,'site','general'),{portrait:path},{merge:true});
+    } else {
+      const u={};u[t]=path;
+      await setDoc(doc(db,'site','images'),u,{merge:true});
+    }
+    const m={'portrait':'portrait-img','coll-corolles':'img-coll-corolles','coll-mer':'img-coll-mer','coll-unique':'img-coll-unique','cp-corolles-hero':'img-cp-corolles-hero','cp-mer-hero':'img-cp-mer-hero','cp-unique-hero':'img-cp-unique-hero'};
+    const el=document.getElementById(m[t]);
+    if(el){el.src=path;el.style.display='block';}
+    toast('Photo mise à jour ✦');
+  });
+};
 window.saveImg=async()=>{
   const t=document.getElementById('img-target').value;const p=document.getElementById('img-path').value.trim();
   if(!p){toast('Chemin vide','e');return;}
@@ -1096,8 +1110,10 @@ async function uploadOneFile(file){
         if(res.ok) resolve(path);
         else{const err=await res.json();reject(new Error(err.message||'Erreur GitHub'));}
       } else {
-        // Pas de GitHub — URL locale temporaire
-        resolve(URL.createObjectURL(file));
+        // Pas de GitHub — utiliser le vrai nom du fichier
+        const localPath = 'images/' + file.name;
+        toast('⚠ Sans token GitHub, la photo ne sera visible que localement. Uploadez-la manuellement dans images/', 'e');
+        resolve(localPath);
       }
     };
     reader.onerror=()=>reject(new Error('Lecture fichier échouée'));

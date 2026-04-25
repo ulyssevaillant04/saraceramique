@@ -3,7 +3,48 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
-<title>Sara Céramique — Petits Mondes Enchantés</title>
+<title>Sara Céramique — Petits Mondes Enchantés | Atelier Céramique Antibes</title>
+<meta name="description" content="Sara Mahjoub, céramiste à Antibes. Tasses, mugs, coupes et sculptures en céramique artisanale inspirées de la nature. Commandes sur-mesure, Côte d'Azur."/>
+<meta name="keywords" content="céramique, céramiste, Antibes, Côte d'Azur, tasses, mugs, artisanat, poterie, commande sur-mesure, Sara Mahjoub"/>
+<meta name="author" content="Sara Mahjoub"/>
+<link rel="canonical" href="https://saraceramique.fr"/>
+
+<!-- Open Graph (partage sur réseaux sociaux + Google) -->
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://saraceramique.fr"/>
+<meta property="og:title" content="Sara Céramique — Petits Mondes Enchantés"/>
+<meta property="og:description" content="Céramiste à Antibes. Tasses, mugs et sculptures inspirés de la nature. Commandes sur-mesure."/>
+<meta property="og:image" content="https://saraceramique.fr/images/mug2.JPG"/>
+<meta property="og:locale" content="fr_FR"/>
+<meta property="og:site_name" content="Sara Céramique"/>
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Sara Céramique — Petits Mondes Enchantés"/>
+<meta name="twitter:description" content="Céramiste à Antibes. Tasses, mugs et sculptures inspirés de la nature."/>
+<meta name="twitter:image" content="https://saraceramique.fr/images/mug2.JPG"/>
+
+<!-- Données structurées (Schema.org) pour Google -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Sara Céramique",
+  "description": "Atelier de céramique artisanale à Antibes. Tasses, mugs, coupes et sculptures inspirés de la nature.",
+  "url": "https://saraceramique.fr",
+  "image": "https://saraceramique.fr/images/mug2.JPG",
+  "founder": {"@type": "Person", "name": "Sara Mahjoub"},
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "32 boulevard d'Aguillon",
+    "addressLocality": "Antibes",
+    "postalCode": "06600",
+    "addressCountry": "FR"
+  },
+  "geo": {"@type": "GeoCoordinates", "latitude": 43.5804, "longitude": 7.1282},
+  "sameAs": ["https://www.instagram.com/saraceramique"]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Nunito:wght@200;300;400&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
@@ -71,7 +112,7 @@ onSnapshot(doc(db,'site','galerie'),snap=>{
   if(bento){
     bento.innerHTML=imgs.map((src,i)=>`
       <div class="g" onclick="openGallery(${i})" style="cursor:zoom-in;">
-        <img src="${src}" alt=""/>
+        <img src="${src}" alt="Céramique artisanale Sara Mahjoub — ${src.split('/').pop().replace(/\.[^.]+$/,'').replace(/-/g,' ')}"/>
         <div class="g-ov"></div>
       </div>`).join('');
     setTimeout(()=>window.rebuildBento&&window.rebuildBento(),300);

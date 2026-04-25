@@ -127,7 +127,12 @@ onSnapshot(doc(db,'site','images'),snap=>{
   const collMap={'coll-corolles':'.coll-card[data-coll=corolles] .coll-img img','coll-mer':'.coll-card[data-coll=mer] .coll-img img','coll-unique':'.coll-card[data-coll=unique] .coll-img img'};
   Object.entries(collMap).forEach(([k,sel])=>{if(d[k]){const el=document.querySelector(sel);if(el)el.src=d[k];}});
   const heroMap={'cp-corolles-hero':'#page-corolles .cp-hero-img img','cp-mer-hero':'#page-mer .cp-hero-img img','cp-unique-hero':'#page-unique .cp-hero-img img'};
-  Object.entries(heroMap).forEach(([k,sel])=>{if(d[k]){const el=document.querySelector(sel);if(el)el.src=d[k];}});
+  Object.entries(heroMap).forEach(([k,sel])=>{
+    if(d[k]){
+      const el=document.querySelector(sel);
+      if(el){el.src=d[k];el.style.opacity='1';el.style.display='block';}
+    }
+  });
 });
 
 // Portrait
@@ -1128,6 +1133,11 @@ function goTo(name, skipScrollReset){
   }
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
+  // Sauvegarder la page dans l'URL pour persister au refresh
+  const hashMap = {'home':'','corolles':'jardinenchante','mer':'tresorsmarins','unique':'piecesuniques','boutique':'boutique'};
+  const h = hashMap[name];
+  if(h) history.replaceState(null,'','#'+h);
+  else history.replaceState(null,'',window.location.pathname);
   if(!skipScrollReset){
     requestAnimationFrame(()=>{
       window.scrollTo(0,0);
@@ -1541,6 +1551,12 @@ function buildGalDots() {
 
 // Swipe tactile
 document.addEventListener('DOMContentLoaded', () => {
+  // Restaurer la page depuis l'URL au chargement/refresh
+  const hash = window.location.hash.replace('#','');
+  const hashToPage = {'jardinenchante':'corolles','tresorsmarins':'mer','piecesuniques':'unique','boutique':'boutique'};
+  if(hash && hashToPage[hash]){
+    goTo(hashToPage[hash], false);
+  }
   const lb = document.getElementById('gal-lb');
   lb.addEventListener('touchstart', e => { galTouchX = e.touches[0].clientX; }, {passive:true});
   lb.addEventListener('touchend', e => {

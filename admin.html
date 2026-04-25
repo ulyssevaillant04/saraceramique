@@ -468,8 +468,14 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
 <div id="pg-corolles" class="pg">
 <div class="coll-page">
   <div class="cp-hero">
-    <div class="cp-hero-img del-wrap eimg" onclick="changeImg('cp-corolles-hero')" id="cp-corolles-hero-wrap">
-      <img id="img-cp-corolles-hero" src="images/mug.JPG"/>
+    <div class="cp-hero-img" id="cp-corolles-hero-wrap" style="position:relative;cursor:pointer;"
+      onmouseenter="this.querySelector('.hero-edit').style.opacity='1'"
+      onmouseleave="this.querySelector('.hero-edit').style.opacity='0'"
+      onclick="changeImg('cp-corolles-hero')">
+      <img id="img-cp-corolles-hero" src="images/mug.JPG" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+      <div class="hero-edit" style="position:absolute;inset:0;background:rgba(26,53,53,.5);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+        <span style="color:#fff;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer la photo</span>
+      </div>
     </div>
     <div class="cp-hero-text">
       <button class="cp-back" onclick="goPage('home',null);document.querySelector('.sn').click()"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
@@ -495,8 +501,14 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
 <div id="pg-mer" class="pg">
 <div class="coll-page">
   <div class="cp-hero">
-    <div class="cp-hero-img del-wrap eimg" onclick="changeImg('cp-mer-hero')" id="cp-mer-hero-wrap">
-      <img id="img-cp-mer-hero" src="images/coupe.JPG"/>
+    <div class="cp-hero-img" id="cp-mer-hero-wrap" style="position:relative;cursor:pointer;"
+      onmouseenter="this.querySelector('.hero-edit').style.opacity='1'"
+      onmouseleave="this.querySelector('.hero-edit').style.opacity='0'"
+      onclick="changeImg('cp-mer-hero')">
+      <img id="img-cp-mer-hero" src="images/coupe.JPG" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+      <div class="hero-edit" style="position:absolute;inset:0;background:rgba(26,53,53,.5);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+        <span style="color:#fff;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer la photo</span>
+      </div>
     </div>
     <div class="cp-hero-text">
       <button class="cp-back" onclick="goPage('home',null);document.querySelector('.sn').click()"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
@@ -522,8 +534,14 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
 <div id="pg-unique" class="pg">
 <div class="coll-page">
   <div class="cp-hero">
-    <div class="cp-hero-img del-wrap eimg" onclick="changeImg('cp-unique-hero')" id="cp-unique-hero-wrap">
-      <img id="img-cp-unique-hero" src="images/lampadaire.JPG"/>
+    <div class="cp-hero-img" id="cp-unique-hero-wrap" style="position:relative;cursor:pointer;"
+      onmouseenter="this.querySelector('.hero-edit').style.opacity='1'"
+      onmouseleave="this.querySelector('.hero-edit').style.opacity='0'"
+      onclick="changeImg('cp-unique-hero')">
+      <img id="img-cp-unique-hero" src="images/lampadaire.JPG" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+      <div class="hero-edit" style="position:absolute;inset:0;background:rgba(26,53,53,.5);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+        <span style="color:#fff;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer la photo</span>
+      </div>
     </div>
     <div class="cp-hero-text">
       <button class="cp-back" onclick="goPage('home',null);document.querySelector('.sn').click()"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>

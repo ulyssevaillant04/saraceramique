@@ -552,6 +552,26 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
 </div><!-- /pg-boutique -->
 
 <!-- MODALS -->
+<!-- ÉDITEUR DE PIÈCE COMPLET -->
+<div class="mov" id="m-pe">
+  <div class="mbox" style="width:620px;max-width:96vw;">
+    <div class="mttl">Éditer la pièce</div>
+    <div class="mf"><label>Nom</label><input id="pe-name" type="text"/></div>
+    <div class="mf"><label>Description</label><textarea id="pe-desc" style="min-height:80px;"></textarea></div>
+    <div style="margin-bottom:1rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;">
+        <label style="font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-soft);">Photos — <em>glisser pour réordonner</em></label>
+        <button class="mbp" onclick="addPePhoto()" style="padding:.4rem .9rem;font-size:.68rem;">+ Ajouter une photo</button>
+      </div>
+      <div id="pe-photos" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;min-height:60px;"></div>
+    </div>
+    <div class="mbrow">
+      <button class="mbp" onclick="savePe()">Enregistrer ✦</button>
+      <button class="mbs" onclick="closeMov('m-pe')">Fermer</button>
+    </div>
+  </div>
+</div>
+<!-- MODAL AJOUTER PIÈCE -->
 <div class="mov" id="m-pc">
   <div class="mbox">
     <div class="mttl" id="m-pc-ttl">Ajouter une pièce</div>
@@ -764,58 +784,167 @@ async function loadColl(coll){
 }
 function renderColl(coll,items){
   const g=document.getElementById('grid-'+coll);
-  if(!g){console.warn('grid-'+coll+' not found');return;}
+  if(!g)return;
   if(!items.length){
     g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--text-soft);font-style:italic;">Aucune pièce — cliquez sur + pour en ajouter</div>';
     return;
   }
   g.innerHTML=items.map((item,idx)=>{
     const imgs=item.imgs||[];
-    // Afficher toutes les photos de la pièce
-    const photoStrip=imgs.length>1?`<div style="display:flex;gap:4px;padding:.5rem .5rem 0;">
-      ${imgs.map((src,pi)=>`<div style="position:relative;flex:1;height:50px;border-radius:5px;overflow:hidden;">
-        <img src="${src}" style="width:100%;height:100%;object-fit:cover;"/>
-        <button onclick="delPcPhoto('${coll}','${item.id}',${pi},event)" style="position:absolute;top:1px;right:1px;width:16px;height:16px;border-radius:50%;background:rgba(192,50,50,.9);color:#fff;border:none;cursor:pointer;font-size:.55rem;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>
-      </div>`).join('')}
-    </div>`:'';
-    return`<div class="pc" style="position:relative;">
+    const thumb=imgs[0]||'';
+    return`<div class="pc pc-drag" draggable="true" data-coll="${coll}" data-id="${item.id}" data-idx="${idx}" data-order="${item.order||0}"
+      onclick="openPcEditor('${coll}','${item.id}')" style="cursor:pointer;position:relative;">
       <div style="height:180px;position:relative;overflow:hidden;background:rgba(75,191,196,.08);">
-        ${imgs[0]?`<img src="${imgs[0]}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'"/>`:'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text-soft);font-size:.75rem;">Aucune photo</div>'}
-        <div style="position:absolute;inset:0;background:rgba(26,53,53,.55);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;" class="pc-img-hover">
-          <button onclick="openUpload(path=>{replPcPhoto('${coll}','${item.id}',0,path)})" style="padding:.35rem .8rem;background:rgba(253,250,247,.93);border:none;border-radius:7px;cursor:pointer;font-size:.68rem;font-family:'Nunito',sans-serif;">📷 Changer la photo</button>
+        ${thumb?`<img src="${thumb}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'"/>`:
+        '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text-soft);font-size:.75rem;">Aucune photo</div>'}
+        <div style="position:absolute;inset:0;background:rgba(26,53,53,.45);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;pointer-events:none;" class="pc-hover-ov">
+          <span style="color:#fff;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;">Cliquer pour éditer</span>
         </div>
+        ${imgs.length>1?`<div style="position:absolute;bottom:.4rem;right:.4rem;background:rgba(26,53,53,.6);color:#fff;font-size:.6rem;padding:.15rem .45rem;border-radius:10px;">${imgs.length} photos</div>`:''}
       </div>
-      ${photoStrip}
       <div class="pc-body" style="padding:1rem;">
         <p class="pc-name">${item.name||''}</p>
-        <p class="pc-desc">${item.desc||''}</p>
+        <p class="pc-desc" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${item.desc||''}</p>
       </div>
-      <div class="pc-acts">
-        ${idx>0?`<button class="pc-act" onclick="movePc('${coll}','${item.id}',${item.order},-1)" title="Déplacer avant">←</button>`:''}
-        ${idx<items.length-1?`<button class="pc-act" onclick="movePc('${coll}','${item.id}',${item.order},1)" title="Déplacer après">→</button>`:''}
-        <button class="pc-act" onclick="openEditPc('${coll}','${item.id}',\`${(item.name||'').replace(/`/g,"'")}\`,\`${(item.desc||'').replace(/`/g,"'")}\`,'${imgs.join(',')}')">✏️</button>
+      <div class="pc-acts" onclick="event.stopPropagation()">
         <button class="pc-act d" onclick="delPc('${coll}','${item.id}')">🗑️</button>
       </div>
     </div>`;
   }).join('');
-  // Hover sur la photo principale
-  g.querySelectorAll('.pc-img-hover').forEach(el=>{
-    const parent=el.parentElement;
-    parent.addEventListener('mouseenter',()=>el.style.opacity='1');
-    parent.addEventListener('mouseleave',()=>el.style.opacity='0');
+  // Hover
+  g.querySelectorAll('.pc-drag').forEach(el=>{
+    el.addEventListener('mouseenter',()=>el.querySelector('.pc-hover-ov').style.opacity='1');
+    el.addEventListener('mouseleave',()=>el.querySelector('.pc-hover-ov').style.opacity='0');
+  });
+  initPcDrag(coll,items);
+}
+
+let pcDragSrc=null,pcDragSrcIdx=null;
+function initPcDrag(coll,items){
+  const cells=document.querySelectorAll(`#grid-${coll} .pc-drag`);
+  cells.forEach(el=>{
+    el.addEventListener('dragstart',e=>{
+      pcDragSrc=el;pcDragSrcIdx=+el.dataset.idx;
+      el.style.opacity='.4';e.dataTransfer.effectAllowed='move';
+    });
+    el.addEventListener('dragend',()=>{
+      el.style.opacity='1';
+      document.querySelectorAll('.pc-drag').forEach(c=>{c.style.border='';c.style.background='';});
+    });
+    el.addEventListener('dragover',e=>{e.preventDefault();if(el!==pcDragSrc){el.style.border='2px solid var(--teal)';el.style.background='rgba(75,191,196,.06)';}});
+    el.addEventListener('dragleave',()=>{el.style.border='';el.style.background='';});
+    el.addEventListener('drop',async e=>{
+      e.preventDefault();el.style.border='';el.style.background='';
+      const dstIdx=+el.dataset.idx;
+      if(pcDragSrc===null||pcDragSrcIdx===dstIdx)return;
+      // Réordonner et sauvegarder
+      const reordered=[...items];
+      const [moved]=reordered.splice(pcDragSrcIdx,1);
+      reordered.splice(dstIdx,0,moved);
+      toast('Réordonnage…');
+      for(let i=0;i<reordered.length;i++){
+        await updateDoc(doc(db,'collections',coll,'pieces',reordered[i].id),{order:(i+1)*100});
+      }
+      await loadColl(coll);
+      toast('Ordre mis à jour ✦');
+    });
   });
 }
-window.openAddPc=coll=>{document.getElementById('m-pc-ttl').textContent='Ajouter une pièce';['pc-name','pc-desc','pc-img1','pc-img2','pc-img3'].forEach(id=>document.getElementById(id).value='');document.getElementById('pc-coll').value=coll;document.getElementById('pc-id').value='';document.getElementById('m-pc').classList.add('open');};
-window.openEditPc=(coll,id,name,desc,imgs)=>{document.getElementById('m-pc-ttl').textContent='Modifier';document.getElementById('pc-name').value=name;document.getElementById('pc-desc').value=desc;const a=imgs.split(',');document.getElementById('pc-img1').value=a[0]||'';document.getElementById('pc-img2').value=a[1]||'';document.getElementById('pc-img3').value=a[2]||'';document.getElementById('pc-coll').value=coll;document.getElementById('pc-id').value=id;document.getElementById('m-pc').classList.add('open');};
+
+// ── ÉDITEUR DE PIÈCE (modal complète) ──
+let currentPcColl='', currentPcId='';
+window.openPcEditor=async(coll,id)=>{
+  currentPcColl=coll; currentPcId=id;
+  try{
+    const snap=await getDoc(doc(db,'collections',coll,'pieces',id));
+    if(!snap.exists())return;
+    const item={id,...snap.data()};
+    document.getElementById('pe-name').value=item.name||'';
+    document.getElementById('pe-desc').value=item.desc||'';
+    renderPePhotos(item.imgs||[]);
+    document.getElementById('m-pe').classList.add('open');
+  }catch(e){toast('Erreur: '+e.message,'e');}
+};
+
+function renderPePhotos(imgs){
+  const container=document.getElementById('pe-photos');
+  container.innerHTML=imgs.length?imgs.map((src,pi)=>`
+    <div class="pe-photo-item" draggable="true" data-pi="${pi}"
+      style="position:relative;border-radius:10px;overflow:hidden;border:2px solid transparent;transition:border-color .2s;cursor:grab;">
+      <img src="${src}" style="width:100%;height:140px;object-fit:contain;display:block;background:rgba(250,245,239,.9);"/>
+      <div style="padding:.5rem .6rem;background:var(--ivory);">
+        <p style="font-size:.65rem;color:var(--text-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${src.split('/').pop()}</p>
+      </div>
+      <button onclick="delPePhoto(${pi})" style="position:absolute;top:.4rem;right:.4rem;width:24px;height:24px;border-radius:50%;background:rgba(192,50,50,.9);color:#fff;border:none;cursor:pointer;font-size:.75rem;display:flex;align-items:center;justify-content:center;">✕</button>
+    </div>`).join('')
+  :'<p style="color:var(--text-soft);font-style:italic;font-size:.82rem;grid-column:1/-1;">Aucune photo</p>';
+  initPePhotoDrag(imgs);
+}
+
+function initPePhotoDrag(imgs){
+  let dragPi=null;
+  document.querySelectorAll('.pe-photo-item').forEach(el=>{
+    el.addEventListener('dragstart',e=>{dragPi=+el.dataset.pi;el.style.opacity='.4';e.dataTransfer.effectAllowed='move';});
+    el.addEventListener('dragend',()=>{el.style.opacity='1';document.querySelectorAll('.pe-photo-item').forEach(c=>c.style.border='2px solid transparent');});
+    el.addEventListener('dragover',e=>{e.preventDefault();if(+el.dataset.pi!==dragPi)el.style.borderColor='var(--teal)';});
+    el.addEventListener('dragleave',()=>el.style.borderColor='transparent');
+    el.addEventListener('drop',async e=>{
+      e.preventDefault();el.style.borderColor='transparent';
+      const dst=+el.dataset.pi;if(dragPi===null||dragPi===dst)return;
+      const newImgs=[...imgs];
+      const [moved]=newImgs.splice(dragPi,1);newImgs.splice(dst,0,moved);
+      await updateDoc(doc(db,'collections',currentPcColl,'pieces',currentPcId),{imgs:newImgs});
+      renderPePhotos(newImgs);
+      toast('Ordre des photos mis à jour ✦');
+    });
+  });
+}
+
+window.delPePhoto=async(pi)=>{
+  if(!confirm('Retirer cette photo ?'))return;
+  const snap=await getDoc(doc(db,'collections',currentPcColl,'pieces',currentPcId));
+  if(!snap.exists())return;
+  const imgs=[...snap.data().imgs||[]];imgs.splice(pi,1);
+  await updateDoc(doc(db,'collections',currentPcColl,'pieces',currentPcId),{imgs});
+  renderPePhotos(imgs);toast('Photo retirée ✦');
+};
+
+window.addPePhoto=()=>{
+  openUpload(async path=>{
+    const snap=await getDoc(doc(db,'collections',currentPcColl,'pieces',currentPcId));
+    const imgs=[...(snap.data().imgs||[]),path];
+    await updateDoc(doc(db,'collections',currentPcColl,'pieces',currentPcId),{imgs});
+    renderPePhotos(imgs);toast('Photo ajoutée ✦');
+  });
+};
+
+window.savePe=async()=>{
+  const name=document.getElementById('pe-name').value.trim();
+  if(!name){toast('Nom obligatoire','e');return;}
+  await updateDoc(doc(db,'collections',currentPcColl,'pieces',currentPcId),{
+    name,desc:document.getElementById('pe-desc').value.trim()
+  });
+  closeMov('m-pe');await loadColl(currentPcColl);toast('Pièce enregistrée ✦');
+};
+
+window.openAddPc=coll=>{
+  document.getElementById('m-pc-ttl').textContent='Ajouter une pièce';
+  ['pc-name','pc-desc','pc-img1','pc-img2','pc-img3'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('pc-coll').value=coll;
+  document.getElementById('pc-id').value='';
+  document.getElementById('m-pc').classList.add('open');
+};
 window.savePc=async()=>{
-  const name=document.getElementById('pc-name').value.trim();if(!name){toast('Nom obligatoire','e');return;}
+  const name=document.getElementById('pc-name').value.trim();
+  if(!name){toast('Nom obligatoire','e');return;}
   const coll=document.getElementById('pc-coll').value;
   const imgs=['pc-img1','pc-img2','pc-img3'].map(id=>document.getElementById(id).value.trim()).filter(Boolean);
   const data={name,desc:document.getElementById('pc-desc').value.trim(),imgs,order:Date.now()};
-  const eid=document.getElementById('pc-id').value;
-  try{if(eid)await updateDoc(doc(db,'collections',coll,'pieces',eid),data);else await addDoc(collection(db,'collections',coll,'pieces'),data);closeMov('m-pc');await loadColl(coll);toast((eid?'Modifié':'Ajouté')+' ✦');}catch(e){toast('Erreur: '+e.message,'e');}
+  try{
+    await addDoc(collection(db,'collections',coll,'pieces'),data);
+    closeMov('m-pc');await loadColl(coll);toast('Pièce ajoutée ✦');
+  }catch(e){toast('Erreur: '+e.message,'e');}
 };
-window.delPc=async(coll,id)=>{if(!confirm('Supprimer ?'))return;await deleteDoc(doc(db,'collections',coll,'pieces',id));await loadColl(coll);toast('Supprimé');};
 window.delPcPhoto=async(coll,id,pi,e)=>{e.stopPropagation();if(!confirm('Retirer cette photo ?'))return;const s=await getDoc(doc(db,'collections',coll,'pieces',id));if(!s.exists())return;const imgs=[...(s.data().imgs||[])];imgs.splice(pi,1);await updateDoc(doc(db,'collections',coll,'pieces',id),{imgs});await loadColl(coll);toast('Photo retirée ✦');};
 window.replPcPhoto=async(coll,id,pi,path)=>{const s=await getDoc(doc(db,'collections',coll,'pieces',id));if(!s.exists())return;const imgs=[...(s.data().imgs||[])];imgs[pi]=path;await updateDoc(doc(db,'collections',coll,'pieces',id),{imgs});await loadColl(coll);toast('Photo remplacée ✦');};
 

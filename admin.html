@@ -681,24 +681,40 @@ async function loadGalerie(){
 }
 function renderGal(){
   const b=document.getElementById('gal-bento');
-  b.innerHTML=galImgs.map((src,i)=>`<div class="g" style="position:relative;overflow:hidden;border-radius:6px;">
-    <img src="${src}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.src=''"/>
-    <div class="g-ov" style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(42,157,163,.5),rgba(232,160,180,.4));opacity:0;transition:opacity .3s;z-index:2;"></div>
-    <div class="gal-actions" style="position:absolute;inset:0;z-index:5;opacity:0;transition:opacity .2s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;">
-      <div style="display:flex;gap:.4rem;">
-        ${i>0?`<button onclick="moveGal(${i},-1,event)" style="padding:.3rem .6rem;background:rgba(253,250,247,.9);border:none;border-radius:6px;cursor:pointer;font-size:.75rem;" title="Déplacer à gauche">←</button>`:''}
-        <button onclick="chGalPh(${i},event)" style="padding:.3rem .8rem;background:rgba(253,250,247,.9);border:none;border-radius:6px;cursor:pointer;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer</button>
-        ${i<galImgs.length-1?`<button onclick="moveGal(${i},1,event)" style="padding:.3rem .6rem;background:rgba(253,250,247,.9);border:none;border-radius:6px;cursor:pointer;font-size:.75rem;" title="Déplacer à droite">→</button>`:''}
+  b.innerHTML=galImgs.map((src,i)=>`
+    <div class="g-admin" draggable="true" data-idx="${i}">
+      <img src="${src}" onerror="this.src=''"/>
+      <div class="g-admin-idx">${i+1}</div>
+      <div class="g-admin-ov">
+        <button class="g-admin-btn" style="background:rgba(253,250,247,.92);color:var(--dark);" onclick="chGalPh(${i},event)">📷 Changer</button>
+        <button class="g-admin-btn" style="background:rgba(192,50,50,.9);color:#fff;" onclick="delGalPh(${i},event)">✕ Supprimer</button>
       </div>
-      <button onclick="delGalPh(${i},event)" style="padding:.25rem .7rem;background:rgba(192,50,50,.9);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;font-family:'Nunito',sans-serif;">✕ Supprimer</button>
-    </div>
-    <div style="position:absolute;inset:0;z-index:3;cursor:pointer;" onmouseenter="this.parentElement.querySelector('.gal-actions').style.opacity=1;this.parentElement.querySelector('.g-ov').style.opacity=1;" onmouseleave="this.parentElement.querySelector('.gal-actions').style.opacity=0;this.parentElement.querySelector('.g-ov').style.opacity=0;"></div>
-  </div>`).join('');
+    </div>`).join('');
+  initGalDrag();
+}
+
+let dragSrcIdx=null;
+function initGalDrag(){
+  const cells=document.querySelectorAll('.g-admin');
+  cells.forEach(el=>{
+    el.addEventListener('dragstart',e=>{dragSrcIdx=+el.dataset.idx;el.classList.add('dragging');e.dataTransfer.effectAllowed='move';});
+    el.addEventListener('dragend',()=>{el.classList.remove('dragging');document.querySelectorAll('.g-admin').forEach(c=>c.classList.remove('drag-over'));});
+    el.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';el.classList.add('drag-over');});
+    el.addEventListener('dragleave',()=>el.classList.remove('drag-over'));
+    el.addEventListener('drop',e=>{
+      e.preventDefault();el.classList.remove('drag-over');
+      const dst=+el.dataset.idx;
+      if(dragSrcIdx===null||dragSrcIdx===dst)return;
+      const moved=galImgs.splice(dragSrcIdx,1)[0];
+      galImgs.splice(dst,0,moved);
+      saveGal();
+    });
+  });
 }
 window.addGalPhoto=()=>{openUpload(path=>{galImgs.push(path);saveGal();});};
 window.chGalPh=(i,e)=>{e&&e.stopPropagation();openUpload(path=>{galImgs[i]=path;saveGal();},galImgs[i]);};
 window.delGalPh=(i,e)=>{e.stopPropagation();if(!confirm('Supprimer cette photo ?'))return;galImgs.splice(i,1);saveGal();};
-window.moveGal=(i,dir,e)=>{e.stopPropagation();const j=i+dir;if(j<0||j>=galImgs.length)return;[galImgs[i],galImgs[j]]=[galImgs[j],galImgs[i]];saveGal();};
+
 async function saveGal(){await setDoc(doc(db,'site','galerie'),{imgs:galImgs});renderGal();toast('Galerie mise à jour ✦');}
 
 // ── IMAGES ──
@@ -720,22 +736,48 @@ window.saveImg=async()=>{
 // ── COLLECTIONS ──
 async function loadColls(){await Promise.all(['corolles','mer','unique'].map(c=>loadColl(c)));}
 async function loadColl(coll){
-  try{const q=query(collection(db,'collections',coll,'pieces'),orderBy('order'));
-  const snap=await getDocs(q);const items=[];snap.forEach(d=>items.push({id:d.id,...d.data()}));renderColl(coll,items);}catch(e){renderColl(coll,[]);}
+  try{
+    // Essayer d'abord orderBy order, sinon sans orderBy
+    let items=[];
+    try{
+      const q=query(collection(db,'collections',coll,'pieces'),orderBy('order'));
+      const snap=await getDocs(q);snap.forEach(d=>items.push({id:d.id,...d.data()}));
+    }catch(e2){
+      const snap=await getDocs(collection(db,'collections',coll,'pieces'));
+      snap.forEach(d=>items.push({id:d.id,...d.data()}));
+      items.sort((a,b)=>(a.order||0)-(b.order||0));
+    }
+    renderColl(coll,items);
+  }catch(e){console.error('loadColl error',coll,e);renderColl(coll,[]);}
 }
 function renderColl(coll,items){
-  const g=document.getElementById('grid-'+coll);if(!g)return;
+  const g=document.getElementById('grid-'+coll);
+  if(!g){console.warn('grid-'+coll+' not found');return;}
+  if(!items.length){
+    g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--text-soft);font-style:italic;">Aucune pièce — cliquez sur + pour en ajouter</div>';
+    return;
+  }
   g.innerHTML=items.map((item,idx)=>{
     const imgs=item.imgs||[];
-    return`<div class="pc">
-      <div class="pc-img" style="position:relative;">
-        <img src="${imgs[0]||''}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" onerror="this.parentElement.style.background='rgba(75,191,196,.1)'"/>
-        <div style="position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-start;padding:.4rem;gap:.3rem;opacity:0;transition:opacity .2s;" class="pc-photo-acts">
-          <button onclick="openUpload(path=>{replPcPhoto('${coll}','${item.id}',0,path)},event)" style="padding:.25rem .5rem;background:rgba(253,250,247,.92);border:none;border-radius:5px;cursor:pointer;font-size:.65rem;">📷</button>
-          ${imgs.length>1?imgs.slice(1).map((_,pi)=>`<button onclick="delPcPhoto('${coll}','${item.id}',${pi+1},event)" style="padding:.25rem .5rem;background:rgba(192,50,50,.88);color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:.65rem;">✕ p${pi+2}</button>`).join(''):''}
+    // Afficher toutes les photos de la pièce
+    const photoStrip=imgs.length>1?`<div style="display:flex;gap:4px;padding:.5rem .5rem 0;">
+      ${imgs.map((src,pi)=>`<div style="position:relative;flex:1;height:50px;border-radius:5px;overflow:hidden;">
+        <img src="${src}" style="width:100%;height:100%;object-fit:cover;"/>
+        <button onclick="delPcPhoto('${coll}','${item.id}',${pi},event)" style="position:absolute;top:1px;right:1px;width:16px;height:16px;border-radius:50%;background:rgba(192,50,50,.9);color:#fff;border:none;cursor:pointer;font-size:.55rem;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>
+      </div>`).join('')}
+    </div>`:'';
+    return`<div class="pc" style="position:relative;">
+      <div style="height:180px;position:relative;overflow:hidden;background:rgba(75,191,196,.08);">
+        ${imgs[0]?`<img src="${imgs[0]}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'"/>`:'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text-soft);font-size:.75rem;">Aucune photo</div>'}
+        <div style="position:absolute;inset:0;background:rgba(26,53,53,.55);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;" class="pc-img-hover">
+          <button onclick="openUpload(path=>{replPcPhoto('${coll}','${item.id}',0,path)})" style="padding:.35rem .8rem;background:rgba(253,250,247,.93);border:none;border-radius:7px;cursor:pointer;font-size:.68rem;font-family:'Nunito',sans-serif;">📷 Changer la photo</button>
         </div>
       </div>
-      <div class="pc-body"><p class="pc-name">${item.name||''}</p><p class="pc-desc">${item.desc||''}</p></div>
+      ${photoStrip}
+      <div class="pc-body" style="padding:1rem;">
+        <p class="pc-name">${item.name||''}</p>
+        <p class="pc-desc">${item.desc||''}</p>
+      </div>
       <div class="pc-acts">
         ${idx>0?`<button class="pc-act" onclick="movePc('${coll}','${item.id}',${item.order},-1)" title="Déplacer avant">←</button>`:''}
         ${idx<items.length-1?`<button class="pc-act" onclick="movePc('${coll}','${item.id}',${item.order},1)" title="Déplacer après">→</button>`:''}
@@ -744,10 +786,11 @@ function renderColl(coll,items){
       </div>
     </div>`;
   }).join('');
-  // Hover sur pc-photo-acts
-  g.querySelectorAll('.pc-img').forEach(el=>{
-    el.addEventListener('mouseenter',()=>el.querySelector('.pc-photo-acts').style.opacity='1');
-    el.addEventListener('mouseleave',()=>el.querySelector('.pc-photo-acts').style.opacity='0');
+  // Hover sur la photo principale
+  g.querySelectorAll('.pc-img-hover').forEach(el=>{
+    const parent=el.parentElement;
+    parent.addEventListener('mouseenter',()=>el.style.opacity='1');
+    parent.addEventListener('mouseleave',()=>el.style.opacity='0');
   });
 }
 window.openAddPc=coll=>{document.getElementById('m-pc-ttl').textContent='Ajouter une pièce';['pc-name','pc-desc','pc-img1','pc-img2','pc-img3'].forEach(id=>document.getElementById(id).value='');document.getElementById('pc-coll').value=coll;document.getElementById('pc-id').value='';document.getElementById('m-pc').classList.add('open');};

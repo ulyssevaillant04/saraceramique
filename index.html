@@ -102,7 +102,7 @@ onSnapshot(doc(db,'site','galerie'),snap=>{
   const imgs=snap.data().imgs||[];
   if(!imgs.length)return;
   // Mettre à jour galImgs pour le carousel
-  window.galImgs=imgs;
+  galImgs=imgs; window.galImgs=imgs;
   // Si le carousel est ouvert, le reconstruire avec les nouvelles images
   if(document.getElementById('gal-lb').classList.contains('open')){
     buildCarousel(); buildGalDots(); updateGalCounter();
@@ -115,7 +115,7 @@ onSnapshot(doc(db,'site','galerie'),snap=>{
         <img src="${src}" alt="Céramique artisanale Sara Mahjoub — ${src.split('/').pop().replace(/\.[^.]+$/,'').replace(/-/g,' ')}"/>
         <div class="g-ov"></div>
       </div>`).join('');
-    setTimeout(()=>window.rebuildBento&&window.rebuildBento(),300);
+    setTimeout(()=>{if(window.innerWidth>900&&window.rebuildBento)window.rebuildBento();},300);
   }
 });
 
@@ -729,12 +729,11 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
       <div class="mob-dd">
         <button class="mob-dd-btn" onclick="toggleMobDd()">
           <span class="mob-link-icon">
-            <svg viewBox="-12 -9 24 18" width="14" height="14" fill="none" style="overflow:visible;flex-shrink:0;">
-              <ellipse cx="-3.5" cy="-1.5" rx="4" ry="2.5" fill="rgba(106,148,150,.6)" stroke="rgba(106,148,150,.8)" stroke-width=".5" transform="rotate(-20 -3.5 -1.5)"/>
-              <ellipse cx="-3" cy="2" rx="2.8" ry="1.6" fill="rgba(106,148,150,.4)" transform="rotate(-30 -3 2)"/>
-              <ellipse cx="3.5" cy="-1.5" rx="4" ry="2.5" fill="rgba(106,148,150,.6)" stroke="rgba(106,148,150,.8)" stroke-width=".5" transform="rotate(20 3.5 -1.5)"/>
-              <ellipse cx="3" cy="2" rx="2.8" ry="1.6" fill="rgba(106,148,150,.4)" transform="rotate(30 3 2)"/>
-              <ellipse cx="0" cy="0" rx=".5" ry="3.5" fill="rgba(106,148,150,1)"/>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="7" height="7" rx="1"/>
+              <rect x="14" y="3" width="7" height="7" rx="1"/>
+              <rect x="3" y="14" width="7" height="7" rx="1"/>
+              <rect x="14" y="14" width="7" height="7" rx="1"/>
             </svg>
           </span>
           Collections
@@ -792,8 +791,8 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     <div class="h-orn-line r"></div>
   </div>
   <div class="h-btns">
-    <a class="btn-teal" onclick="navScrollTo('#galerie')">Découvrir l'atelier</a>
-    <a class="btn-rose-outline" onclick="navScrollTo('#contact')">Commander une pièce <svg width="15" height="6" viewBox="0 0 15 6" fill="none"><path d="M0 3h13M10 1l3 2-3 2" stroke="currentColor" stroke-width=".9"/></svg></a>
+    <a class="btn-teal" data-key="heroBtn1" onclick="navScrollTo('#galerie')">Découvrir l'atelier</a>
+    <a class="btn-rose-outline" data-key="heroBtn2" onclick="navScrollTo('#contact')">Commander une pièce <svg width="15" height="6" viewBox="0 0 15 6" fill="none"><path d="M0 3h13M10 1l3 2-3 2" stroke="currentColor" stroke-width=".9"/></svg></a>
   </div>
   <div style="position:absolute;bottom:2.4rem;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:.55rem;font-size:.56rem;letter-spacing:.28em;text-transform:uppercase;color:var(--text-soft);animation:floatY 4s ease-in-out infinite;">
     <span style="font-size:1.4rem;animation:sway 3s ease-in-out infinite;">🌸</span>
@@ -815,14 +814,14 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   </div>
   <div class="reveal">
     <p class="s-lbl">À propos</p>
-    <h2 class="s-ttl">Sara Mahjoub,<br><em>façonneuse de rêves</em></h2>
+    <h2 class="s-ttl" data-key="abTtl">Sara Mahjoub,<br><em>façonneuse de rêves</em></h2>
     <blockquote class="ab-quote" data-key="abQuote">"J'aime imaginer que nous sommes de petits êtres miniatures, transformant les éléments naturels en objets du quotidien."</blockquote>
     <p class="ab-body" data-key="abBody">Mon univers naît de la rencontre entre la nature et l'imaginaire. Je m'inspire du vivant, des fleurs, des formes organiques et des trésors que la nature nous offre. Une corolle devient une tasse, un coquillage devient coupelle, un pétale devient pendentif.<br><br>À travers mes créations, je cherche à faire entrer un peu de magie dans les gestes simples de chaque jour.</p>
     <div class="ab-sig" data-key="abSig">Sara Mahjoub</div>
     <div class="stats">
-      <div><div class="stat-n t">8+</div><div class="stat-l">Années d'atelier</div></div>
-      <div><div class="stat-n r">300+</div><div class="stat-l">Pièces créées</div></div>
-      <div><div class="stat-n t">12</div><div class="stat-l">Expositions</div></div>
+      <div><div class="stat-n t" data-key="stat1">8+</div><div class="stat-l">Années d'atelier</div></div>
+      <div><div class="stat-n r" data-key="stat2">300+</div><div class="stat-l">Pièces créées</div></div>
+      <div><div class="stat-n t" data-key="stat3">12</div><div class="stat-l">Expositions</div></div>
     </div>
   </div>
 </section>
@@ -830,7 +829,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 <!-- GALLERY -->
 <section id="galerie">
   <div class="gal-hdr reveal">
-    <div><p class="s-lbl no-flower"><svg class="s-lbl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="4"/></svg>Galerie</p><h2 class="s-ttl">Fleurs de <em>terre cuite</em></h2></div>
+    <div><p class="s-lbl no-flower"><svg class="s-lbl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="4"/></svg>Galerie</p><h2 class="s-ttl" data-key="galTtl">Fleurs de <em>terre cuite</em></h2></div>
     <p class="gal-note" data-key="galNote">Chaque pièce, une invitation à rêver.</p>
   </div>
   <div class="bento reveal" id="gal-bento">
@@ -849,20 +848,20 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 <section id="collections">
   <div style="text-align:center;" class="reveal">
     <p class="s-lbl" style="justify-content:center;">Collections</p>
-    <h2 class="s-ttl">Collections</h2>
+    <h2 class="s-ttl" data-key="collSttl">Collections</h2>
   </div>
   <div class="coll-grid">
     <div class="coll-card reveal" onclick="goTo('corolles')" data-coll="corolles">
       <div class="coll-img"><img src="images/mug2.JPG" /><div class="coll-img-ov"></div></div>
-      <div class="coll-body"><p class="coll-tag">Collection</p><h3 class="coll-name">Jardin Enchanté</h3><p class="coll-desc">Boire dans une fleur. Des tasses et mugs aux bords pétales, pour transformer chaque thé en rituel enchanté.</p><span class="coll-link">Découvrir →</span></div>
+      <div class="coll-body"><p class="coll-tag">Collection</p><h3 class="coll-name">Jardin Enchanté</h3><p class="coll-desc" data-key="collCorolles">Boire dans une fleur. Des tasses et mugs aux bords pétales, pour transformer chaque thé en rituel enchanté.</p><span class="coll-link">Découvrir →</span></div>
     </div>
     <div class="coll-card reveal" style="transition-delay:.15s" onclick="goTo('mer')" data-coll="mer">
       <div class="coll-img"><img src="images/coupe.JPG" /><div class="coll-img-ov"></div></div>
-      <div class="coll-body"><p class="coll-tag">Collection</p><h3 class="coll-name">Trésors Marins</h3><p class="coll-desc">Coquillages devenus coupelles, vagues sculptées dans l'argile. La mer réinterprétée avec des yeux de fée.</p><span class="coll-link">Découvrir →</span></div>
+      <div class="coll-body"><p class="coll-tag">Collection</p><h3 class="coll-name">Trésors Marins</h3><p class="coll-desc" data-key="collMer">Coquillages devenus coupelles, vagues sculptées dans l'argile. La mer réinterprétée avec des yeux de fée.</p><span class="coll-link">Découvrir →</span></div>
     </div>
     <div class="coll-card reveal" style="transition-delay:.3s" onclick="goTo('unique')" data-coll="unique">
       <div class="coll-img"><img src="images/lampadaire.JPG" /><div class="coll-img-ov"></div></div>
-      <div class="coll-body"><p class="coll-tag">Sur commande</p><h3 class="coll-name">Pièces Uniques</h3><p class="coll-desc">Lampadaires sculpturaux, cadeaux précieux, objets sur-mesure nés d'un désir particulier.</p><span class="coll-link">Découvrir →</span></div>
+      <div class="coll-body"><p class="coll-tag">Sur commande</p><h3 class="coll-name">Pièces Uniques</h3><p class="coll-desc" data-key="collUnique">Lampadaires sculpturaux, cadeaux précieux, objets sur-mesure nés d'un désir particulier.</p><span class="coll-link">Découvrir →</span></div>
     </div>
   </div>
 </section>
@@ -900,7 +899,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 
 <footer>
   <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
-  <p class="f-tagline">Petits mondes enchantés · Côte d'Azur</p>
+  <p class="f-tagline" data-key="fTagline">Petits mondes enchantés · Côte d'Azur</p>
   <ul class="f-links">
     <li><a onclick="navScrollTo('#apropos')">À Propos</a></li>
     <li><a onclick="navScrollTo('#galerie')">Galerie</a></li>
@@ -909,7 +908,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     <li><a onclick="navScrollTo('#contact')">Contact</a></li>
     <li class="c-val-ig-wrap"><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="f-ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg class="c-val-ig">@saraceramique</a></li>
   </ul>
-  <p class="f-copy">© 2026 Sara Mahjoub — Tous droits réservés</p>
+  <p class="f-copy" data-key="fCopy">© 2026 Sara Mahjoub — Tous droits réservés</p>
 </footer>
 
 </div><!-- /page-home -->
@@ -940,7 +939,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     </div>
   </section>
   <div class="cp-cta reveal">
-    <h2>Une pièce vous fait rêver ?</h2>
+    <h2 data-key="cpCorollesCtaTtl">Une pièce vous fait rêver ?</h2>
     <p>Chaque création est unique. Contactez-moi pour une commande sur-mesure ou pour acquérir une pièce disponible.</p>
     <button class="btn-teal" onclick="navScrollTo('#contact')">Me contacter ✦</button>
   </div>
@@ -1060,7 +1059,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 <div id="page-boutique" class="page">
 <section class="boutique-hero">
   <span class="b-badge" data-key="bBadge">Bientôt disponible</span>
-  <h1 class="b-title">La Boutique<em>ouvre ses portes</em></h1>
+  <h1 class="b-title" data-key="bTitle">La Boutique<em>ouvre ses portes</em></h1>
   <p class="b-desc" data-key="bDesc">Un espace pour acquérir des créations uniques directement depuis l'atelier. Tasses, coupes, sculptures et pièces d'exception — bientôt à portée de clic.</p>
   <div class="b-orn">
     <div class="h-orn-line"></div>
@@ -1471,7 +1470,7 @@ function navScrollTo(hash){
 
 /* ── GALLERY LIGHTBOX ── */
 /* ── GALLERY CAROUSEL LIGHTBOX ── */
-const galImgs = [
+let galImgs = [
   'images/mug.JPG','images/coupe.JPG','images/fiole.JPG','images/mug2.JPG',
   'images/coupe2.JPG','images/lampadaire.JPG','images/mug.JPG','images/coupe.JPG'
 ];
@@ -1790,8 +1789,8 @@ function buildBento(){
   });
   if(loaded===imgs.length)applyLayout();
 }
-window.rebuildBento=buildBento;
-document.addEventListener('DOMContentLoaded',()=>setTimeout(buildBento,400));
+window.rebuildBento=()=>{if(window.innerWidth>900)buildBento();};
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{if(window.innerWidth>900)buildBento();},400));
 
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.07,rootMargin:'0px 0px -35px 0px'});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));

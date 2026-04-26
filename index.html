@@ -161,7 +161,10 @@ async function loadCollFromFirebase(collKey,pageId){
     grid.innerHTML=items.map(item=>`
       <div class="pc" onclick="openLightbox(this)"
         data-imgs='${JSON.stringify(item.imgs||[])}' data-name="${item.name||''}" data-desc="${item.desc||''}">
-        <div class="pc-img"><img src="${(item.imgs||[])[0]||''}" /></div>
+        <div class="pc-img">${(item.imgs||[]).length>0&&item.imgs[0]
+          ? `<img src="${item.imgs[0]}" />`
+          : `<div class="pc-img-placeholder"><span>À venir</span></div>`
+        }</div>
         <div class="pc-body"><p class="pc-name">${item.name||''}</p><p class="pc-desc">${item.desc||''}</p></div>
       </div>`).join('');
   });
@@ -398,6 +401,17 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 .pc-img{aspect-ratio:1;overflow:hidden;position:relative;}
 .pc-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s;}
 .pc:hover .pc-img img{transform:scale(1.05);}
+.pc-img-placeholder{
+  width:100%;height:100%;
+  background:linear-gradient(135deg,var(--teal-deep),var(--dark));
+  display:flex;align-items:center;justify-content:center;
+}
+.pc-img-placeholder span{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-size:1.1rem;
+  color:rgba(207,240,241,.7);
+  letter-spacing:.12em;
+}
 .pc-body{padding:1.3rem;}
 .pc-name{font-family:'Playfair Display',serif;font-style:italic;font-size:.98rem;color:var(--dark);margin-bottom:.45rem;}
 .pc-desc{font-size:.76rem;font-weight:300;color:var(--text-soft);line-height:1.7;}

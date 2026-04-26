@@ -12,6 +12,7 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%231a3535'/><text y='68' x='50' text-anchor='middle' font-size='58' font-family='Georgia,serif' fill='%234bbfc4'>✿</text></svg>"/>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"/>
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"/>
+<link rel="apple-touch-icon" sizes="120x120" href="apple-touch-icon-120.png"/>
 <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png"/>
 <meta name="theme-color" content="#1a3535"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -1803,7 +1804,7 @@ const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.targ
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
 /* ── NEWSLETTER ── */
-function subscribeNewsletter() {
+async function subscribeNewsletter() {
   const emailInput = document.getElementById('newsletter-email');
   const msgEl = document.getElementById('newsletter-msg');
   const email = emailInput.value.trim();
@@ -1811,31 +1812,35 @@ function subscribeNewsletter() {
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     emailInput.style.borderColor = 'var(--rose-deep)';
     emailInput.placeholder = 'Adresse email invalide…';
-    setTimeout(() => {
-      emailInput.style.borderColor = '';
-      emailInput.placeholder = 'votre@email.com';
-    }, 2500);
+    setTimeout(() => { emailInput.style.borderColor=''; emailInput.placeholder='votre@email.com'; }, 2500);
     return;
   }
 
-  // ⬇ Remplace par ton Service ID et Template ID EmailJS
-  emailjs.send("service_kc1twkl", "template_g08arfm", {
-    to_email: email,
-    to_name: email.split('@')[0],
-  })
-  .then(() => {
-    emailInput.style.display = 'none';
-    emailInput.closest('.b-notify').querySelector('button').style.display = 'none';
-    msgEl.style.display = 'block';
-  })
-  .catch((err) => {
-    console.error('EmailJS error:', err);
-    msgEl.textContent = '✦ Inscription enregistrée ! Nous vous contacterons bientôt.';
-    msgEl.style.color = 'var(--rose-deep)';
-    emailInput.style.display = 'none';
-    emailInput.closest('.b-notify').querySelector('button').style.display = 'none';
-    msgEl.style.display = 'block';
-  });
+  // Lire la config Brevo depuis Firebase
+  try {
+    const snap = await getDoc(doc(db,'site','brevo'));
+    if(snap.exists() && snap.data().key && snap.data().list) {
+      const {key, list} = snap.data();
+      const res = await fetch('https://api.brevo.com/v3/contacts', {
+        method:'POST',
+        headers:{'api-key':key,'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify({email, listIds:[parseInt(list)], updateEnabled:true})
+      });
+      if(res.ok || res.status===201 || res.status===204) {
+        emailInput.style.display='none';
+        emailInput.closest('.b-notify').querySelector('button').style.display='none';
+        msgEl.textContent='✦ Merci ! Vous serez parmi les premiers informés.';
+        msgEl.style.display='block';
+        return;
+      }
+    }
+  } catch(e) {}
+
+  // Fallback si Brevo non configuré
+  emailInput.style.display='none';
+  emailInput.closest('.b-notify').querySelector('button').style.display='none';
+  msgEl.textContent='✦ Inscription enregistrée ! Nous vous contacterons bientôt.';
+  msgEl.style.display='block';
 }
 
 /* ── WAVE ICON CANVAS ── */

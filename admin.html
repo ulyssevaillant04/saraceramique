@@ -1313,26 +1313,30 @@ async function initCadrageModal(coll,mode,opts){
   if(!loaded){toast('Image non chargeable','e');return;}
 
   const pw=preview.clientWidth||500;
-  // Photo affichée à sa vraie proportion dans pw
+  // Réduire la photo pour qu'elle tienne entièrement dans la modal (max 400px de haut)
+  const maxH=400;
   const ratio=loaded.naturalHeight/loaded.naturalWidth;
-  const iw=pw;
-  const ih=Math.round(pw*ratio);
+  const iw=ratio > 1 ? Math.round(maxH/ratio) : pw; // portrait : ajuster largeur
+  const ih=Math.round(iw*ratio);
+  const scale=iw/loaded.naturalWidth; // pour info
 
-  // Cadre carré = largeur totale de la photo
+  // Cadre carré = largeur totale de la photo affichée
   const fw=iw;
   const fh=fw; // carré
 
-  // Preview assez haut pour voir toute la photo
-  preview.style.cssText=`position:relative;overflow:hidden;height:${ih}px;max-height:420px;background:#1a3535;border-radius:10px;border:2px solid var(--teal);cursor:ns-resize;`;
+  // Preview = hauteur de la photo entière
+  const previewH=ih;
+  preview.style.cssText=`position:relative;overflow:hidden;height:${previewH}px;background:#1a3535;border-radius:10px;border:2px solid var(--teal);cursor:ns-resize;`;
 
-  // Image positionnée en haut, pleine largeur
+  // Image positionnée centrée horizontalement, en haut
+  const imgLeft=Math.round((pw-iw)/2);
   imgNode.src=imgEl.src;
-  imgNode.style.cssText=`display:block;position:absolute;width:${iw}px;height:${ih}px;left:0;top:0;pointer-events:none;`;
+  imgNode.style.cssText=`display:block;position:absolute;width:${iw}px;height:${ih}px;left:${imgLeft}px;top:0;pointer-events:none;`;
 
-  // Cadre carré — position Y initiale
+  // Cadre carré centré horizontalement
   const maxTop=ih-fh;
   let frameTop=Math.round(maxTop*(posY/100));
-  frame.style.cssText=`position:absolute;width:${fw}px;height:${fh}px;left:0;top:${frameTop}px;border:2.5px solid rgba(255,255,255,0.95);box-shadow:0 0 0 9999px rgba(0,0,0,0.5);z-index:3;pointer-events:none;border-radius:0;`;
+  frame.style.cssText=`position:absolute;width:${fw}px;height:${fh}px;left:${imgLeft}px;top:${frameTop}px;border:2.5px solid rgba(255,255,255,0.95);box-shadow:0 0 0 9999px rgba(0,0,0,0.5);z-index:3;pointer-events:none;border-radius:0;`;
 
   cadrageState.y=maxTop>0?Math.round((frameTop/maxTop)*100):50;
   document.getElementById('cadrage-pos-display').textContent=`Position Y : ${cadrageState.y}%`;

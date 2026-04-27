@@ -476,23 +476,9 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
       <div class="hero-edit" style="position:absolute;inset:0;background:rgba(26,53,53,.5);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;pointer-events:none;">
         <span style="color:#fff;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer la photo</span>
       </div>
-      <div style="position:absolute;bottom:.6rem;left:50%;transform:translateX(-50%);z-index:15;display:flex;gap:.4rem;opacity:0;transition:opacity .2s;" class="pos-widget" id="pos-widget-corolles">
-        <div style="font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:#fff;font-family:'Nunito',sans-serif;padding:.2rem .5rem;background:rgba(26,53,53,.7);border-radius:4px;white-space:nowrap;">Cadrage desktop :</div>
-        <select onchange="savePosDesktop('corolles',this.value)" id="pos-desk-corolles" style="font-size:.65rem;padding:.2rem .4rem;border-radius:4px;border:none;background:rgba(26,53,53,.85);color:#fff;font-family:'Nunito',sans-serif;cursor:pointer;">
-          <option value="center center">Centre</option>
-          <option value="center top">Haut</option>
-          <option value="center bottom">Bas</option>
-          <option value="left center">Gauche</option>
-          <option value="right center">Droite</option>
-        </select>
-        <div style="font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:#fff;font-family:'Nunito',sans-serif;padding:.2rem .5rem;background:rgba(26,53,53,.7);border-radius:4px;white-space:nowrap;">Mobile :</div>
-        <select onchange="savePosMobile('corolles',this.value)" id="pos-mob-corolles" style="font-size:.65rem;padding:.2rem .4rem;border-radius:4px;border:none;background:rgba(26,53,53,.85);color:#fff;font-family:'Nunito',sans-serif;cursor:pointer;">
-          <option value="center center">Centre</option>
-          <option value="center top">Haut</option>
-          <option value="center bottom">Bas</option>
-          <option value="left center">Gauche</option>
-          <option value="right center">Droite</option>
-        </select>
+      <div style="position:absolute;bottom:.6rem;left:50%;transform:translateX(-50%);z-index:15;display:flex;gap:.5rem;opacity:0;transition:opacity .2s;" class="pos-widget" id="pos-widget-corolles">
+        <button onclick="openCadrage('corolles');event.stopPropagation();" style="padding:.3rem .8rem;background:rgba(26,53,53,.85);color:#fff;border:none;border-radius:6px;font-size:.65rem;font-family:'Nunito',sans-serif;cursor:pointer;letter-spacing:.08em;">⊹ Cadrage desktop</button>
+        <button onclick="openCadraMobile('corolles');event.stopPropagation();" style="padding:.3rem .8rem;background:rgba(42,157,163,.85);color:#fff;border:none;border-radius:6px;font-size:.65rem;font-family:'Nunito',sans-serif;cursor:pointer;letter-spacing:.08em;">📱 Cadrage mobile</button>
       </div>
     </div>
     <div class="cp-hero-text">
@@ -527,23 +513,9 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
       <div class="hero-edit" style="position:absolute;inset:0;background:rgba(26,53,53,.5);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;pointer-events:none;">
         <span style="color:#fff;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer la photo</span>
       </div>
-      <div style="position:absolute;bottom:.6rem;left:50%;transform:translateX(-50%);z-index:15;display:flex;gap:.4rem;opacity:0;transition:opacity .2s;" class="pos-widget" id="pos-widget-mer">
-        <div style="font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:#fff;font-family:'Nunito',sans-serif;padding:.2rem .5rem;background:rgba(26,53,53,.7);border-radius:4px;white-space:nowrap;">Cadrage desktop :</div>
-        <select onchange="savePosDesktop('mer',this.value)" id="pos-desk-mer" style="font-size:.65rem;padding:.2rem .4rem;border-radius:4px;border:none;background:rgba(26,53,53,.85);color:#fff;font-family:'Nunito',sans-serif;cursor:pointer;">
-          <option value="center center">Centre</option>
-          <option value="center top">Haut</option>
-          <option value="center bottom">Bas</option>
-          <option value="left center">Gauche</option>
-          <option value="right center">Droite</option>
-        </select>
-        <div style="font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:#fff;font-family:'Nunito',sans-serif;padding:.2rem .5rem;background:rgba(26,53,53,.7);border-radius:4px;white-space:nowrap;">Mobile :</div>
-        <select onchange="savePosMobile('mer',this.value)" id="pos-mob-mer" style="font-size:.65rem;padding:.2rem .4rem;border-radius:4px;border:none;background:rgba(26,53,53,.85);color:#fff;font-family:'Nunito',sans-serif;cursor:pointer;">
-          <option value="center center">Centre</option>
-          <option value="center top">Haut</option>
-          <option value="center bottom">Bas</option>
-          <option value="left center">Gauche</option>
-          <option value="right center">Droite</option>
-        </select>
+      <div style="position:absolute;bottom:.6rem;left:50%;transform:translateX(-50%);z-index:15;display:flex;gap:.5rem;opacity:0;transition:opacity .2s;" class="pos-widget" id="pos-widget-mer">
+        <button onclick="openCadrage('mer');event.stopPropagation();" style="padding:.3rem .8rem;background:rgba(26,53,53,.85);color:#fff;border:none;border-radius:6px;font-size:.65rem;font-family:'Nunito',sans-serif;cursor:pointer;letter-spacing:.08em;">⊹ Cadrage desktop</button>
+        <button onclick="openCadraMobile('mer');event.stopPropagation();" style="padding:.3rem .8rem;background:rgba(42,157,163,.85);color:#fff;border:none;border-radius:6px;font-size:.65rem;font-family:'Nunito',sans-serif;cursor:pointer;letter-spacing:.08em;">📱 Cadrage mobile</button>
       </div>
     </div>
     <div class="cp-hero-text">
@@ -578,23 +550,9 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
       <div class="hero-edit" style="position:absolute;inset:0;background:rgba(26,53,53,.5);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;pointer-events:none;">
         <span style="color:#fff;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer la photo</span>
       </div>
-      <div style="position:absolute;bottom:.6rem;left:50%;transform:translateX(-50%);z-index:15;display:flex;gap:.4rem;opacity:0;transition:opacity .2s;" class="pos-widget" id="pos-widget-unique">
-        <div style="font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:#fff;font-family:'Nunito',sans-serif;padding:.2rem .5rem;background:rgba(26,53,53,.7);border-radius:4px;white-space:nowrap;">Cadrage desktop :</div>
-        <select onchange="savePosDesktop('unique',this.value)" id="pos-desk-unique" style="font-size:.65rem;padding:.2rem .4rem;border-radius:4px;border:none;background:rgba(26,53,53,.85);color:#fff;font-family:'Nunito',sans-serif;cursor:pointer;">
-          <option value="center center">Centre</option>
-          <option value="center top">Haut</option>
-          <option value="center bottom">Bas</option>
-          <option value="left center">Gauche</option>
-          <option value="right center">Droite</option>
-        </select>
-        <div style="font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:#fff;font-family:'Nunito',sans-serif;padding:.2rem .5rem;background:rgba(26,53,53,.7);border-radius:4px;white-space:nowrap;">Mobile :</div>
-        <select onchange="savePosMobile('unique',this.value)" id="pos-mob-unique" style="font-size:.65rem;padding:.2rem .4rem;border-radius:4px;border:none;background:rgba(26,53,53,.85);color:#fff;font-family:'Nunito',sans-serif;cursor:pointer;">
-          <option value="center center">Centre</option>
-          <option value="center top">Haut</option>
-          <option value="center bottom">Bas</option>
-          <option value="left center">Gauche</option>
-          <option value="right center">Droite</option>
-        </select>
+      <div style="position:absolute;bottom:.6rem;left:50%;transform:translateX(-50%);z-index:15;display:flex;gap:.5rem;opacity:0;transition:opacity .2s;" class="pos-widget" id="pos-widget-unique">
+        <button onclick="openCadrage('unique');event.stopPropagation();" style="padding:.3rem .8rem;background:rgba(26,53,53,.85);color:#fff;border:none;border-radius:6px;font-size:.65rem;font-family:'Nunito',sans-serif;cursor:pointer;letter-spacing:.08em;">⊹ Cadrage desktop</button>
+        <button onclick="openCadraMobile('unique');event.stopPropagation();" style="padding:.3rem .8rem;background:rgba(42,157,163,.85);color:#fff;border:none;border-radius:6px;font-size:.65rem;font-family:'Nunito',sans-serif;cursor:pointer;letter-spacing:.08em;">📱 Cadrage mobile</button>
       </div>
     </div>
     <div class="cp-hero-text">
@@ -671,7 +629,28 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
 </footer>
 </div><!-- /pg-boutique -->
 
-<!-- MODALS -->
+<!-- MODAL CADRAGE -->
+<div class="mov" id="m-cadrage">
+  <div class="mbox" style="width:560px;">
+    <div class="mttl" id="cadrage-ttl">Cadrage de la photo</div>
+    <p style="font-size:.75rem;color:var(--text-soft);margin-bottom:1rem;line-height:1.6;">Glissez la photo pour choisir le cadrage. La zone encadrée en blanc représente ce qui sera visible.</p>
+    <!-- Aperçu interactif -->
+    <div id="cadrage-preview" style="position:relative;overflow:hidden;border-radius:10px;border:2px solid var(--teal);cursor:grab;user-select:none;margin-bottom:1rem;">
+      <!-- Cadre visible -->
+      <div id="cadrage-frame" style="position:absolute;border:2px solid rgba(255,255,255,.8);box-shadow:0 0 0 2000px rgba(0,0,0,.45);pointer-events:none;z-index:2;border-radius:4px;"></div>
+      <img id="cadrage-img" style="display:block;position:absolute;cursor:grab;" draggable="false"/>
+    </div>
+    <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:1rem;">
+      <span style="font-size:.7rem;color:var(--text-soft);letter-spacing:.1em;text-transform:uppercase;">Position actuelle :</span>
+      <span id="cadrage-pos-display" style="font-size:.72rem;color:var(--teal-deep);font-family:monospace;"></span>
+    </div>
+    <div class="mbrow">
+      <button class="mbp" onclick="saveCadragePos()">Appliquer ✦</button>
+      <button class="mbs" onclick="closeMov('m-cadrage')">Annuler</button>
+    </div>
+  </div>
+</div>
+
 <!-- ÉDITEUR DE PIÈCE COMPLET -->
 <div class="mov" id="m-pe">
   <div class="mbox" style="width:620px;max-width:96vw;">
@@ -1296,7 +1275,134 @@ window.movePc=async(coll,id,order,dir)=>{
 };
 
 
-// ── CADRAGE PHOTOS HERO ──
+// ── CADRAGE DRAG INTERACTIF ──
+let cadrageState={coll:'',mode:'desk',x:50,y:50};
+
+window.openCadrage=async(coll)=>{
+  cadrageState.coll=coll; cadrageState.mode='desk';
+  document.getElementById('cadrage-ttl').textContent='Cadrage desktop — '+(coll==='corolles'?'Jardin Enchanté':coll==='mer'?'Trésors Marins':'Pièces Uniques');
+  await initCadrageModal(coll,'desk',{w:'100%',ratio:'aspect-ratio:4/3'});
+};
+window.openCadraMobile=async(coll)=>{
+  cadrageState.coll=coll; cadrageState.mode='mob';
+  document.getElementById('cadrage-ttl').textContent='Cadrage mobile — '+(coll==='corolles'?'Jardin Enchanté':coll==='mer'?'Trésors Marins':'Pièces Uniques');
+  await initCadrageModal(coll,'mob',{w:'280px',ratio:'aspect-ratio:1/1'});
+};
+
+async function initCadrageModal(coll,mode,opts){
+  const imgEl=document.getElementById('img-cp-'+coll+'-hero');
+  if(!imgEl||!imgEl.src){toast('Ajoutez d\'abord une photo','e');return;}
+  const preview=document.getElementById('cadrage-preview');
+  const frame=document.getElementById('cadrage-frame');
+  const img=document.getElementById('cadrage-img');
+  
+  // Taille preview
+  const isDesk=mode==='desk';
+  preview.style.width='100%';
+  preview.style.height=isDesk?'300px':'300px';
+  
+  // Charger position actuelle
+  let posX=50,posY=50;
+  try{
+    const snap=await getDoc(doc(db,'site','heroPositions'));
+    if(snap.exists()){
+      const pct=snap.data()[coll+'_'+mode+'_pct'];
+      if(pct){posX=pct.x;posY=pct.y;}
+    }
+  }catch(e){}
+  cadrageState.x=posX; cadrageState.y=posY;
+  
+  // Setup image
+  img.src=imgEl.src;
+  img.onload=()=>{
+    const pw=preview.offsetWidth, ph=isDesk?300:300;
+    const nat=img.naturalWidth/img.naturalHeight;
+    const fw=isDesk?pw:Math.round(ph*(9/16)); // frame desktop=pleine largeur, mobile=carré
+    const fh=isDesk?Math.round(pw/2):ph; // desktop 2:1 aperçu, mobile carré
+    
+    // Cadre (zone visible simulée)
+    frame.style.width=fw+'px';
+    frame.style.height=fh+'px';
+    
+    // Image plus grande que le frame pour pouvoir glisser
+    const scale=Math.max(fw/img.naturalWidth, fh/img.naturalHeight)*1.5;
+    const iw=img.naturalWidth*scale, ih=img.naturalHeight*scale;
+    img.style.width=iw+'px';
+    img.style.height=ih+'px';
+    
+    const maxX=Math.max(0,iw-fw), maxY=Math.max(0,ih-fh);
+    const cx=(fw-iw)/2 + maxX*(posX/100);
+    const cy=(fh-ih)/2 + maxY*(posY/100);
+    
+    // Centrer le frame dans preview
+    frame.style.left=Math.round((pw-fw)/2)+'px';
+    frame.style.top=Math.round((300-fh)/2)+'px';
+    img.style.left=frame.offsetLeft+Math.round((fw-iw)/2 + maxX*(posX/100))+'px';
+    img.style.top=frame.offsetTop+Math.round((fh-ih)/2 + maxY*(posY/100))+'px';
+    
+    updatePosDisplay();
+    initDrag(preview,img,frame,iw,ih,fw,fh);
+  };
+  document.getElementById('m-cadrage').classList.add('open');
+}
+
+function updatePosDisplay(){
+  document.getElementById('cadrage-pos-display').textContent=`X:${Math.round(cadrageState.x)}% Y:${Math.round(cadrageState.y)}%`;
+}
+
+function initDrag(preview,img,frame,iw,ih,fw,fh){
+  let dragging=false,startX,startY,startLeft,startTop;
+  const fl=frame.offsetLeft,ft=frame.offsetTop;
+  const minL=fl-(iw-fw), maxL=fl;
+  const minT=ft-(ih-fh), maxT=ft;
+  
+  const onDown=e=>{
+    dragging=true;
+    const pt=e.touches?e.touches[0]:e;
+    startX=pt.clientX; startY=pt.clientY;
+    startLeft=parseInt(img.style.left)||0;
+    startTop=parseInt(img.style.top)||0;
+    img.style.cursor='grabbing';
+  };
+  const onMove=e=>{
+    if(!dragging)return;
+    e.preventDefault();
+    const pt=e.touches?e.touches[0]:e;
+    const dx=pt.clientX-startX, dy=pt.clientY-startY;
+    const newL=Math.min(maxL,Math.max(minL,startLeft+dx));
+    const newT=Math.min(maxT,Math.max(minT,startTop+dy));
+    img.style.left=newL+'px';
+    img.style.top=newT+'px';
+    // Calculer pourcentage
+    const rangeX=iw-fw, rangeY=ih-fh;
+    cadrageState.x=rangeX>0?Math.round(((newL-fl)/(maxL-minL))*100):50;
+    cadrageState.y=rangeY>0?Math.round(((newT-ft)/(maxT-minT))*100):50;
+    updatePosDisplay();
+  };
+  const onUp=()=>{dragging=false;img.style.cursor='grab';};
+  
+  img.removeEventListener('mousedown',img._onDown);
+  img._onDown=onDown;
+  img.addEventListener('mousedown',onDown);
+  document.addEventListener('mousemove',onMove);
+  document.addEventListener('mouseup',onUp);
+  img.addEventListener('touchstart',onDown,{passive:false});
+  document.addEventListener('touchmove',onMove,{passive:false});
+  document.addEventListener('touchend',onUp);
+}
+
+window.saveCadragePos=async()=>{
+  const {coll,mode,x,y}=cadrageState;
+  const u={};
+  u[coll+'_'+mode+'_pct']={x,y};
+  // Convertir en object-position CSS
+  u[coll+'_'+mode]=`${x}% ${y}%`;
+  await setDoc(doc(db,'site','heroPositions'),u,{merge:true});
+  closeMov('m-cadrage');
+  toast('Cadrage sauvegardé ✦');
+};
+
+
 async function loadHeroPositions(){
   try{
     const snap=await getDoc(doc(db,'site','heroPositions'));

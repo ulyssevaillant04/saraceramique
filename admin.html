@@ -697,7 +697,6 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
       <div class="hero-edit" style="position:absolute;inset:0;background:rgba(26,53,53,.5);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;pointer-events:none;">
         <span style="color:#fff;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer la photo</span>
       </div>
-      <!-- Boutons cadrage identiques aux collections -->
       <div style="position:absolute;bottom:.6rem;left:50%;transform:translateX(-50%);z-index:15;display:flex;gap:.5rem;opacity:0;transition:opacity .2s;" class="pos-widget" id="pos-widget-expo">
         <button onclick="openCadrage('expo');event.stopPropagation();" style="padding:.3rem .8rem;background:rgba(26,53,53,.85);color:#fff;border:none;border-radius:6px;font-size:.65rem;font-family:'Nunito',sans-serif;cursor:pointer;letter-spacing:.08em;">⊹ Cadrage desktop</button>
         <button onclick="openCadraMobile('expo');event.stopPropagation();" style="padding:.3rem .8rem;background:rgba(42,157,163,.85);color:#fff;border:none;border-radius:6px;font-size:.65rem;font-family:'Nunito',sans-serif;cursor:pointer;letter-spacing:.08em;">📱 Cadrage mobile</button>
@@ -713,62 +712,9 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
   </div>
   <section class="cp-pieces">
     <h2 class="cp-pieces-title" contenteditable="true" data-key="expoPiecesTitle" spellcheck="false">Les expositions <em>Sujet de diplôme</em></h2>
-    <div class="cp-grid" id="grid-expo">
-
-      <!-- Item 1 — cliquable pour éditer photos (drag & drop) -->
-      <div class="pc pc-expo" data-expo-n="1" style="position:relative;cursor:pointer;"
-        onclick="openExpoItemEditor(1)"
-        onmouseenter="this.querySelector('.pc-hover-ov').style.opacity='1'"
-        onmouseleave="this.querySelector('.pc-hover-ov').style.opacity='0'">
-        <div style="height:180px;position:relative;overflow:hidden;background:rgba(75,191,196,.08);">
-          <div id="expo-item1-ph" class="pc-img-placeholder"><span>À venir</span></div>
-          <img id="expo-item1-img" src="" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0;"/>
-          <div class="pc-hover-ov" style="position:absolute;inset:0;background:rgba(26,53,53,.45);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;pointer-events:none;">
-            <span style="color:#fff;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;">Cliquer pour éditer</span>
-          </div>
-        </div>
-        <div class="pc-body">
-          <p class="pc-name" data-key="expoItem1Name"></p>
-          <p class="pc-desc" data-key="expoItem1Desc" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></p>
-        </div>
-      </div>
-
-      <!-- Item 2 -->
-      <div class="pc pc-expo" data-expo-n="2" style="position:relative;cursor:pointer;"
-        onclick="openExpoItemEditor(2)"
-        onmouseenter="this.querySelector('.pc-hover-ov').style.opacity='1'"
-        onmouseleave="this.querySelector('.pc-hover-ov').style.opacity='0'">
-        <div style="height:180px;position:relative;overflow:hidden;background:rgba(75,191,196,.08);">
-          <div id="expo-item2-ph" class="pc-img-placeholder"><span>À venir</span></div>
-          <img id="expo-item2-img" src="" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0;"/>
-          <div class="pc-hover-ov" style="position:absolute;inset:0;background:rgba(26,53,53,.45);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;pointer-events:none;">
-            <span style="color:#fff;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;">Cliquer pour éditer</span>
-          </div>
-        </div>
-        <div class="pc-body">
-          <p class="pc-name" data-key="expoItem2Name"></p>
-          <p class="pc-desc" data-key="expoItem2Desc" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></p>
-        </div>
-      </div>
-
-      <!-- Item 3 -->
-      <div class="pc pc-expo" data-expo-n="3" style="position:relative;cursor:pointer;"
-        onclick="openExpoItemEditor(3)"
-        onmouseenter="this.querySelector('.pc-hover-ov').style.opacity='1'"
-        onmouseleave="this.querySelector('.pc-hover-ov').style.opacity='0'">
-        <div style="height:180px;position:relative;overflow:hidden;background:rgba(75,191,196,.08);">
-          <div id="expo-item3-ph" class="pc-img-placeholder"><span>À venir</span></div>
-          <img id="expo-item3-img" src="" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0;"/>
-          <div class="pc-hover-ov" style="position:absolute;inset:0;background:rgba(26,53,53,.45);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;pointer-events:none;">
-            <span style="color:#fff;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;">Cliquer pour éditer</span>
-          </div>
-        </div>
-        <div class="pc-body">
-          <p class="pc-name" data-key="expoItem3Name"></p>
-          <p class="pc-desc" data-key="expoItem3Desc" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></p>
-        </div>
-      </div>
-
+    <div class="cp-grid" id="grid-expo"></div>
+    <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1rem;">
+      <button class="add-pc" onclick="openAddPc('expo')" style="flex:1;min-width:180px;">+ Ajouter un item</button>
     </div>
   </section>
   <div class="cp-cta">
@@ -946,7 +892,7 @@ window.goPage=(id,btn)=>{
   // Recharger les pièces quand on ouvre une page collection
   if(['corolles','mer','unique'].includes(id)) loadColl(id);
   // Recharger images expo quand on ouvre la page expo
-  if(id==='sujetdediplome') loadImages();
+  if(id==='sujetdediplome'){ loadColl('expo'); loadImages(); }
 };
 
 window.openAddExpoItem=()=>{
@@ -1076,7 +1022,7 @@ window.saveImg=async()=>{
 };
 
 // ── COLLECTIONS ──
-async function loadColls(){await Promise.all(['corolles','mer','unique'].map(c=>loadColl(c)));}
+async function loadColls(){await Promise.all(['corolles','mer','unique','expo'].map(c=>loadColl(c)));}
 async function loadColl(coll){
   try{
     // Essayer d'abord orderBy order, sinon sans orderBy
@@ -1466,122 +1412,15 @@ window.openCadraMobile=async(coll)=>{
 };
 
 // ── ÉDITEUR D'ITEM EXPO (photos drag & drop, même interface que m-pe) ──
-let currentExpoN = 0;
-const EXPO_KEYS = {1:{name:'expoItem1Name',desc:'expoItem1Desc',img:'expoItem1Img'},2:{name:'expoItem2Name',desc:'expoItem2Desc',img:'expoItem2Img'},3:{name:'expoItem3Name',desc:'expoItem3Desc',img:'expoItem3Img'}};
+// ── EXPO : branchement sur le système collections (même code) ──
+// La collection Firebase 'expo' utilise exactement la même structure que
+// 'corolles', 'mer', 'unique' → collections/expo/pieces/{id}
+// loadColl / renderColl / openPcEditor / addPePhoto / savePe / delPc
+// fonctionnent sans aucune modification.
 
-window.openExpoItemEditor=async(n)=>{
-  currentExpoN=n;
-  const keys=EXPO_KEYS[n];
-  // Récupérer nom/desc depuis Firebase textes
-  let name='',desc='',imgs=[];
-  try{
-    const st=await getDoc(doc(db,'site','textes'));
-    if(st.exists()){name=st.data()[keys.name]||'';desc=st.data()[keys.desc]||'';}
-    const si=await getDoc(doc(db,'site','images'));
-    if(si.exists()&&si.data()[keys.img]) imgs=[si.data()[keys.img]];
-  }catch(e){}
-  document.getElementById('pe-name').value=name;
-  document.getElementById('pe-desc').value=desc;
-  // Adapter le modal pour l'expo : surcharger currentPcColl/Id pour éviter
-  // d'écraser la logique collection, on garde currentExpoN
-  currentPcColl='__expo__'; currentPcId='__expo__'+n;
-  renderExpoPhotos(imgs);
-  document.getElementById('m-pe').classList.add('open');
-};
+window.openAddExpoItem=()=>openAddPc('expo');
 
-function renderExpoPhotos(imgs){
-  const container=document.getElementById('pe-photos');
-  container.innerHTML=imgs.length?imgs.map((src,pi)=>`
-    <div class="pe-photo-item" draggable="true" data-pi="${pi}"
-      style="position:relative;border-radius:10px;overflow:hidden;border:2px solid transparent;transition:border-color .2s;cursor:grab;">
-      <img src="${src}" style="width:100%;height:140px;object-fit:contain;display:block;background:rgba(250,245,239,.9);"/>
-      <div style="padding:.5rem .6rem;background:var(--ivory);">
-        <p style="font-size:.65rem;color:var(--text-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${src.split('/').pop()}</p>
-      </div>
-      <button onclick="delExpoPhoto(${pi})" style="position:absolute;top:.4rem;right:.4rem;width:24px;height:24px;border-radius:50%;background:rgba(192,50,50,.9);color:#fff;border:none;cursor:pointer;font-size:.75rem;display:flex;align-items:center;justify-content:center;">✕</button>
-    </div>`).join('')
-  :'<p style="color:var(--text-soft);font-style:italic;font-size:.82rem;grid-column:1/-1;">Aucune photo — cliquez + Ajouter</p>';
-  initExpoPhotoDrag(imgs);
-}
 
-function initExpoPhotoDrag(imgs){
-  let dragPi=null;
-  document.querySelectorAll('.pe-photo-item').forEach(el=>{
-    el.addEventListener('dragstart',e=>{dragPi=+el.dataset.pi;el.style.opacity='.4';e.dataTransfer.effectAllowed='move';});
-    el.addEventListener('dragend',()=>{el.style.opacity='1';document.querySelectorAll('.pe-photo-item').forEach(c=>c.style.border='2px solid transparent');});
-    el.addEventListener('dragover',e=>{e.preventDefault();if(+el.dataset.pi!==dragPi)el.style.borderColor='var(--teal)';});
-    el.addEventListener('dragleave',()=>el.style.borderColor='transparent');
-    el.addEventListener('drop',async e=>{
-      e.preventDefault();el.style.borderColor='transparent';
-      const dst=+el.dataset.pi;if(dragPi===null||dragPi===dst)return;
-      const newImgs=[...imgs];
-      const [moved]=newImgs.splice(dragPi,1);newImgs.splice(dst,0,moved);
-      // Sauvegarder la première comme image principale
-      await saveExpoItemImgs(newImgs);
-      renderExpoPhotos(newImgs);
-      toast('Ordre des photos mis à jour ✦');
-    });
-  });
-}
-
-window.delExpoPhoto=async(pi)=>{
-  if(!confirm('Retirer cette photo ?'))return;
-  const snap=await getDoc(doc(db,'site','images'));
-  const key=EXPO_KEYS[currentExpoN].img;
-  const cur=snap.exists()&&snap.data()[key]?[snap.data()[key]]:[];
-  cur.splice(pi,1);
-  await saveExpoItemImgs(cur);
-  renderExpoPhotos(cur);toast('Photo retirée ✦');
-};
-
-async function saveExpoItemImgs(imgs){
-  const key=EXPO_KEYS[currentExpoN].img;
-  const u={};u[key]=imgs[0]||'';
-  await setDoc(doc(db,'site','images'),u,{merge:true});
-  // Mettre à jour l'affichage de la card
-  showExpoItemImg(currentExpoN,imgs[0]||'');
-}
-
-// Surcharger addPePhoto pour gérer expo
-const _origAddPePhoto=window.addPePhoto;
-window.addPePhoto=()=>{
-  if(currentPcColl==='__expo__'){
-    const cb=async paths=>{
-      const allPaths=Array.isArray(paths)?paths:[paths];
-      // Pour l'expo, on garde seulement la première image (1 image par item)
-      await saveExpoItemImgs(allPaths);
-      renderExpoPhotos(allPaths.slice(0,1));
-      toast('Photo ajoutée ✦');
-    };
-    cb._multi=false;
-    openUpload(cb);
-  } else {
-    _origAddPePhoto();
-  }
-};
-
-// Surcharger savePe pour gérer expo
-const _origSavePe=window.savePe;
-window.savePe=async()=>{
-  if(currentPcColl==='__expo__'){
-    const n=currentExpoN;
-    const keys=EXPO_KEYS[n];
-    const name=document.getElementById('pe-name').value.trim();
-    const desc=document.getElementById('pe-desc').value.trim();
-    // Sauvegarder dans Firebase textes
-    const u={};u[keys.name]=name;u[keys.desc]=desc;
-    await setDoc(doc(db,'site','textes'),u,{merge:true});
-    // Mettre à jour les cards dans la grille
-    const nameEl=document.querySelector(`#grid-expo [data-key="${keys.name}"]`);
-    const descEl=document.querySelector(`#grid-expo [data-key="${keys.desc}"]`);
-    if(nameEl)nameEl.textContent=name;
-    if(descEl)descEl.textContent=desc;
-    closeMov('m-pe');
-    toast('Item exposition enregistré ✦');
-  } else {
-    await _origSavePe();
-  }
-};
 
 
 async function initCadrageModal(coll,mode,opts){

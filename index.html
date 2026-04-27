@@ -81,13 +81,6 @@ onSnapshot(doc(db,'site','textes'),snap=>{
   if(d.collCorolles)document.querySelectorAll('[data-coll=corolles] .coll-desc').forEach(el=>el.textContent=d.collCorolles);
   if(d.collMer)document.querySelectorAll('[data-coll=mer] .coll-desc').forEach(el=>el.textContent=d.collMer);
   if(d.collUnique)document.querySelectorAll('[data-coll=unique] .coll-desc').forEach(el=>el.textContent=d.collUnique);
-  // Sync expo item lightbox data
-  [1,2,3].forEach(n=>{
-    const pc=document.querySelectorAll('#expo-grid .pc')[n-1];
-    if(!pc)return;
-    if(d['expoItem'+n+'Name'])pc.dataset.name=d['expoItem'+n+'Name'];
-    if(d['expoItem'+n+'Desc'])pc.dataset.desc=d['expoItem'+n+'Desc'];
-  });
 });
 
 
@@ -187,25 +180,7 @@ onSnapshot(doc(db,'site','images'),snap=>{
       if(el) el.style.opacity='1';
     }
   });
-  // Photos items expo
-  [1,2,3].forEach(n=>{
-    if(d['expoItem'+n+'Img']){
-      const pc=document.querySelectorAll('#expo-grid .pc')[n-1];
-      if(pc){
-        const ph=pc.querySelector('.pc-img-placeholder');
-        if(ph)ph.style.display='none';
-        let img=pc.querySelector('.pc-img img');
-        if(!img){img=document.createElement('img');img.style.cssText='width:100%;height:100%;object-fit:cover;';pc.querySelector('.pc-img').appendChild(img);}
-        img.src=d['expoItem'+n+'Img'];
-        // Sync data-imgs for lightbox
-        const nm=pc.querySelector('[data-key="expoItem'+n+'Name"]');
-        const ds=pc.querySelector('[data-key="expoItem'+n+'Desc"]');
-        pc.dataset.imgs=JSON.stringify([d['expoItem'+n+'Img']]);
-        pc.dataset.name=nm?nm.textContent:'';
-        pc.dataset.desc=ds?ds.textContent:'';
-      }
-    }
-  });
+  // (expo items chargés via loadCollFromFirebase ci-dessous)
 });
 
 // Portrait
@@ -241,6 +216,7 @@ async function loadCollFromFirebase(collKey,pageId){
 loadCollFromFirebase('corolles','page-corolles');
 loadCollFromFirebase('mer','page-mer');
 loadCollFromFirebase('unique','page-unique');
+loadCollFromFirebase('expo','page-sujetdediplome');
 </script>
 <style>
 /* ══════════════════════════════════════════
@@ -1294,23 +1270,8 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   </div>
   <section class="cp-pieces">
     <h2 class="cp-pieces-title reveal" data-key="expoPiecesTitle">Les expositions <em>Sujet de diplôme</em></h2>
-    <div class="cp-grid reveal" id="expo-grid">
-      <!-- Item 1 -->
-      <div class="pc" onclick="openLightbox(this)" data-imgs='[]' data-name="" data-desc="">
-        <div class="pc-img"><div class="pc-img-placeholder"><span>À venir</span></div></div>
-        <div class="pc-body"><p class="pc-name" data-key="expoItem1Name"></p><p class="pc-desc" data-key="expoItem1Desc"></p></div>
-      </div>
-      <!-- Item 2 -->
-      <div class="pc" onclick="openLightbox(this)" data-imgs='[]' data-name="" data-desc="">
-        <div class="pc-img"><div class="pc-img-placeholder"><span>À venir</span></div></div>
-        <div class="pc-body"><p class="pc-name" data-key="expoItem2Name"></p><p class="pc-desc" data-key="expoItem2Desc"></p></div>
-      </div>
-      <!-- Item 3 -->
-      <div class="pc" onclick="openLightbox(this)" data-imgs='[]' data-name="" data-desc="">
-        <div class="pc-img"><div class="pc-img-placeholder"><span>À venir</span></div></div>
-        <div class="pc-body"><p class="pc-name" data-key="expoItem3Name"></p><p class="pc-desc" data-key="expoItem3Desc"></p></div>
-      </div>
-    </div>
+    <!-- Grille chargée dynamiquement depuis collections/expo/pieces -->
+    <div class="cp-grid reveal" id="expo-grid"></div>
   </section>
   <div class="cp-cta reveal">
     <h2 data-key="expoCtaTtl">Vous souhaitez m'accueillir ?</h2>

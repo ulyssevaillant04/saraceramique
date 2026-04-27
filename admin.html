@@ -1293,11 +1293,12 @@ async function initCadrageModal(coll,mode,opts){
   const imgEl=document.getElementById('img-cp-'+coll+'-hero');
   if(!imgEl||!imgEl.src){toast('Aucune photo disponible','e');return;}
   const isDesk=mode==='desk';
-  let posX=50,posY=50;
-  try{const snap=await getDoc(doc(db,'site','heroPositions'));if(snap.exists()){const pct=snap.data()[coll+'_'+mode+'_pct'];if(pct){posX=pct.x;posY=pct.y;}}}catch(e){}
-  cadrageState.x=posX;cadrageState.y=posY;
 
-  // Ouvrir la modal
+  // Charger position Y actuelle
+  let posY=50;
+  try{const snap=await getDoc(doc(db,'site','heroPositions'));if(snap.exists()){const pct=snap.data()[coll+'_'+mode+'_pct'];if(pct)posY=pct.y;}}catch(e){}
+  cadrageState.y=posY;
+
   document.getElementById('m-cadrage').classList.add('open');
   await new Promise(r=>setTimeout(r,150));
 
@@ -1305,92 +1306,69 @@ async function initCadrageModal(coll,mode,opts){
   const frame=document.getElementById('cadrage-frame');
   const imgNode=document.getElementById('cadrage-img');
 
-  // Reset
-  preview.style.cssText='position:relative;overflow:hidden;height:340px;background:#eee;border-radius:10px;border:2px solid var(--teal);cursor:grab;';
-  frame.style.cssText='';
-  imgNode.style.cssText='display:none;';
-
-  // Charger l'image
-  const src=imgEl.src;
+  // Charger image pour avoir ses dimensions
   const loaded=await new Promise(r=>{
-    const t=new Image();
-    t.onload=()=>r(t);
-    t.onerror=()=>r(null);
-    t.src=src;
+    const t=new Image();t.onload=()=>r(t);t.onerror=()=>r(null);t.src=imgEl.src;
   });
   if(!loaded){toast('Image non chargeable','e');return;}
 
   const pw=preview.clientWidth||500;
-  const ph=340;
-  const fw=pw; // toujours pleine largeur
-  const fh=isDesk?Math.round(fw*0.5):fw; // desktop 2:1, mobile carré pleine largeur
-  const scale=Math.max(fw/loaded.naturalWidth,fh/loaded.naturalHeight)*1.6;
-  const iw=Math.round(loaded.naturalWidth*scale);
-  const ih=Math.round(loaded.naturalHeight*scale);
-  const fl=Math.round((pw-fw)/2);
-  const ft=Math.round((ph-fh)/2);
-  const minL=fl-(iw-fw); const maxL=fl;
-  const minT=ft-(ih-fh); const maxT=ft;
-  const startL=Math.round(minL+(maxL-minL)*(posX/100));
-  const startT=Math.round(minT+(maxT-minT)*(posY/100));
+  // Photo affichée à sa vraie proportion dans pw
+  const ratio=loaded.naturalHeight/loaded.naturalWidth;
+  const iw=pw;
+  const ih=Math.round(pw*ratio);
 
-  // Positionner image
-  imgNode.src=src;
-  imgNode.style.cssText=`display:block;position:absolute;width:${iw}px;height:${ih}px;left:${startL}px;top:${startT}px;cursor:grab;user-select:none;-webkit-user-drag:none;pointer-events:all;`;
+  // Cadre carré = largeur totale de la photo
+  const fw=iw;
+  const fh=fw; // carré
 
-  // Cadre blanc
-  frame.style.cssText=`position:absolute;width:${fw}px;height:${fh}px;left:${fl}px;top:${ft}px;border:2.5px solid rgba(255,255,255,0.95);box-shadow:0 0 0 9999px rgba(0,0,0,0.52);z-index:3;pointer-events:none;border-radius:6px;`;
+  // Preview assez haut pour voir toute la photo
+  preview.style.cssText=`position:relative;overflow:hidden;height:${ih}px;max-height:420px;background:#1a3535;border-radius:10px;border:2px solid var(--teal);cursor:ns-resize;`;
 
-  document.getElementById('cadrage-pos-display').textContent=`X:${posX}% Y:${posY}%`;
+  // Image positionnée en haut, pleine largeur
+  imgNode.src=imgEl.src;
+  imgNode.style.cssText=`display:block;position:absolute;width:${iw}px;height:${ih}px;left:0;top:0;pointer-events:none;`;
 
-  // Drag — attaché sur preview pour éviter tout problème de pointer-events
-  let drag=false,ox=0,oy=0,lx=startL,ly=startT;
-  const getPos=e=>e.touches?{x:e.touches[0].clientX,y:e.touches[0].clientY}:{x:e.clientX,y:e.clientY};
+  // Cadre carré — position Y initiale
+  const maxTop=ih-fh;
+  let frameTop=Math.round(maxTop*(posY/100));
+  frame.style.cssText=`position:absolute;width:${fw}px;height:${fh}px;left:0;top:${frameTop}px;border:2.5px solid rgba(255,255,255,0.95);box-shadow:0 0 0 9999px rgba(0,0,0,0.5);z-index:3;pointer-events:none;border-radius:0;`;
 
-  const onDown=e=>{
-    drag=true;
-    const p=getPos(e);
-    ox=p.x; oy=p.y;
-    lx=parseInt(imgNode.style.left)||startL;
-    ly=parseInt(imgNode.style.top)||startT;
-    preview.style.cursor='grabbing';
-    e.preventDefault();e.stopPropagation();
-  };
-  const onMove=e=>{
-    if(!drag)return;
-    e.preventDefault();
-    const p=getPos(e);
-    const nl=Math.min(maxL,Math.max(minL,lx+(p.x-ox)));
-    const nt=Math.min(maxT,Math.max(minT,ly+(p.y-oy)));
-    imgNode.style.left=nl+'px';
-    imgNode.style.top=nt+'px';
-    const rx=maxL-minL,ry=maxT-minT;
-    cadrageState.x=rx>1?Math.round(((nl-minL)/rx)*100):50;
-    cadrageState.y=ry>1?Math.round(((nt-minT)/ry)*100):50;
-    document.getElementById('cadrage-pos-display').textContent=`X:${cadrageState.x}% Y:${cadrageState.y}%`;
-  };
-  const onUp=()=>{drag=false;preview.style.cursor='grab';};
+  cadrageState.y=maxTop>0?Math.round((frameTop/maxTop)*100):50;
+  document.getElementById('cadrage-pos-display').textContent=`Position Y : ${cadrageState.y}%`;
 
-  // Nettoyer anciens listeners en clonant preview
+  // Drag vertical seulement
+  let drag=false,startY,startTop;
   const newPreview=preview.cloneNode(false);
   while(preview.firstChild)newPreview.appendChild(preview.firstChild);
   preview.parentNode.replaceChild(newPreview,preview);
 
-  newPreview.addEventListener('mousedown',onDown);
-  newPreview.addEventListener('touchstart',onDown,{passive:false});
-  window.addEventListener('mousemove',onMove);
-  window.addEventListener('mouseup',onUp);
-  window.addEventListener('touchmove',onMove,{passive:false});
-  window.addEventListener('touchend',onUp);
+  const getY=e=>e.touches?e.touches[0].clientY:e.clientY;
+  newPreview.addEventListener('mousedown',e=>{drag=true;startY=getY(e);startTop=frameTop;newPreview.style.cursor='grabbing';e.preventDefault();});
+  newPreview.addEventListener('touchstart',e=>{drag=true;startY=getY(e);startTop=frameTop;e.preventDefault();},{passive:false});
+  window.addEventListener('mousemove',e=>{
+    if(!drag)return;
+    frameTop=Math.min(maxTop,Math.max(0,startTop+(getY(e)-startY)));
+    frame.style.top=frameTop+'px';
+    cadrageState.y=maxTop>0?Math.round((frameTop/maxTop)*100):50;
+    document.getElementById('cadrage-pos-display').textContent=`Position Y : ${cadrageState.y}%`;
+  });
+  window.addEventListener('touchmove',e=>{
+    if(!drag)return;e.preventDefault();
+    frameTop=Math.min(maxTop,Math.max(0,startTop+(getY(e)-startY)));
+    frame.style.top=frameTop+'px';
+    cadrageState.y=maxTop>0?Math.round((frameTop/maxTop)*100):50;
+    document.getElementById('cadrage-pos-display').textContent=`Position Y : ${cadrageState.y}%`;
+  },{passive:false});
+  window.addEventListener('mouseup',()=>{drag=false;newPreview.style.cursor='ns-resize';});
+  window.addEventListener('touchend',()=>{drag=false;});
 }
 
 window.saveCadragePos=async()=>{
-  const {coll,mode,x,y}=cadrageState;
+  const {coll,mode,y}=cadrageState;
   const u={};
-  u[coll+'_'+mode+'_pct']={x,y};
-  // Pour mobile : cadre pleine largeur donc X toujours centré, seul Y compte
-  const posCSS=mode==='mob'?`50% ${y}%`:`${x}% ${y}%`;
-  u[coll+'_'+mode]=posCSS;
+  u[coll+'_'+mode+'_pct']={x:50,y};
+  u[coll+'_'+mode]=`50% ${y}%`;
   await setDoc(doc(db,'site','heroPositions'),u,{merge:true});
   closeMov('m-cadrage');
   toast('Cadrage sauvegardé ✦');

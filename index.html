@@ -249,7 +249,7 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--text);c
 
 /* ══ NAV ══ */
 /* scroll offset pour navbar fixe */
-#apropos,#galerie,#collections,#univers,#contact{scroll-margin-top:70px;}
+#apropos,#galerie,#collections,#expositions,#univers,#contact{scroll-margin-top:70px;}
 
 nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 5rem;background:rgba(253,250,247,.93);backdrop-filter:blur(16px);border-bottom:1px solid rgba(75,191,196,.15);}
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.12rem;font-weight:400;font-style:italic;color:var(--dark);text-decoration:none;letter-spacing:.03em;cursor:pointer;transition:letter-spacing .4s,color .3s;display:inline-block;}
@@ -677,7 +677,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   #page-home .h-orn{margin:1.4rem 0;}
   #page-home .h-btns{flex-direction:column;gap:.8rem;align-items:flex-start;}
   #apropos,#contact{grid-template-columns:1fr;gap:2.5rem;}  #apropos{padding:0.5rem 1.5rem 4rem;}
-  #apropos,#galerie,#collections,#univers,#contact{scroll-margin-top:75px;}
+  #apropos,#galerie,#collections,#expositions,#univers,#contact{scroll-margin-top:75px;}
   #galerie,#collections,#univers,#contact{padding:0.5rem 1.5rem 4rem;}
   .bento{grid-template-columns:1fr 1fr;grid-auto-rows:140px;}
   .g:nth-child(n){grid-column:auto;grid-row:auto;}
@@ -738,7 +738,6 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <a class="nav-logo" onclick="goTo('home')" style="cursor:pointer">Sara <span>Céramique</span></a>
   <ul class="nav-links">
     <li><a onclick="navScrollTo('#apropos')">À Propos</a></li>
-    <li><a onclick="navScrollTo('#galerie')">Galerie</a></li>
     <li class="has-dd">
       <a onclick="navScrollTo('#collections')">Collections</a>
       <div class="dd-menu">
@@ -772,6 +771,29 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
         </div>
       </div>
     </li>
+    <li class="has-dd">
+      <a onclick="navScrollTo('#expositions')">Expositions</a>
+      <div class="dd-menu">
+        <div class="dd-menu-inner">
+          <a onclick="navScrollTo('#expositions')">
+            <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+              <rect x="3" y="3" width="18" height="14" rx="2"/>
+              <path d="M8 21h8M12 17v4"/>
+              <circle cx="8.5" cy="9" r="1.5" fill="currentColor" stroke="none"/>
+              <path d="M21 15l-5-5-4 4-3-3-3 3"/>
+            </svg>
+            Prochaines dates
+          </a>
+          <a onclick="navScrollTo('#expositions')">
+            <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+              <path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z"/>
+            </svg>
+            Expositions passées
+          </a>
+        </div>
+      </div>
+    </li>
+    <li><a onclick="navScrollTo('#galerie')">Galerie</a></li>
     <li><a onclick="goTo('boutique')">Boutique <span class="nbadge">Bientôt</span></a></li>
     <li><a onclick="navScrollTo('#contact')">Contact</a></li>
   </ul>
@@ -790,10 +812,6 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     </div>
     <div class="mob-links">
       <a onclick="mobileNav('#apropos')"><span class="mob-link-icon" style="color:var(--text-soft);font-size:.9rem;">✿</span>À Propos</a>
-      <a onclick="mobileNav('#galerie')">
-        <span class="mob-link-icon">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="4"/></svg>
-        </span>Galerie</a>
       <div class="mob-dd">
         <button class="mob-dd-btn" onclick="toggleMobDd()">
           <span class="mob-link-icon">
@@ -834,6 +852,36 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
           </a>
         </div>
       </div>
+      <div class="mob-dd">
+        <button class="mob-dd-btn" onclick="toggleMobDdExpo()">
+          <span class="mob-link-icon" style="font-size:.9rem;">🎨</span>
+          Expositions
+          <svg class="mob-dd-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </button>
+        <div class="mob-dd-items" id="mob-dd-items-expo">
+          <a onclick="mobileNav('#expositions')">
+            <span class="mob-dd-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" style="width:15px;height:15px;">
+                <rect x="3" y="4" width="18" height="14" rx="2"/>
+                <path d="M8 20h8M12 18v2"/>
+              </svg>
+            </span>
+            Prochaines dates
+          </a>
+          <a onclick="mobileNav('#expositions')">
+            <span class="mob-dd-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" style="width:15px;height:15px;">
+                <path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z"/>
+              </svg>
+            </span>
+            Expositions passées
+          </a>
+        </div>
+      </div>
+      <a onclick="mobileNav('#galerie')">
+        <span class="mob-link-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="4"/></svg>
+        </span>Galerie</a>
       <a onclick="mobileNav('boutique')"><span class="mob-link-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></span>Boutique <span class="nbadge" style="margin-left:.5rem;">Bientôt</span></a>
       <a onclick="mobileNav('#contact')">
         <span class="mob-link-icon">
@@ -894,6 +942,65 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   </div>
 </section>
 
+<!-- COLLECTIONS -->
+<section id="collections">
+  <div style="text-align:center;" class="reveal">
+    <p class="s-lbl" style="justify-content:center;">Collections</p>
+    <h2 class="s-ttl" data-key="collSttl">Collections</h2>
+  </div>
+  <div class="coll-grid">
+    <div class="coll-card reveal" onclick="goTo('corolles')" data-coll="corolles">
+      <div class="coll-img"><img src="images/mug2.JPG" /><div class="coll-img-ov"></div></div>
+      <div class="coll-body"><p class="coll-tag">Collection</p><h3 class="coll-name">Jardin Enchanté</h3><p class="coll-desc" data-key="collCorolles">Boire dans une fleur. Des tasses et mugs aux bords pétales, pour transformer chaque thé en rituel enchanté.</p><span class="coll-link">Découvrir →</span></div>
+    </div>
+    <div class="coll-card reveal" style="transition-delay:.15s" onclick="goTo('mer')" data-coll="mer">
+      <div class="coll-img"><img src="images/coupe.JPG" /><div class="coll-img-ov"></div></div>
+      <div class="coll-body"><p class="coll-tag">Collection</p><h3 class="coll-name">Trésors Marins</h3><p class="coll-desc" data-key="collMer">Coquillages devenus coupelles, vagues sculptées dans l'argile. La mer réinterprétée avec des yeux de fée.</p><span class="coll-link">Découvrir →</span></div>
+    </div>
+    <div class="coll-card reveal" style="transition-delay:.3s" onclick="goTo('unique')" data-coll="unique">
+      <div class="coll-img"><img src="images/lampadaire.JPG" /><div class="coll-img-ov"></div></div>
+      <div class="coll-body"><p class="coll-tag">Sur commande</p><h3 class="coll-name">Pièces Uniques</h3><p class="coll-desc" data-key="collUnique">Lampadaires sculpturaux, cadeaux précieux, objets sur-mesure nés d'un désir particulier.</p><span class="coll-link">Découvrir →</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPOSITIONS -->
+<section id="expositions" style="padding:8rem 5rem;background:linear-gradient(180deg,rgba(250,245,239,0.82) 0%,rgba(228,247,247,0.82) 100%);position:relative;overflow:hidden;">
+  <div style="text-align:center;" class="reveal">
+    <p class="s-lbl" style="justify-content:center;"><span style="font-size:.85rem;">🎨</span>Expositions</p>
+    <h2 class="s-ttl" data-key="expoTtl">À la rencontre<br><em>du public</em></h2>
+    <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--text-soft);max-width:48ch;margin:1.8rem auto 3.5rem;line-height:1.95;" data-key="expoDesc">Retrouvez Sara Mahjoub et ses créations lors de marchés artisanaux, galeries et événements sur la Côte d'Azur.</p>
+  </div>
+  <div class="reveal" style="max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:1.5rem;">
+    <div style="background:rgba(253,250,247,.97);border:1px solid rgba(75,191,196,.18);border-radius:18px;padding:2rem 2.5rem;box-shadow:0 8px 28px rgba(42,157,163,.08);display:flex;align-items:center;gap:2rem;">
+      <div style="flex-shrink:0;text-align:center;background:linear-gradient(135deg,var(--teal-mid),var(--teal-deep));color:#fff;border-radius:14px;padding:.8rem 1.2rem;min-width:64px;">
+        <div style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:400;line-height:1;">—</div>
+        <div style="font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;margin-top:.2rem;opacity:.85;">à venir</div>
+      </div>
+      <div>
+        <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.05rem;color:var(--dark);margin-bottom:.3rem;" data-key="expo1Name">Prochaine exposition</p>
+        <p style="font-size:.78rem;font-weight:300;color:var(--text-soft);line-height:1.7;" data-key="expo1Lieu">Lieu et date à annoncer — suivez Instagram pour les actualités !</p>
+      </div>
+    </div>
+    <div style="background:rgba(253,250,247,.97);border:1px solid rgba(232,160,180,.18);border-radius:18px;padding:2rem 2.5rem;box-shadow:0 8px 28px rgba(201,106,136,.06);display:flex;align-items:center;gap:2rem;opacity:.75;">
+      <div style="flex-shrink:0;text-align:center;background:linear-gradient(135deg,var(--rose),var(--rose-deep));color:#fff;border-radius:14px;padding:.8rem 1.2rem;min-width:64px;">
+        <div style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:400;line-height:1;">✦</div>
+        <div style="font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;margin-top:.2rem;opacity:.85;">passée</div>
+      </div>
+      <div>
+        <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.05rem;color:var(--dark);margin-bottom:.3rem;" data-key="expo2Name">Marché de Noël — Antibes</p>
+        <p style="font-size:.78rem;font-weight:300;color:var(--text-soft);line-height:1.7;" data-key="expo2Lieu">Décembre 2024 · Marché artisanal du vieux Antibes</p>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:3.5rem;" class="reveal">
+    <a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="btn-rose-outline" style="display:inline-flex;">
+      Suivre les actualités sur Instagram
+      <svg width="15" height="6" viewBox="0 0 15 6" fill="none" style="margin-left:.6rem;"><path d="M0 3h13M10 1l3 2-3 2" stroke="currentColor" stroke-width=".9"/></svg>
+    </a>
+  </div>
+</section>
+
 <!-- GALLERY -->
 <section id="galerie">
   <div class="gal-hdr reveal">
@@ -914,28 +1021,6 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     <button onclick="openGallery(0)" class="btn-voir-plus">
       Voir toutes les photos
     </button>
-  </div>
-</section>
-
-<!-- COLLECTIONS -->
-<section id="collections">
-  <div style="text-align:center;" class="reveal">
-    <p class="s-lbl" style="justify-content:center;">Collections</p>
-    <h2 class="s-ttl" data-key="collSttl">Collections</h2>
-  </div>
-  <div class="coll-grid">
-    <div class="coll-card reveal" onclick="goTo('corolles')" data-coll="corolles">
-      <div class="coll-img"><img src="images/mug2.JPG" /><div class="coll-img-ov"></div></div>
-      <div class="coll-body"><p class="coll-tag">Collection</p><h3 class="coll-name">Jardin Enchanté</h3><p class="coll-desc" data-key="collCorolles">Boire dans une fleur. Des tasses et mugs aux bords pétales, pour transformer chaque thé en rituel enchanté.</p><span class="coll-link">Découvrir →</span></div>
-    </div>
-    <div class="coll-card reveal" style="transition-delay:.15s" onclick="goTo('mer')" data-coll="mer">
-      <div class="coll-img"><img src="images/coupe.JPG" /><div class="coll-img-ov"></div></div>
-      <div class="coll-body"><p class="coll-tag">Collection</p><h3 class="coll-name">Trésors Marins</h3><p class="coll-desc" data-key="collMer">Coquillages devenus coupelles, vagues sculptées dans l'argile. La mer réinterprétée avec des yeux de fée.</p><span class="coll-link">Découvrir →</span></div>
-    </div>
-    <div class="coll-card reveal" style="transition-delay:.3s" onclick="goTo('unique')" data-coll="unique">
-      <div class="coll-img"><img src="images/lampadaire.JPG" /><div class="coll-img-ov"></div></div>
-      <div class="coll-body"><p class="coll-tag">Sur commande</p><h3 class="coll-name">Pièces Uniques</h3><p class="coll-desc" data-key="collUnique">Lampadaires sculpturaux, cadeaux précieux, objets sur-mesure nés d'un désir particulier.</p><span class="coll-link">Découvrir →</span></div>
-    </div>
   </div>
 </section>
 
@@ -965,7 +1050,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     <div class="f-g"><label class="f-lbl">Email</label><input id="contact-email" class="f-in" type="email" placeholder="votre@email.com"/></div>
     <div class="f-g"><label class="f-lbl">Sujet</label><input id="contact-sujet" class="f-in" type="text" placeholder="Commande, cours, rêve à réaliser…"/></div>
     <div class="f-g"><label class="f-lbl">Message</label><textarea id="contact-message" class="f-ta" placeholder="Racontez-moi votre idée…"></textarea></div>
-    <button class="btn-send" onclick="sendContact()">Envoyer ✦</button>
+    <button class="btn-send" onclick="sendContact()">Envoyer</button>
     <div id="contact-msg" style="display:none;margin-top:1.2rem;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:var(--teal-deep);text-align:center;animation:riseUp .5s ease both;">✦ Message envoyé ! Je vous répondrai très vite.</div>
   </div>
 </section>
@@ -1014,7 +1099,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="cp-cta reveal">
     <h2 data-key="cpCorollesCtaTtl">Une pièce vous fait rêver ?</h2>
     <p>Chaque création est unique. Contactez-moi pour une commande sur-mesure ou pour acquérir une pièce disponible.</p>
-    <button class="btn-teal" onclick="navScrollTo('#contact')">Me contacter ✦</button>
+    <button class="btn-teal" onclick="navScrollTo('#contact')">Me contacter</button>
   </div>
 <footer>
   <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
@@ -1063,7 +1148,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="cp-cta reveal">
     <h2>Une pièce vous fait rêver ?</h2>
     <p>Chaque création est unique. Contactez-moi pour une commande sur-mesure ou pour acquérir une pièce disponible.</p>
-    <button class="btn-teal" onclick="navScrollTo('#contact')">Me contacter ✦</button>
+    <button class="btn-teal" onclick="navScrollTo('#contact')">Me contacter</button>
   </div>
 <footer>
   <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
@@ -1108,7 +1193,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="cp-cta reveal">
     <h2>Votre projet vous attend</h2>
     <p>Décrivez-moi votre rêve et ensemble nous créerons quelque chose d'unique.</p>
-    <button class="btn-teal" onclick="navScrollTo('#contact')">Me contacter ✦</button>
+    <button class="btn-teal" onclick="navScrollTo('#contact')">Me contacter</button>
   </div>
 <footer>
   <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
@@ -1779,6 +1864,12 @@ function toggleMobileMenu(){
 function toggleMobDd(){
   document.querySelector('.mob-dd-btn').classList.toggle('open');
   document.getElementById('mob-dd-items').classList.toggle('open');
+}
+function toggleMobDdExpo(){
+  const btn = document.querySelectorAll('.mob-dd-btn')[1];
+  const items = document.getElementById('mob-dd-items-expo');
+  btn.classList.toggle('open');
+  items.classList.toggle('open');
 }
 function mobileNav(target){
   document.getElementById('mob-btn').classList.remove('open');

@@ -1296,10 +1296,9 @@ async function initCadrageModal(coll,mode,opts){
   const frame=document.getElementById('cadrage-frame');
   const img=document.getElementById('cadrage-img');
   
-  // Taille preview
   const isDesk=mode==='desk';
   preview.style.width='100%';
-  preview.style.height=isDesk?'300px':'300px';
+  preview.style.height='320px';
   
   // Charger position actuelle
   let posX=50,posY=50;
@@ -1312,36 +1311,30 @@ async function initCadrageModal(coll,mode,opts){
   }catch(e){}
   cadrageState.x=posX; cadrageState.y=posY;
   
-  // Setup image
   img.src=imgEl.src;
   img.onload=()=>{
-    const pw=preview.offsetWidth, ph=isDesk?300:300;
-    const nat=img.naturalWidth/img.naturalHeight;
-    const fw=isDesk?pw:Math.round(ph*(9/16)); // frame desktop=pleine largeur, mobile=carré
-    const fh=isDesk?Math.round(pw/2):ph; // desktop 2:1 aperçu, mobile carré
+    const pw=preview.offsetWidth;
+    const ph=320;
+    // Desktop : frame 16:9, Mobile : frame CARRÉ
+    const fw=isDesk?pw:Math.min(pw,320);
+    const fh=isDesk?Math.round(fw*9/16):fw; // carré pour mobile
     
-    // Cadre (zone visible simulée)
-    frame.style.width=fw+'px';
-    frame.style.height=fh+'px';
-    
-    // Image plus grande que le frame pour pouvoir glisser
-    const scale=Math.max(fw/img.naturalWidth, fh/img.naturalHeight)*1.5;
+    const scale=Math.max(fw/img.naturalWidth, fh/img.naturalHeight)*1.4;
     const iw=img.naturalWidth*scale, ih=img.naturalHeight*scale;
-    img.style.width=iw+'px';
-    img.style.height=ih+'px';
+    img.style.width=iw+'px'; img.style.height=ih+'px';
     
-    const maxX=Math.max(0,iw-fw), maxY=Math.max(0,ih-fh);
-    const cx=(fw-iw)/2 + maxX*(posX/100);
-    const cy=(fh-ih)/2 + maxY*(posY/100);
+    const fl=Math.round((pw-fw)/2), ft=Math.round((ph-fh)/2);
+    frame.style.width=fw+'px'; frame.style.height=fh+'px';
+    frame.style.left=fl+'px'; frame.style.top=ft+'px';
     
-    // Centrer le frame dans preview
-    frame.style.left=Math.round((pw-fw)/2)+'px';
-    frame.style.top=Math.round((300-fh)/2)+'px';
-    img.style.left=frame.offsetLeft+Math.round((fw-iw)/2 + maxX*(posX/100))+'px';
-    img.style.top=frame.offsetTop+Math.round((fh-ih)/2 + maxY*(posY/100))+'px';
+    const maxX=iw-fw, maxY=ih-fh;
+    const startL=fl-maxX*(posX/100);
+    const startT=ft-maxY*(posY/100);
+    img.style.left=Math.round(startL)+'px';
+    img.style.top=Math.round(startT)+'px';
     
     updatePosDisplay();
-    initDrag(preview,img,frame,iw,ih,fw,fh);
+    initDrag(preview,img,frame,iw,ih,fw,fh,fl,ft);
   };
   document.getElementById('m-cadrage').classList.add('open');
 }
@@ -1350,9 +1343,8 @@ function updatePosDisplay(){
   document.getElementById('cadrage-pos-display').textContent=`X:${Math.round(cadrageState.x)}% Y:${Math.round(cadrageState.y)}%`;
 }
 
-function initDrag(preview,img,frame,iw,ih,fw,fh){
+function initDrag(preview,img,frame,iw,ih,fw,fh,fl,ft){
   let dragging=false,startX,startY,startLeft,startTop;
-  const fl=frame.offsetLeft,ft=frame.offsetTop;
   const minL=fl-(iw-fw), maxL=fl;
   const minT=ft-(ih-fh), maxT=ft;
   
@@ -1371,22 +1363,22 @@ function initDrag(preview,img,frame,iw,ih,fw,fh){
     const dx=pt.clientX-startX, dy=pt.clientY-startY;
     const newL=Math.min(maxL,Math.max(minL,startLeft+dx));
     const newT=Math.min(maxT,Math.max(minT,startTop+dy));
-    img.style.left=newL+'px';
-    img.style.top=newT+'px';
-    // Calculer pourcentage
-    const rangeX=iw-fw, rangeY=ih-fh;
-    cadrageState.x=rangeX>0?Math.round(((newL-fl)/(maxL-minL))*100):50;
-    cadrageState.y=rangeY>0?Math.round(((newT-ft)/(maxT-minT))*100):50;
+    img.style.left=newL+'px'; img.style.top=newT+'px';
+    const rangeX=maxL-minL, rangeY=maxT-minT;
+    cadrageState.x=rangeX>0?Math.round(((newL-minL)/rangeX)*100):50;
+    cadrageState.y=rangeY>0?Math.round(((newT-minT)/rangeY)*100):50;
     updatePosDisplay();
   };
   const onUp=()=>{dragging=false;img.style.cursor='grab';};
   
-  img.removeEventListener('mousedown',img._onDown);
-  img._onDown=onDown;
-  img.addEventListener('mousedown',onDown);
+  // Nettoyer anciens listeners
+  const newImg=img.cloneNode(true);
+  img.parentNode.replaceChild(newImg,img);
+  const ni=document.getElementById('cadrage-img');
+  ni.addEventListener('mousedown',onDown);
   document.addEventListener('mousemove',onMove);
   document.addEventListener('mouseup',onUp);
-  img.addEventListener('touchstart',onDown,{passive:false});
+  ni.addEventListener('touchstart',onDown,{passive:false});
   document.addEventListener('touchmove',onMove,{passive:false});
   document.addEventListener('touchend',onUp);
 }

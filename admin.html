@@ -430,64 +430,97 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
 <!-- EXPOSITIONS -->
 <section id="expositions" style="padding:5rem;background:radial-gradient(ellipse at 12% 50%,rgba(75,191,196,.1) 0%,transparent 50%),rgba(250,245,239,0.82);">
 
-  <!-- En-tête identique au site -->
-  <div style="text-align:center;margin-bottom:4rem;">
-    <p class="s-lbl" style="justify-content:center;">Expositions</p>
-    <h2 class="s-ttl" style="text-align:center;" contenteditable="true" data-key="expoPageTitle" spellcheck="false">Sujet de diplôme<em>À la rencontre du public</em></h2>
-    <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--text-soft);max-width:48ch;margin:1.5rem auto 0;line-height:1.95;" contenteditable="true" data-key="expoPageDesc" spellcheck="false">Retrouvez Sara Mahjoub et ses créations lors de marchés artisanaux, galeries et événements sur la Côte d'Azur.</p>
+  <!-- Hero (miroir exact de la page sujetdediplome) -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;min-height:50vh;border-radius:18px;overflow:hidden;margin-bottom:3rem;box-shadow:0 8px 30px rgba(42,157,163,.1);">
+    <!-- Image hero -->
+    <div id="cp-expo-hero-wrap" style="position:relative;cursor:pointer;background:linear-gradient(135deg,var(--aqua-light),var(--rose-pale));"
+      onmouseenter="this.querySelector('.hero-edit').style.opacity='1'"
+      onmouseleave="this.querySelector('.hero-edit').style.opacity='0'"
+      onclick="changeImg('cp-expo-hero')">
+      <img id="img-cp-expo-hero" src="" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none'"/>
+      <div class="hero-edit" style="position:absolute;inset:0;background:rgba(26,53,53,.5);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+        <span style="color:#fff;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer la photo</span>
+      </div>
+    </div>
+    <!-- Texte hero -->
+    <div class="cp-hero-text" style="display:flex;flex-direction:column;justify-content:center;padding:4rem;">
+      <p class="cp-hero-tag" contenteditable="true" data-key="expoPageTag" spellcheck="false">Expositions Sara Céramique</p>
+      <h1 class="cp-hero-title" contenteditable="true" data-key="expoPageTitle" spellcheck="false">Sujet de diplôme<em>À la rencontre du public</em></h1>
+      <div class="cp-divider"></div>
+      <p class="cp-hero-desc" contenteditable="true" data-key="expoPageDesc" spellcheck="false">Retrouvez Sara Mahjoub et ses créations lors de marchés artisanaux, galeries et événements sur la Côte d'Azur.</p>
+    </div>
   </div>
 
-  <!-- Cartes expositions — même layout que la vraie page -->
-  <div style="max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:2rem;">
+  <!-- Titre de section -->
+  <h2 class="cp-pieces-title" contenteditable="true" data-key="expoPiecesTitle" spellcheck="false">Les expositions <em>Sujet de diplôme</em></h2>
 
-    <!-- Carte 1 : Sujet de diplôme (teal) -->
-    <div style="background:rgba(253,250,247,.97);border:1px solid rgba(75,191,196,.2);border-radius:22px;padding:2.5rem 3rem;box-shadow:0 10px 36px rgba(42,157,163,.1);display:flex;align-items:flex-start;gap:2.2rem;">
-      <div style="flex-shrink:0;text-align:center;background:linear-gradient(135deg,var(--teal-mid),var(--teal-deep));color:#fff;border-radius:16px;padding:1rem 1.4rem;min-width:72px;">
-        <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;line-height:1;">—</div>
-        <div style="font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;margin-top:.3rem;opacity:.85;">à venir</div>
+  <!-- 3 items identiques à cp-grid des collections -->
+  <div class="cp-grid" id="grid-expo" style="margin-bottom:2rem;">
+
+    <!-- Item 1 -->
+    <div class="pc" style="position:relative;">
+      <div class="pc-img" style="position:relative;cursor:pointer;"
+        onmouseenter="this.querySelector('.img-edit').style.opacity='1'"
+        onmouseleave="this.querySelector('.img-edit').style.opacity='0'"
+        onclick="changeExpoItemImg(1)">
+        <div id="expo-item1-ph" class="pc-img-placeholder"><span>À venir</span></div>
+        <img id="expo-item1-img" src="" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0;"/>
+        <div class="img-edit" style="position:absolute;inset:0;background:rgba(26,53,53,.5);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;z-index:5;pointer-events:none;">
+          <span style="color:#fff;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer</span>
+        </div>
       </div>
-      <div style="flex:1;">
-        <p style="font-size:.58rem;letter-spacing:.35em;text-transform:uppercase;color:var(--teal-deep);margin-bottom:.6rem;">Sujet de diplôme</p>
-        <h2 contenteditable="true" data-key="expo1Name" spellcheck="false"
-          style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.45rem;color:var(--dark);margin-bottom:.7rem;outline:none;">Prochaine exposition</h2>
-        <p contenteditable="true" data-key="expo1Lieu" spellcheck="false"
-          style="font-size:.86rem;font-weight:300;color:var(--text-soft);line-height:1.85;outline:none;">Lieu et date à annoncer — suivez Instagram pour les actualités !</p>
+      <div class="pc-body">
+        <p class="pc-name" contenteditable="true" data-key="expoItem1Name" spellcheck="false"></p>
+        <p class="pc-desc" contenteditable="true" data-key="expoItem1Desc" spellcheck="false"></p>
       </div>
     </div>
 
-    <!-- Carte 2 : Exposition passée (rose) -->
-    <div style="background:rgba(253,250,247,.97);border:1px solid rgba(232,160,180,.18);border-radius:22px;padding:2.5rem 3rem;box-shadow:0 10px 36px rgba(201,106,136,.07);display:flex;align-items:flex-start;gap:2.2rem;opacity:.82;">
-      <div style="flex-shrink:0;text-align:center;background:linear-gradient(135deg,var(--rose),var(--rose-deep));color:#fff;border-radius:16px;padding:1rem 1.4rem;min-width:72px;">
-        <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;line-height:1;">✦</div>
-        <div style="font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;margin-top:.3rem;opacity:.85;">passée</div>
+    <!-- Item 2 -->
+    <div class="pc" style="position:relative;">
+      <div class="pc-img" style="position:relative;cursor:pointer;"
+        onmouseenter="this.querySelector('.img-edit').style.opacity='1'"
+        onmouseleave="this.querySelector('.img-edit').style.opacity='0'"
+        onclick="changeExpoItemImg(2)">
+        <div id="expo-item2-ph" class="pc-img-placeholder"><span>À venir</span></div>
+        <img id="expo-item2-img" src="" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0;"/>
+        <div class="img-edit" style="position:absolute;inset:0;background:rgba(26,53,53,.5);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;z-index:5;pointer-events:none;">
+          <span style="color:#fff;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer</span>
+        </div>
       </div>
-      <div style="flex:1;">
-        <p style="font-size:.58rem;letter-spacing:.35em;text-transform:uppercase;color:var(--rose-deep);margin-bottom:.6rem;">Exposition passée</p>
-        <h2 contenteditable="true" data-key="expo2Name" spellcheck="false"
-          style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.45rem;color:var(--dark);margin-bottom:.7rem;outline:none;">Marché de Noël — Antibes</h2>
-        <p contenteditable="true" data-key="expo2Lieu" spellcheck="false"
-          style="font-size:.86rem;font-weight:300;color:var(--text-soft);line-height:1.85;outline:none;">Décembre 2024 · Marché artisanal du vieux Antibes</p>
+      <div class="pc-body">
+        <p class="pc-name" contenteditable="true" data-key="expoItem2Name" spellcheck="false"></p>
+        <p class="pc-desc" contenteditable="true" data-key="expoItem2Desc" spellcheck="false"></p>
+      </div>
+    </div>
+
+    <!-- Item 3 -->
+    <div class="pc" style="position:relative;">
+      <div class="pc-img" style="position:relative;cursor:pointer;"
+        onmouseenter="this.querySelector('.img-edit').style.opacity='1'"
+        onmouseleave="this.querySelector('.img-edit').style.opacity='0'"
+        onclick="changeExpoItemImg(3)">
+        <div id="expo-item3-ph" class="pc-img-placeholder"><span>À venir</span></div>
+        <img id="expo-item3-img" src="" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0;"/>
+        <div class="img-edit" style="position:absolute;inset:0;background:rgba(26,53,53,.5);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;z-index:5;pointer-events:none;">
+          <span style="color:#fff;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer</span>
+        </div>
+      </div>
+      <div class="pc-body">
+        <p class="pc-name" contenteditable="true" data-key="expoItem3Name" spellcheck="false"></p>
+        <p class="pc-desc" contenteditable="true" data-key="expoItem3Desc" spellcheck="false"></p>
       </div>
     </div>
 
   </div>
 
-  <!-- CTA identique au site -->
-  <div style="text-align:center;margin-top:3.5rem;">
-    <a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="btn-rose-outline" style="display:inline-flex;cursor:default;">
-      Suivre les actualités sur Instagram
-      <svg width="15" height="6" viewBox="0 0 15 6" fill="none" style="margin-left:.6rem;"><path d="M0 3h13M10 1l3 2-3 2" stroke="currentColor" stroke-width=".9"/></svg>
-    </a>
-  </div>
-
-  <!-- CTA contact -->
-  <div class="cp-cta" style="margin-top:3rem;padding:3rem;text-align:center;background:linear-gradient(180deg,rgba(228,247,247,.82),rgba(253,250,247,.82));border-radius:18px;">
+  <!-- CTA -->
+  <div class="cp-cta" style="padding:3rem;border-radius:18px;text-align:center;">
     <h2 contenteditable="true" data-key="expoCtaTtl" spellcheck="false">Vous souhaitez m'accueillir ?</h2>
     <p contenteditable="true" data-key="expoCtaDesc" spellcheck="false">Pour toute invitation à exposer, n'hésitez pas à me contacter directement.</p>
     <span class="btn-teal" style="cursor:default;">Me contacter</span>
   </div>
 
-  <p style="font-size:.72rem;color:var(--text-soft);font-style:italic;text-align:center;margin-top:1.5rem;">✦ Cliquez sur les textes en bleu pour les modifier — puis "Tout enregistrer"</p>
+  <p style="font-size:.72rem;color:var(--text-soft);font-style:italic;text-align:center;margin-top:1.5rem;">✦ Cliquez sur les textes pour modifier · 📷 Cliquez sur les images pour les changer · Puis "Tout enregistrer"</p>
 </section>
 
 <!-- MON UNIVERS -->
@@ -938,19 +971,34 @@ async function saveGal(){await setDoc(doc(db,'site','galerie'),{imgs:galImgs});r
 // ── IMAGES ──
 async function loadImages(){
   try{const s=await getDoc(doc(db,'site','images'));if(!s.exists())return;const d=s.data();
-  const m={'portrait':'portrait-img','coll-corolles':'img-coll-corolles','coll-mer':'img-coll-mer','coll-unique':'img-coll-unique','cp-corolles-hero':'img-cp-corolles-hero','cp-mer-hero':'img-cp-mer-hero','cp-unique-hero':'img-cp-unique-hero'};
-  Object.entries(m).forEach(([k,id])=>{if(d[k]){const el=document.getElementById(id);if(el)el.src=d[k];}});}catch(e){}
+  const m={'portrait':'portrait-img','coll-corolles':'img-coll-corolles','coll-mer':'img-coll-mer','coll-unique':'img-coll-unique','cp-corolles-hero':'img-cp-corolles-hero','cp-mer-hero':'img-cp-mer-hero','cp-unique-hero':'img-cp-unique-hero','cp-expo-hero':'img-cp-expo-hero'};
+  Object.entries(m).forEach(([k,id])=>{if(d[k]){const el=document.getElementById(id);if(el){el.src=d[k];el.style.display='block';}}});
+  // Items expo
+  [1,2,3].forEach(n=>{if(d['expoItem'+n+'Img']){showExpoItemImg(n,d['expoItem'+n+'Img']);}});}catch(e){}
 }
+function showExpoItemImg(n,path){
+  const ph=document.getElementById('expo-item'+n+'-ph');
+  const img=document.getElementById('expo-item'+n+'-img');
+  if(ph)ph.style.display='none';
+  if(img){img.src=path;img.style.display='block';}
+}
+window.changeExpoItemImg=(n)=>{
+  openUpload(async path=>{
+    const u={};u['expoItem'+n+'Img']=path;
+    await setDoc(doc(db,'site','images'),u,{merge:true});
+    showExpoItemImg(n,path);
+    toast('Photo exposition mise à jour ✦');
+  });
+};
 window.changeImg=async t=>{
   openUpload(async path=>{
-    // Portrait → site/general (lu par index.html)
     if(t==='portrait'){
       await setDoc(doc(db,'site','general'),{portrait:path},{merge:true});
     } else {
       const u={};u[t]=path;
       await setDoc(doc(db,'site','images'),u,{merge:true});
     }
-    const m={'portrait':'portrait-img','coll-corolles':'img-coll-corolles','coll-mer':'img-coll-mer','coll-unique':'img-coll-unique','cp-corolles-hero':'img-cp-corolles-hero','cp-mer-hero':'img-cp-mer-hero','cp-unique-hero':'img-cp-unique-hero'};
+    const m={'portrait':'portrait-img','coll-corolles':'img-coll-corolles','coll-mer':'img-coll-mer','coll-unique':'img-coll-unique','cp-corolles-hero':'img-cp-corolles-hero','cp-mer-hero':'img-cp-mer-hero','cp-unique-hero':'img-cp-unique-hero','cp-expo-hero':'img-cp-expo-hero'};
     const el=document.getElementById(m[t]);
     if(el){el.src=path;el.style.display='block';}
     toast('Photo mise à jour ✦');
@@ -960,7 +1008,7 @@ window.saveImg=async()=>{
   const t=document.getElementById('img-target').value;const p=document.getElementById('img-path').value.trim();
   if(!p){toast('Chemin vide','e');return;}
   const u={};u[t]=p;await setDoc(doc(db,'site','images'),u,{merge:true});
-  const m={'portrait':'portrait-img','coll-corolles':'img-coll-corolles','coll-mer':'img-coll-mer','coll-unique':'img-coll-unique','cp-corolles-hero':'img-cp-corolles-hero','cp-mer-hero':'img-cp-mer-hero','cp-unique-hero':'img-cp-unique-hero'};
+  const m={'portrait':'portrait-img','coll-corolles':'img-coll-corolles','coll-mer':'img-coll-mer','coll-unique':'img-coll-unique','cp-corolles-hero':'img-cp-corolles-hero','cp-mer-hero':'img-cp-mer-hero','cp-unique-hero':'img-cp-unique-hero','cp-expo-hero':'img-cp-expo-hero'};
   const el=document.getElementById(m[t]);if(el)el.src=p;
   closeMov('m-img');toast('Photo mise à jour ✦');
 };

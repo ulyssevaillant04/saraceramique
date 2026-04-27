@@ -81,6 +81,13 @@ onSnapshot(doc(db,'site','textes'),snap=>{
   if(d.collCorolles)document.querySelectorAll('[data-coll=corolles] .coll-desc').forEach(el=>el.textContent=d.collCorolles);
   if(d.collMer)document.querySelectorAll('[data-coll=mer] .coll-desc').forEach(el=>el.textContent=d.collMer);
   if(d.collUnique)document.querySelectorAll('[data-coll=unique] .coll-desc').forEach(el=>el.textContent=d.collUnique);
+  // Sync expo item lightbox data
+  [1,2,3].forEach(n=>{
+    const pc=document.querySelectorAll('#expo-grid .pc')[n-1];
+    if(!pc)return;
+    if(d['expoItem'+n+'Name'])pc.dataset.name=d['expoItem'+n+'Name'];
+    if(d['expoItem'+n+'Desc'])pc.dataset.desc=d['expoItem'+n+'Desc'];
+  });
 });
 
 
@@ -165,20 +172,38 @@ onSnapshot(doc(db,'site','images'),snap=>{
   const d=snap.data();
   const collMap={'coll-corolles':'.coll-card[data-coll=corolles] .coll-img img','coll-mer':'.coll-card[data-coll=mer] .coll-img img','coll-unique':'.coll-card[data-coll=unique] .coll-img img'};
   Object.entries(collMap).forEach(([k,sel])=>{if(d[k]){const el=document.querySelector(sel);if(el)el.src=d[k];}});
-  const heroMap={'cp-corolles-hero':'#img-cp-corolles-hero','cp-mer-hero':'#img-cp-mer-hero','cp-unique-hero':'#img-cp-unique-hero'};
+  const heroMap={'cp-corolles-hero':'#img-cp-corolles-hero','cp-mer-hero':'#img-cp-mer-hero','cp-unique-hero':'#img-cp-unique-hero','cp-expo-hero':'#img-cp-expo-hero'};
   Object.entries(heroMap).forEach(([k,sel])=>{
     if(d[k]){
       const el=document.querySelector(sel);
       if(el){
         el.onload=()=>el.style.opacity='1';
-        el.onerror=()=>el.style.opacity='1'; // afficher quand même si erreur
+        el.onerror=()=>el.style.opacity='1';
         el.src=d[k];
         if(el.complete) el.style.opacity='1';
       }
     } else {
-      // Pas de photo Firebase → afficher la photo par défaut
       const el=document.querySelector(sel);
       if(el) el.style.opacity='1';
+    }
+  });
+  // Photos items expo
+  [1,2,3].forEach(n=>{
+    if(d['expoItem'+n+'Img']){
+      const pc=document.querySelectorAll('#expo-grid .pc')[n-1];
+      if(pc){
+        const ph=pc.querySelector('.pc-img-placeholder');
+        if(ph)ph.style.display='none';
+        let img=pc.querySelector('.pc-img img');
+        if(!img){img=document.createElement('img');img.style.cssText='width:100%;height:100%;object-fit:cover;';pc.querySelector('.pc-img').appendChild(img);}
+        img.src=d['expoItem'+n+'Img'];
+        // Sync data-imgs for lightbox
+        const nm=pc.querySelector('[data-key="expoItem'+n+'Name"]');
+        const ds=pc.querySelector('[data-key="expoItem'+n+'Desc"]');
+        pc.dataset.imgs=JSON.stringify([d['expoItem'+n+'Img']]);
+        pc.dataset.name=nm?nm.textContent:'';
+        pc.dataset.desc=ds?ds.textContent:'';
+      }
     }
   });
 });
@@ -301,10 +326,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;justify-content
 
 /* ══ SECTION COMMON ══ */
 section{position:relative;}
-.s-lbl{font-size:.6rem;letter-spacing:.38em;text-transform:uppercase;color:var(--teal-deep);margin-bottom:1rem;display:flex;align-items:center;gap:.8rem;}
-.s-lbl::before{content:"✿";font-size:.85rem;color:var(--rose);}
+.s-lbl{font-size:.72rem;letter-spacing:.38em;text-transform:uppercase;color:var(--teal-deep);margin-bottom:1rem;display:flex;align-items:center;gap:.8rem;}
+.s-lbl::before{content:"✿";font-size:1.1rem;color:var(--teal);}
 .s-lbl.no-flower::before{content:none;}
-.s-lbl-icon{width:15px;height:15px;color:var(--teal);}
+.s-lbl.rose-flower::before{color:var(--rose);}
+.s-lbl-icon{width:18px;height:18px;color:var(--teal);}
 .s-ttl{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,3rem);font-weight:400;color:var(--dark);line-height:1.2;}
 /* rose italic em */
 .s-ttl em{font-style:italic;color:var(--rose-deep);}
@@ -938,7 +964,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 <!-- COLLECTIONS -->
 <section id="collections">
   <div style="text-align:center;" class="reveal">
-    <p class="s-lbl" style="justify-content:center;">Collections</p>
+    <p class="s-lbl no-flower" style="justify-content:center;"><svg class="s-lbl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Collections</p>
     <h2 class="s-ttl" data-key="collSttl">Collections</h2>
   </div>
   <div class="coll-grid">
@@ -960,7 +986,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 <!-- EXPOSITIONS -->
 <section id="expositions" style="padding:8rem 5rem;background:linear-gradient(180deg,rgba(250,245,239,0.82) 0%,rgba(228,247,247,0.82) 100%);position:relative;overflow:hidden;">
   <div style="text-align:center;" class="reveal">
-    <p class="s-lbl" style="justify-content:center;">Expositions</p>
+    <p class="s-lbl no-flower" style="justify-content:center;"><svg class="s-lbl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="6" y="6" width="12" height="12" rx="1"/><circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"/><path d="M6 18l4-4 3 3 2-2 3 3"/></svg>Expositions</p>
     <h2 class="s-ttl" data-key="expoTtl">À la rencontre<br><em>du public</em></h2>
     <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--text-soft);max-width:48ch;margin:1.8rem auto 3.5rem;line-height:1.95;" data-key="expoDesc">Retrouvez Sara Mahjoub et ses créations lors de marchés artisanaux, galeries et événements sur la Côte d'Azur.</p>
   </div>
@@ -1251,68 +1277,46 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 <!-- ══════════════════════════════════
      PAGE SUJET DE DIPLÔME
 ══════════════════════════════════ -->
+<!-- ══════════════════════════════════
+     PAGE SUJET DE DIPLÔME
+══════════════════════════════════ -->
 <div id="page-sujetdediplome" class="page">
-
-<section style="min-height:65vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:9rem 2rem 5rem;
-  background:radial-gradient(ellipse at 25% 30%,rgba(75,191,196,.2) 0%,transparent 52%),radial-gradient(ellipse at 75% 70%,rgba(232,160,180,.16) 0%,transparent 48%),rgba(253,250,247,0.82);">
-  <p class="h-eyebrow reveal"><span class="h-dot"></span>Expositions · Diplôme<span class="h-dot"></span></p>
-  <h1 class="h-title reveal" style="font-size:clamp(2.4rem,7vw,5.5rem);" data-key="expoPageTitle">Sujet de diplôme<em style="font-size:.78em;">À la rencontre du public</em></h1>
-  <div class="h-orn reveal">
-    <div class="h-orn-line"></div>
-    <span style="color:var(--teal);font-size:1rem;animation:spin 12s linear infinite;">✿</span>
-    <div class="h-orn-line r"></div>
+<div class="coll-page">
+  <div class="cp-hero">
+    <div class="cp-hero-img"><img src="" style="opacity:0;transition:opacity .4s;background:linear-gradient(135deg,var(--aqua-light),var(--rose-pale));" id="img-cp-expo-hero"/></div>
+    <div class="cp-hero-text">
+      <button class="cp-back" onclick="navScrollTo('#expositions')"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux expositions</button>
+      <p class="cp-hero-tag" data-key="expoPageTag">Expositions Sara Céramique</p>
+      <h1 class="cp-hero-title" data-key="expoPageTitle">Sujet de diplôme<em>À la rencontre du public</em></h1>
+      <div class="cp-divider"></div>
+      <p class="cp-hero-desc" data-key="expoPageDesc">Retrouvez Sara Mahjoub et ses créations lors de marchés artisanaux, galeries et événements sur la Côte d'Azur.</p>
+    </div>
   </div>
-  <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(.95rem,1.9vw,1.28rem);color:var(--text-soft);max-width:52ch;line-height:1.95;margin-top:1rem;" class="reveal" data-key="expoPageDesc">Retrouvez Sara Mahjoub et ses créations lors de marchés artisanaux, galeries et événements sur la Côte d'Azur.</p>
-</section>
-
-<!-- Cartes expositions -->
-<section style="padding:5rem;background:radial-gradient(ellipse at 12% 50%,rgba(75,191,196,.1) 0%,transparent 50%),rgba(250,245,239,0.82);">
-  <div style="max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:2rem;">
-
-    <!-- Expo 1 — principale (teal) -->
-    <div class="reveal" style="background:rgba(253,250,247,.97);border:1px solid rgba(75,191,196,.2);border-radius:22px;padding:2.5rem 3rem;box-shadow:0 10px 36px rgba(42,157,163,.1);display:flex;align-items:flex-start;gap:2.2rem;">
-      <div style="flex-shrink:0;text-align:center;background:linear-gradient(135deg,var(--teal-mid),var(--teal-deep));color:#fff;border-radius:16px;padding:1rem 1.4rem;min-width:72px;">
-        <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;line-height:1;">—</div>
-        <div style="font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;margin-top:.3rem;opacity:.85;">à venir</div>
+  <section class="cp-pieces">
+    <h2 class="cp-pieces-title reveal" data-key="expoPiecesTitle">Les expositions <em>Sujet de diplôme</em></h2>
+    <div class="cp-grid reveal" id="expo-grid">
+      <!-- Item 1 -->
+      <div class="pc" onclick="openLightbox(this)" data-imgs='[]' data-name="" data-desc="">
+        <div class="pc-img"><div class="pc-img-placeholder"><span>À venir</span></div></div>
+        <div class="pc-body"><p class="pc-name" data-key="expoItem1Name"></p><p class="pc-desc" data-key="expoItem1Desc"></p></div>
       </div>
-      <div style="flex:1;">
-        <p style="font-size:.58rem;letter-spacing:.35em;text-transform:uppercase;color:var(--teal-deep);margin-bottom:.6rem;">Sujet de diplôme</p>
-        <h2 style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.45rem;color:var(--dark);margin-bottom:.7rem;" data-key="expo1Name">Prochaine exposition</h2>
-        <p style="font-size:.86rem;font-weight:300;color:var(--text-soft);line-height:1.85;" data-key="expo1Lieu">Lieu et date à annoncer — suivez Instagram pour les actualités !</p>
+      <!-- Item 2 -->
+      <div class="pc" onclick="openLightbox(this)" data-imgs='[]' data-name="" data-desc="">
+        <div class="pc-img"><div class="pc-img-placeholder"><span>À venir</span></div></div>
+        <div class="pc-body"><p class="pc-name" data-key="expoItem2Name"></p><p class="pc-desc" data-key="expoItem2Desc"></p></div>
+      </div>
+      <!-- Item 3 -->
+      <div class="pc" onclick="openLightbox(this)" data-imgs='[]' data-name="" data-desc="">
+        <div class="pc-img"><div class="pc-img-placeholder"><span>À venir</span></div></div>
+        <div class="pc-body"><p class="pc-name" data-key="expoItem3Name"></p><p class="pc-desc" data-key="expoItem3Desc"></p></div>
       </div>
     </div>
-
-    <!-- Expo 2 — passée (rose) -->
-    <div class="reveal" style="background:rgba(253,250,247,.97);border:1px solid rgba(232,160,180,.18);border-radius:22px;padding:2.5rem 3rem;box-shadow:0 10px 36px rgba(201,106,136,.07);display:flex;align-items:flex-start;gap:2.2rem;opacity:.82;">
-      <div style="flex-shrink:0;text-align:center;background:linear-gradient(135deg,var(--rose),var(--rose-deep));color:#fff;border-radius:16px;padding:1rem 1.4rem;min-width:72px;">
-        <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;line-height:1;">✦</div>
-        <div style="font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;margin-top:.3rem;opacity:.85;">passée</div>
-      </div>
-      <div style="flex:1;">
-        <p style="font-size:.58rem;letter-spacing:.35em;text-transform:uppercase;color:var(--rose-deep);margin-bottom:.6rem;">Exposition passée</p>
-        <h2 style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.45rem;color:var(--dark);margin-bottom:.7rem;" data-key="expo2Name">Marché de Noël — Antibes</h2>
-        <p style="font-size:.86rem;font-weight:300;color:var(--text-soft);line-height:1.85;" data-key="expo2Lieu">Décembre 2024 · Marché artisanal du vieux Antibes</p>
-      </div>
-    </div>
-
+  </section>
+  <div class="cp-cta reveal">
+    <h2 data-key="expoCtaTtl">Vous souhaitez m'accueillir ?</h2>
+    <p data-key="expoCtaDesc">Pour toute invitation à exposer, n'hésitez pas à me contacter directement.</p>
+    <button class="btn-teal" onclick="navScrollTo('#contact')">Me contacter</button>
   </div>
-
-  <!-- CTA Instagram -->
-  <div class="reveal" style="text-align:center;margin-top:3.5rem;">
-    <a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="btn-rose-outline" style="display:inline-flex;">
-      Suivre les actualités sur Instagram
-      <svg width="15" height="6" viewBox="0 0 15 6" fill="none" style="margin-left:.6rem;"><path d="M0 3h13M10 1l3 2-3 2" stroke="currentColor" stroke-width=".9"/></svg>
-    </a>
-  </div>
-</section>
-
-<!-- CTA contact -->
-<div class="cp-cta reveal">
-  <h2 data-key="expoCtaTtl">Vous souhaitez m'accueillir ?</h2>
-  <p data-key="expoCtaDesc">Pour toute invitation à exposer, n'hésitez pas à me contacter directement.</p>
-  <button class="btn-teal" onclick="navScrollTo('#contact')">Me contacter</button>
-</div>
-
 <footer>
   <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
   <p class="f-tagline">Petits mondes enchantés · Côte d'Azur</p>
@@ -1323,10 +1327,11 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     <li><a onclick="navScrollTo('#galerie')">Galerie</a></li>
     <li><a onclick="goTo('boutique')">Boutique</a></li>
     <li><a onclick="navScrollTo('#contact')">Contact</a></li>
+    <li class="c-val-ig-wrap"><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="f-ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg>@saraceramique</a></li>
   </ul>
   <p class="f-copy">© 2026 Sara Mahjoub — Tous droits réservés</p>
 </footer>
-
+</div>
 </div><!-- /page-sujetdediplome -->
 
 

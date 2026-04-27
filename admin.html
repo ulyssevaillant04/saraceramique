@@ -1322,8 +1322,8 @@ async function initCadrageModal(coll,mode,opts){
 
   const pw=preview.clientWidth||500;
   const ph=340;
-  const fw=isDesk?pw:Math.round(ph*0.65);
-  const fh=isDesk?Math.round(fw*0.5):fw; // desktop 2:1, mobile carré
+  const fw=pw; // toujours pleine largeur
+  const fh=isDesk?Math.round(fw*0.5):fw; // desktop 2:1, mobile carré pleine largeur
   const scale=Math.max(fw/loaded.naturalWidth,fh/loaded.naturalHeight)*1.6;
   const iw=Math.round(loaded.naturalWidth*scale);
   const ih=Math.round(loaded.naturalHeight*scale);
@@ -1388,8 +1388,9 @@ window.saveCadragePos=async()=>{
   const {coll,mode,x,y}=cadrageState;
   const u={};
   u[coll+'_'+mode+'_pct']={x,y};
-  // Convertir en object-position CSS
-  u[coll+'_'+mode]=`${x}% ${y}%`;
+  // Pour mobile : cadre pleine largeur donc X toujours centré, seul Y compte
+  const posCSS=mode==='mob'?`50% ${y}%`:`${x}% ${y}%`;
+  u[coll+'_'+mode]=posCSS;
   await setDoc(doc(db,'site','heroPositions'),u,{merge:true});
   closeMov('m-cadrage');
   toast('Cadrage sauvegardé ✦');

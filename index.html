@@ -775,7 +775,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
       <a onclick="navScrollTo('#expositions')">Expositions</a>
       <div class="dd-menu">
         <div class="dd-menu-inner">
-          <a onclick="navScrollTo('#expositions')">
+          <a onclick="goTo('sujetdediplome')">
             <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
               <rect x="2" y="3" width="20" height="16" rx="2"/>
               <path d="M8 19h8M12 19v2"/>
@@ -859,7 +859,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
           <svg class="mob-dd-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
         </button>
         <div class="mob-dd-items" id="mob-dd-items-expo">
-          <a onclick="mobileNav('#expositions')">
+          <a onclick="mobileNav('sujetdediplome')">
             <span class="mob-dd-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" style="width:15px;height:15px;">
                 <rect x="2" y="3" width="20" height="16" rx="2"/>
@@ -952,7 +952,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     </div>
     <div class="coll-card reveal" style="transition-delay:.3s" onclick="goTo('unique')" data-coll="unique">
       <div class="coll-img"><img src="images/lampadaire.JPG" /><div class="coll-img-ov"></div></div>
-      <div class="coll-body"><p class="coll-tag">Sur commande</p><h3 class="coll-name">Pièces Uniques</h3><p class="coll-desc" data-key="collUnique">Lampadaires sculpturaux, cadeaux précieux, objets sur-mesure nés d'un désir particulier.</p><span class="coll-link">Découvrir →</span></div>
+      <div class="coll-body"><p class="coll-tag">Collection</p><h3 class="coll-name">Pièces Uniques</h3><p class="coll-desc" data-key="collUnique">Lampadaires sculpturaux, cadeaux précieux, objets sur-mesure nés d'un désir particulier.</p><span class="coll-link">Découvrir →</span></div>
     </div>
   </div>
 </section>
@@ -960,7 +960,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 <!-- EXPOSITIONS -->
 <section id="expositions" style="padding:8rem 5rem;background:linear-gradient(180deg,rgba(250,245,239,0.82) 0%,rgba(228,247,247,0.82) 100%);position:relative;overflow:hidden;">
   <div style="text-align:center;" class="reveal">
-    <p class="s-lbl" style="justify-content:center;"><svg class="s-lbl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="6" y="6" width="12" height="12" rx="1"/><circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"/><path d="M6 18l4-4 3 3 2-2 3 3"/></svg>Expositions</p>
+    <p class="s-lbl" style="justify-content:center;">Expositions</p>
     <h2 class="s-ttl" data-key="expoTtl">À la rencontre<br><em>du public</em></h2>
     <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--text-soft);max-width:48ch;margin:1.8rem auto 3.5rem;line-height:1.95;" data-key="expoDesc">Retrouvez Sara Mahjoub et ses créations lors de marchés artisanaux, galeries et événements sur la Côte d'Azur.</p>
   </div>
@@ -1248,6 +1248,87 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 </footer>
 </div>
 
+<!-- ══════════════════════════════════
+     PAGE SUJET DE DIPLÔME
+══════════════════════════════════ -->
+<div id="page-sujetdediplome" class="page">
+
+<section style="min-height:65vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:9rem 2rem 5rem;
+  background:radial-gradient(ellipse at 25% 30%,rgba(75,191,196,.2) 0%,transparent 52%),radial-gradient(ellipse at 75% 70%,rgba(232,160,180,.16) 0%,transparent 48%),rgba(253,250,247,0.82);">
+  <p class="h-eyebrow reveal"><span class="h-dot"></span>Expositions · Diplôme<span class="h-dot"></span></p>
+  <h1 class="h-title reveal" style="font-size:clamp(2.4rem,7vw,5.5rem);" data-key="expoPageTitle">Sujet de diplôme<em style="font-size:.78em;">À la rencontre du public</em></h1>
+  <div class="h-orn reveal">
+    <div class="h-orn-line"></div>
+    <span style="color:var(--teal);font-size:1rem;animation:spin 12s linear infinite;">✿</span>
+    <div class="h-orn-line r"></div>
+  </div>
+  <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(.95rem,1.9vw,1.28rem);color:var(--text-soft);max-width:52ch;line-height:1.95;margin-top:1rem;" class="reveal" data-key="expoPageDesc">Retrouvez Sara Mahjoub et ses créations lors de marchés artisanaux, galeries et événements sur la Côte d'Azur.</p>
+</section>
+
+<!-- Cartes expositions -->
+<section style="padding:5rem;background:radial-gradient(ellipse at 12% 50%,rgba(75,191,196,.1) 0%,transparent 50%),rgba(250,245,239,0.82);">
+  <div style="max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:2rem;">
+
+    <!-- Expo 1 — principale (teal) -->
+    <div class="reveal" style="background:rgba(253,250,247,.97);border:1px solid rgba(75,191,196,.2);border-radius:22px;padding:2.5rem 3rem;box-shadow:0 10px 36px rgba(42,157,163,.1);display:flex;align-items:flex-start;gap:2.2rem;">
+      <div style="flex-shrink:0;text-align:center;background:linear-gradient(135deg,var(--teal-mid),var(--teal-deep));color:#fff;border-radius:16px;padding:1rem 1.4rem;min-width:72px;">
+        <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;line-height:1;">—</div>
+        <div style="font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;margin-top:.3rem;opacity:.85;">à venir</div>
+      </div>
+      <div style="flex:1;">
+        <p style="font-size:.58rem;letter-spacing:.35em;text-transform:uppercase;color:var(--teal-deep);margin-bottom:.6rem;">Sujet de diplôme</p>
+        <h2 style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.45rem;color:var(--dark);margin-bottom:.7rem;" data-key="expo1Name">Prochaine exposition</h2>
+        <p style="font-size:.86rem;font-weight:300;color:var(--text-soft);line-height:1.85;" data-key="expo1Lieu">Lieu et date à annoncer — suivez Instagram pour les actualités !</p>
+      </div>
+    </div>
+
+    <!-- Expo 2 — passée (rose) -->
+    <div class="reveal" style="background:rgba(253,250,247,.97);border:1px solid rgba(232,160,180,.18);border-radius:22px;padding:2.5rem 3rem;box-shadow:0 10px 36px rgba(201,106,136,.07);display:flex;align-items:flex-start;gap:2.2rem;opacity:.82;">
+      <div style="flex-shrink:0;text-align:center;background:linear-gradient(135deg,var(--rose),var(--rose-deep));color:#fff;border-radius:16px;padding:1rem 1.4rem;min-width:72px;">
+        <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;line-height:1;">✦</div>
+        <div style="font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;margin-top:.3rem;opacity:.85;">passée</div>
+      </div>
+      <div style="flex:1;">
+        <p style="font-size:.58rem;letter-spacing:.35em;text-transform:uppercase;color:var(--rose-deep);margin-bottom:.6rem;">Exposition passée</p>
+        <h2 style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.45rem;color:var(--dark);margin-bottom:.7rem;" data-key="expo2Name">Marché de Noël — Antibes</h2>
+        <p style="font-size:.86rem;font-weight:300;color:var(--text-soft);line-height:1.85;" data-key="expo2Lieu">Décembre 2024 · Marché artisanal du vieux Antibes</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CTA Instagram -->
+  <div class="reveal" style="text-align:center;margin-top:3.5rem;">
+    <a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="btn-rose-outline" style="display:inline-flex;">
+      Suivre les actualités sur Instagram
+      <svg width="15" height="6" viewBox="0 0 15 6" fill="none" style="margin-left:.6rem;"><path d="M0 3h13M10 1l3 2-3 2" stroke="currentColor" stroke-width=".9"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- CTA contact -->
+<div class="cp-cta reveal">
+  <h2 data-key="expoCtaTtl">Vous souhaitez m'accueillir ?</h2>
+  <p data-key="expoCtaDesc">Pour toute invitation à exposer, n'hésitez pas à me contacter directement.</p>
+  <button class="btn-teal" onclick="navScrollTo('#contact')">Me contacter</button>
+</div>
+
+<footer>
+  <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
+  <p class="f-tagline">Petits mondes enchantés · Côte d'Azur</p>
+  <ul class="f-links">
+    <li><a onclick="navScrollTo('#apropos')">À Propos</a></li>
+    <li><a onclick="navScrollTo('#collections')">Collections</a></li>
+    <li><a onclick="goTo('sujetdediplome')">Expositions</a></li>
+    <li><a onclick="navScrollTo('#galerie')">Galerie</a></li>
+    <li><a onclick="goTo('boutique')">Boutique</a></li>
+    <li><a onclick="navScrollTo('#contact')">Contact</a></li>
+  </ul>
+  <p class="f-copy">© 2026 Sara Mahjoub — Tous droits réservés</p>
+</footer>
+
+</div><!-- /page-sujetdediplome -->
+
 
 <!-- ══ GALLERY LIGHTBOX CAROUSEL ══ -->
 <div id="gal-lb" onclick="galLbClickOutside(event)">
@@ -1304,7 +1385,7 @@ function goTo(name, skipScrollReset){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   // Sauvegarder la page dans l'URL pour persister au refresh
-  const hashMap = {'home':'','corolles':'jardinenchante','mer':'tresorsmarins','unique':'piecesuniques','boutique':'boutique'};
+  const hashMap = {'home':'','corolles':'jardinenchante','mer':'tresorsmarins','unique':'piecesuniques','boutique':'boutique','sujetdediplome':'sujetdediplome'};
   const h = hashMap[name];
   if(h) history.replaceState(null,'','#'+h);
   else history.replaceState(null,'',window.location.pathname);
@@ -1714,7 +1795,7 @@ function buildGalDots() {
 document.addEventListener('DOMContentLoaded', () => {
   // Restaurer la page depuis l'URL au chargement/refresh
   const hash = window.location.hash.replace('#','');
-  const hashToPage = {'jardinenchante':'corolles','tresorsmarins':'mer','piecesuniques':'unique','boutique':'boutique'};
+  const hashToPage = {'jardinenchante':'corolles','tresorsmarins':'mer','piecesuniques':'unique','boutique':'boutique','sujetdediplome':'sujetdediplome'};
   if(hash && hashToPage[hash]){
     goTo(hashToPage[hash], false);
   }
@@ -1868,7 +1949,7 @@ function mobileNav(target){
   document.getElementById('mob-btn').classList.remove('open');
   document.getElementById('mob-menu').classList.remove('open');
   document.body.style.overflow='';
-  if(['corolles','mer','unique','boutique','home'].includes(target)){
+  if(['corolles','mer','unique','boutique','home','sujetdediplome'].includes(target)){
     goTo(target);
   } else {
     const isMobile = window.innerWidth <= 900;

@@ -649,7 +649,8 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   footer{padding:2.5rem 1.5rem;}
   .f-links{gap:1.2rem;}
   .cp-hero{grid-template-columns:1fr;}
-  .cp-hero-img{height:40vh;}
+  .cp-hero-img{height:auto;aspect-ratio:3/2;width:100vw;margin-left:calc(-1 * var(--page-pad, 0px));}
+  .cp-hero-img img{width:100%;height:100%;object-fit:cover;}
   .cp-hero-text{padding:2.5rem 1.5rem;}
   .cp-pieces{padding:3rem 1.5rem;}
   .cp-grid{grid-template-columns:1fr!important;}
@@ -1071,7 +1072,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <p class="b-desc" data-key="bDesc">Un espace pour acquérir des créations uniques directement depuis l'atelier. Tasses, coupes, sculptures et pièces d'exception — bientôt à portée de clic.</p>
   <div class="b-orn">
     <div class="h-orn-line"></div>
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 3c0 0-3 3-3 9s3 9 3 9M12 3c0 0 3 3 3 9s-3 9-3 9M3 12c0 0 3-3 9-3s9 3 9 3M3 12c0 0 3 3 9 3s9-3 9-3"/></svg>
+    <span style="color:var(--teal);font-size:1rem;animation:spin 12s linear infinite;">✿</span>
     <div class="h-orn-line r"></div>
   </div>
   <p style="font-size:.76rem;color:var(--text-soft);font-family:'Cormorant Garamond',serif;font-style:italic;margin-bottom:.9rem;" class="b-newsletter-txt">Soyez averti(e) dès l'ouverture :</p>
@@ -1183,18 +1184,31 @@ function goTo(name, skipScrollReset){
 }
 
 function navScrollTo(hash){
+  const nav=document.querySelector('nav');
+  const offset=nav?nav.offsetHeight+8:68;
+  const scrollToEl=el=>{
+    const top=el.getBoundingClientRect().top+window.scrollY-offset;
+    window.scrollTo({top,behavior:'smooth'});
+  };
+  const isHome=document.getElementById('page-home').classList.contains('active');
+  if(!isHome){
+    goTo('home',true);
+    setTimeout(()=>{const el=document.querySelector(hash);if(el)scrollToEl(el);},150);
+  } else {
+    const el=document.querySelector(hash);if(el)scrollToEl(el);
+  }
+});
+  };
   const isHome = document.getElementById('page-home').classList.contains('active');
   if(!isHome){
-    // Venir d'une autre page : changer sans remettre à zéro, puis scroller
     goTo('home', true);
     setTimeout(()=>{
       const el = document.querySelector(hash);
-      if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+      if(el) scrollToEl(el);
     }, 150);
   } else {
-    // Déjà sur home : scroller directement depuis la position actuelle
     const el = document.querySelector(hash);
-    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    if(el) scrollToEl(el);
   }
 }
 

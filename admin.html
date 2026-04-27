@@ -1291,37 +1291,97 @@ window.openCadraMobile=async(coll)=>{
 
 async function initCadrageModal(coll,mode,opts){
   const imgEl=document.getElementById('img-cp-'+coll+'-hero');
-  if(!imgEl||!imgEl.src){toast('Aucune photo — ajoutez-en une d\'abord','e');return;}
+  if(!imgEl||!imgEl.src){toast('Aucune photo disponible','e');return;}
   const isDesk=mode==='desk';
   let posX=50,posY=50;
   try{const snap=await getDoc(doc(db,'site','heroPositions'));if(snap.exists()){const pct=snap.data()[coll+'_'+mode+'_pct'];if(pct){posX=pct.x;posY=pct.y;}}}catch(e){}
   cadrageState.x=posX;cadrageState.y=posY;
+
+  // Ouvrir la modal
   document.getElementById('m-cadrage').classList.add('open');
-  await new Promise(r=>setTimeout(r,120));
+  await new Promise(r=>setTimeout(r,150));
+
   const preview=document.getElementById('cadrage-preview');
   const frame=document.getElementById('cadrage-frame');
-  const img=document.getElementById('cadrage-img');
-  preview.style.cssText='height:320px;position:relative;overflow:hidden;';
-  await new Promise(r=>{if(img.src===imgEl.src&&img.complete){r();return;}img.onload=r;img.onerror=r;img.src=imgEl.src;});
-  const pw=preview.offsetWidth||520,ph=320;
-  const fw=isDesk?pw:Math.min(Math.round(ph*0.7),300);
-  const fh=isDesk?Math.round(fw*(9/16)):fw;
-  const scale=Math.max(fw/img.naturalWidth,fh/img.naturalHeight)*1.5;
-  const iw=Math.round(img.naturalWidth*scale),ih=Math.round(img.naturalHeight*scale);
-  const fl=Math.round((pw-fw)/2),ft=Math.round((ph-fh)/2);
-  const minL=fl-(iw-fw),maxL=fl,minT=ft-(ih-fh),maxT=ft;
+  const imgNode=document.getElementById('cadrage-img');
+
+  // Reset
+  preview.style.cssText='position:relative;overflow:hidden;height:340px;background:#eee;border-radius:10px;border:2px solid var(--teal);cursor:grab;';
+  frame.style.cssText='';
+  imgNode.style.cssText='display:none;';
+
+  // Charger l'image
+  const src=imgEl.src;
+  const loaded=await new Promise(r=>{
+    const t=new Image();
+    t.onload=()=>r(t);
+    t.onerror=()=>r(null);
+    t.src=src;
+  });
+  if(!loaded){toast('Image non chargeable','e');return;}
+
+  const pw=preview.clientWidth||500;
+  const ph=340;
+  const fw=isDesk?pw:Math.round(ph*0.65);
+  const fh=isDesk?Math.round(fw*0.5):fw; // desktop 2:1, mobile carré
+  const scale=Math.max(fw/loaded.naturalWidth,fh/loaded.naturalHeight)*1.6;
+  const iw=Math.round(loaded.naturalWidth*scale);
+  const ih=Math.round(loaded.naturalHeight*scale);
+  const fl=Math.round((pw-fw)/2);
+  const ft=Math.round((ph-fh)/2);
+  const minL=fl-(iw-fw); const maxL=fl;
+  const minT=ft-(ih-fh); const maxT=ft;
   const startL=Math.round(minL+(maxL-minL)*(posX/100));
   const startT=Math.round(minT+(maxT-minT)*(posY/100));
-  frame.style.cssText=`position:absolute;width:${fw}px;height:${fh}px;left:${fl}px;top:${ft}px;border:2.5px solid #fff;box-shadow:0 0 0 2000px rgba(0,0,0,.5);z-index:2;pointer-events:none;border-radius:4px;`;
-  img.style.cssText=`position:absolute;width:${iw}px;height:${ih}px;left:${startL}px;top:${startT}px;cursor:grab;user-select:none;-webkit-user-drag:none;`;
-  updatePosDisplay();
-  let drag=false,sx,sy,sl,st;
-  const down=e=>{drag=true;const p=e.touches?e.touches[0]:e;sx=p.clientX;sy=p.clientY;sl=parseInt(img.style.left);st=parseInt(img.style.top);img.style.cursor='grabbing';e.preventDefault();};
-  const move=e=>{if(!drag)return;e.preventDefault();const p=e.touches?e.touches[0]:e;const nl=Math.min(maxL,Math.max(minL,sl+(p.clientX-sx)));const nt=Math.min(maxT,Math.max(minT,st+(p.clientY-sy)));img.style.left=nl+'px';img.style.top=nt+'px';const rx=maxL-minL,ry=maxT-minT;cadrageState.x=rx>0?Math.round(((nl-minL)/rx)*100):50;cadrageState.y=ry>0?Math.round(((nt-minT)/ry)*100):50;updatePosDisplay();};
-  const up=()=>{drag=false;img.style.cursor='grab';};
-  img.addEventListener('mousedown',down);img.addEventListener('touchstart',down,{passive:false});
-  window.addEventListener('mousemove',move);window.addEventListener('mouseup',up);
-  window.addEventListener('touchmove',move,{passive:false});window.addEventListener('touchend',up);
+
+  // Positionner image
+  imgNode.src=src;
+  imgNode.style.cssText=`display:block;position:absolute;width:${iw}px;height:${ih}px;left:${startL}px;top:${startT}px;cursor:grab;user-select:none;-webkit-user-drag:none;pointer-events:all;`;
+
+  // Cadre blanc
+  frame.style.cssText=`position:absolute;width:${fw}px;height:${fh}px;left:${fl}px;top:${ft}px;border:2.5px solid rgba(255,255,255,0.95);box-shadow:0 0 0 9999px rgba(0,0,0,0.52);z-index:3;pointer-events:none;border-radius:6px;`;
+
+  document.getElementById('cadrage-pos-display').textContent=`X:${posX}% Y:${posY}%`;
+
+  // Drag — attaché sur preview pour éviter tout problème de pointer-events
+  let drag=false,ox=0,oy=0,lx=startL,ly=startT;
+  const getPos=e=>e.touches?{x:e.touches[0].clientX,y:e.touches[0].clientY}:{x:e.clientX,y:e.clientY};
+
+  const onDown=e=>{
+    drag=true;
+    const p=getPos(e);
+    ox=p.x; oy=p.y;
+    lx=parseInt(imgNode.style.left)||startL;
+    ly=parseInt(imgNode.style.top)||startT;
+    preview.style.cursor='grabbing';
+    e.preventDefault();e.stopPropagation();
+  };
+  const onMove=e=>{
+    if(!drag)return;
+    e.preventDefault();
+    const p=getPos(e);
+    const nl=Math.min(maxL,Math.max(minL,lx+(p.x-ox)));
+    const nt=Math.min(maxT,Math.max(minT,ly+(p.y-oy)));
+    imgNode.style.left=nl+'px';
+    imgNode.style.top=nt+'px';
+    const rx=maxL-minL,ry=maxT-minT;
+    cadrageState.x=rx>1?Math.round(((nl-minL)/rx)*100):50;
+    cadrageState.y=ry>1?Math.round(((nt-minT)/ry)*100):50;
+    document.getElementById('cadrage-pos-display').textContent=`X:${cadrageState.x}% Y:${cadrageState.y}%`;
+  };
+  const onUp=()=>{drag=false;preview.style.cursor='grab';};
+
+  // Nettoyer anciens listeners en clonant preview
+  const newPreview=preview.cloneNode(false);
+  while(preview.firstChild)newPreview.appendChild(preview.firstChild);
+  preview.parentNode.replaceChild(newPreview,preview);
+
+  newPreview.addEventListener('mousedown',onDown);
+  newPreview.addEventListener('touchstart',onDown,{passive:false});
+  window.addEventListener('mousemove',onMove);
+  window.addEventListener('mouseup',onUp);
+  window.addEventListener('touchmove',onMove,{passive:false});
+  window.addEventListener('touchend',onUp);
 }
 
 window.saveCadragePos=async()=>{

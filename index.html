@@ -216,6 +216,9 @@ body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--text);c
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 
 /* ══ NAV ══ */
+/* scroll offset pour navbar fixe */
+#apropos,#galerie,#collections,#univers,#contact{scroll-margin-top:70px;}
+
 nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 5rem;background:rgba(253,250,247,.93);backdrop-filter:blur(16px);border-bottom:1px solid rgba(75,191,196,.15);}
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.12rem;font-weight:400;font-style:italic;color:var(--dark);text-decoration:none;letter-spacing:.03em;cursor:pointer;transition:letter-spacing .4s,color .3s;display:inline-block;}
 .nav-logo span{color:var(--teal-deep);transition:color .3s;}
@@ -648,8 +651,8 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   .coll-grid{grid-template-columns:1fr;}
   footer{padding:2.5rem 1.5rem;}
   .f-links{gap:1.2rem;}
-  .cp-hero{grid-template-columns:1fr !important;min-height:unset !important;}
-  .cp-hero-img{width:100% !important;aspect-ratio:1/1 !important;height:100vw !important;min-height:unset !important;}
+  .cp-hero{grid-template-columns:1fr !important;min-height:unset !important;margin-top:0;}
+  .cp-hero-img{width:100% !important;aspect-ratio:1/1 !important;height:100vw !important;min-height:unset !important;display:block;}
   .cp-hero-text{padding:2.5rem 1.5rem;}
   .cp-pieces{padding:3rem 1.5rem;}
   .cp-grid{grid-template-columns:1fr!important;}
@@ -1185,10 +1188,7 @@ function goTo(name, skipScrollReset){
 function navScrollTo(hash){
   const doScroll=()=>{
     const el=document.querySelector(hash);
-    if(!el)return;
-    const navH=document.querySelector('nav')?.offsetHeight||60;
-    const y=el.getBoundingClientRect().top+window.pageYOffset-navH;
-    window.scrollTo({top:y,behavior:'smooth'});
+    if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
   };
   if(!document.getElementById('page-home').classList.contains('active')){
     goTo('home',true);setTimeout(doScroll,200);

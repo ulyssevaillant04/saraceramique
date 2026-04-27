@@ -469,12 +469,30 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
 <div class="coll-page">
   <div class="cp-hero">
     <div class="cp-hero-img" id="cp-corolles-hero-wrap" style="position:relative;cursor:pointer;"
-      onmouseenter="this.querySelector('.hero-edit').style.opacity='1'"
-      onmouseleave="this.querySelector('.hero-edit').style.opacity='0'"
+      onmouseenter="this.querySelector('.hero-edit').style.opacity='1';document.getElementById('pos-widget-corolles').style.opacity='1'"
+      onmouseleave="this.querySelector('.hero-edit').style.opacity='0';document.getElementById('pos-widget-corolles').style.opacity='0'"
       onclick="changeImg('cp-corolles-hero')">
       <img id="img-cp-corolles-hero" src="images/mug.JPG" style="width:100%;height:100%;object-fit:cover;display:block;"/>
       <div class="hero-edit" style="position:absolute;inset:0;background:rgba(26,53,53,.5);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;pointer-events:none;">
         <span style="color:#fff;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer la photo</span>
+      </div>
+      <div style="position:absolute;bottom:.6rem;left:50%;transform:translateX(-50%);z-index:15;display:flex;gap:.4rem;opacity:0;transition:opacity .2s;" class="pos-widget" id="pos-widget-corolles">
+        <div style="font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:#fff;font-family:'Nunito',sans-serif;padding:.2rem .5rem;background:rgba(26,53,53,.7);border-radius:4px;white-space:nowrap;">Cadrage desktop :</div>
+        <select onchange="savePosDesktop('corolles',this.value)" id="pos-desk-corolles" style="font-size:.65rem;padding:.2rem .4rem;border-radius:4px;border:none;background:rgba(26,53,53,.85);color:#fff;font-family:'Nunito',sans-serif;cursor:pointer;">
+          <option value="center center">Centre</option>
+          <option value="center top">Haut</option>
+          <option value="center bottom">Bas</option>
+          <option value="left center">Gauche</option>
+          <option value="right center">Droite</option>
+        </select>
+        <div style="font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:#fff;font-family:'Nunito',sans-serif;padding:.2rem .5rem;background:rgba(26,53,53,.7);border-radius:4px;white-space:nowrap;">Mobile :</div>
+        <select onchange="savePosMobile('corolles',this.value)" id="pos-mob-corolles" style="font-size:.65rem;padding:.2rem .4rem;border-radius:4px;border:none;background:rgba(26,53,53,.85);color:#fff;font-family:'Nunito',sans-serif;cursor:pointer;">
+          <option value="center center">Centre</option>
+          <option value="center top">Haut</option>
+          <option value="center bottom">Bas</option>
+          <option value="left center">Gauche</option>
+          <option value="right center">Droite</option>
+        </select>
       </div>
     </div>
     <div class="cp-hero-text">
@@ -502,12 +520,30 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
 <div class="coll-page">
   <div class="cp-hero">
     <div class="cp-hero-img" id="cp-mer-hero-wrap" style="position:relative;cursor:pointer;"
-      onmouseenter="this.querySelector('.hero-edit').style.opacity='1'"
-      onmouseleave="this.querySelector('.hero-edit').style.opacity='0'"
+      onmouseenter="this.querySelector('.hero-edit').style.opacity='1';document.getElementById('pos-widget-mer').style.opacity='1'"
+      onmouseleave="this.querySelector('.hero-edit').style.opacity='0';document.getElementById('pos-widget-mer').style.opacity='0'"
       onclick="changeImg('cp-mer-hero')">
       <img id="img-cp-mer-hero" src="images/coupe.JPG" style="width:100%;height:100%;object-fit:cover;display:block;"/>
       <div class="hero-edit" style="position:absolute;inset:0;background:rgba(26,53,53,.5);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;pointer-events:none;">
         <span style="color:#fff;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer la photo</span>
+      </div>
+      <div style="position:absolute;bottom:.6rem;left:50%;transform:translateX(-50%);z-index:15;display:flex;gap:.4rem;opacity:0;transition:opacity .2s;" class="pos-widget" id="pos-widget-mer">
+        <div style="font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:#fff;font-family:'Nunito',sans-serif;padding:.2rem .5rem;background:rgba(26,53,53,.7);border-radius:4px;white-space:nowrap;">Cadrage desktop :</div>
+        <select onchange="savePosDesktop('mer',this.value)" id="pos-desk-mer" style="font-size:.65rem;padding:.2rem .4rem;border-radius:4px;border:none;background:rgba(26,53,53,.85);color:#fff;font-family:'Nunito',sans-serif;cursor:pointer;">
+          <option value="center center">Centre</option>
+          <option value="center top">Haut</option>
+          <option value="center bottom">Bas</option>
+          <option value="left center">Gauche</option>
+          <option value="right center">Droite</option>
+        </select>
+        <div style="font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:#fff;font-family:'Nunito',sans-serif;padding:.2rem .5rem;background:rgba(26,53,53,.7);border-radius:4px;white-space:nowrap;">Mobile :</div>
+        <select onchange="savePosMobile('mer',this.value)" id="pos-mob-mer" style="font-size:.65rem;padding:.2rem .4rem;border-radius:4px;border:none;background:rgba(26,53,53,.85);color:#fff;font-family:'Nunito',sans-serif;cursor:pointer;">
+          <option value="center center">Centre</option>
+          <option value="center top">Haut</option>
+          <option value="center bottom">Bas</option>
+          <option value="left center">Gauche</option>
+          <option value="right center">Droite</option>
+        </select>
       </div>
     </div>
     <div class="cp-hero-text">
@@ -535,12 +571,30 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
 <div class="coll-page">
   <div class="cp-hero">
     <div class="cp-hero-img" id="cp-unique-hero-wrap" style="position:relative;cursor:pointer;"
-      onmouseenter="this.querySelector('.hero-edit').style.opacity='1'"
-      onmouseleave="this.querySelector('.hero-edit').style.opacity='0'"
+      onmouseenter="this.querySelector('.hero-edit').style.opacity='1';document.getElementById('pos-widget-unique').style.opacity='1'"
+      onmouseleave="this.querySelector('.hero-edit').style.opacity='0';document.getElementById('pos-widget-unique').style.opacity='0'"
       onclick="changeImg('cp-unique-hero')">
       <img id="img-cp-unique-hero" src="images/lampadaire.JPG" style="width:100%;height:100%;object-fit:cover;display:block;"/>
       <div class="hero-edit" style="position:absolute;inset:0;background:rgba(26,53,53,.5);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;pointer-events:none;">
         <span style="color:#fff;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer la photo</span>
+      </div>
+      <div style="position:absolute;bottom:.6rem;left:50%;transform:translateX(-50%);z-index:15;display:flex;gap:.4rem;opacity:0;transition:opacity .2s;" class="pos-widget" id="pos-widget-unique">
+        <div style="font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:#fff;font-family:'Nunito',sans-serif;padding:.2rem .5rem;background:rgba(26,53,53,.7);border-radius:4px;white-space:nowrap;">Cadrage desktop :</div>
+        <select onchange="savePosDesktop('unique',this.value)" id="pos-desk-unique" style="font-size:.65rem;padding:.2rem .4rem;border-radius:4px;border:none;background:rgba(26,53,53,.85);color:#fff;font-family:'Nunito',sans-serif;cursor:pointer;">
+          <option value="center center">Centre</option>
+          <option value="center top">Haut</option>
+          <option value="center bottom">Bas</option>
+          <option value="left center">Gauche</option>
+          <option value="right center">Droite</option>
+        </select>
+        <div style="font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:#fff;font-family:'Nunito',sans-serif;padding:.2rem .5rem;background:rgba(26,53,53,.7);border-radius:4px;white-space:nowrap;">Mobile :</div>
+        <select onchange="savePosMobile('unique',this.value)" id="pos-mob-unique" style="font-size:.65rem;padding:.2rem .4rem;border-radius:4px;border:none;background:rgba(26,53,53,.85);color:#fff;font-family:'Nunito',sans-serif;cursor:pointer;">
+          <option value="center center">Centre</option>
+          <option value="center top">Haut</option>
+          <option value="center bottom">Bas</option>
+          <option value="left center">Gauche</option>
+          <option value="right center">Droite</option>
+        </select>
       </div>
     </div>
     <div class="cp-hero-text">
@@ -576,8 +630,27 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
   </div>
   <p style="font-size:.76rem;color:var(--text-soft);font-family:'Cormorant Garamond',serif;font-style:italic;margin-bottom:.9rem;" contenteditable="true" data-key="bNewsTxt" spellcheck="false">Soyez averti(e) dès l'ouverture :</p>
   <div class="b-notify">
-    <input class="b-input" type="email" placeholder="votre@email.com" disabled/>
-    <button class="b-btn">Me prévenir</button>
+    <input class="b-input" type="email" id="test-email" placeholder="votre@email.com"/>
+    <button class="b-btn" onclick="testBrevo()">Tester ✦</button>
+  </div>
+  <!-- Config Brevo -->
+  <div id="brevo-config" style="margin-top:1.5rem;max-width:480px;background:rgba(75,191,196,.06);border:1px solid rgba(75,191,196,.2);border-radius:14px;padding:1.2rem;text-align:left;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;">
+      <span id="brevo-status" style="font-size:.72rem;color:var(--teal-deep);">⚙ Configurer Brevo</span>
+      <button onclick="toggleBrevoConfig()" style="font-size:.65rem;color:var(--text-soft);background:none;border:none;cursor:pointer;text-decoration:underline;" id="brevo-toggle-btn">Modifier</button>
+    </div>
+    <div id="brevo-fields">
+      <div class="mf" style="margin-bottom:.7rem;">
+        <label style="font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-soft);">Clé API Brevo</label>
+        <input type="password" id="brevo-key" placeholder="xkeysib-..." style="width:100%;padding:.6rem .8rem;border:1.5px solid rgba(75,191,196,.22);border-radius:8px;font-family:'Nunito',sans-serif;font-size:.82rem;background:var(--ivory);outline:none;margin-top:.3rem;"/>
+      </div>
+      <div class="mf" style="margin-bottom:.8rem;">
+        <label style="font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-soft);">ID de votre liste Brevo</label>
+        <input type="text" id="brevo-list" placeholder="ex: 3" style="width:100%;padding:.6rem .8rem;border:1.5px solid rgba(75,191,196,.22);border-radius:8px;font-family:'Nunito',sans-serif;font-size:.82rem;background:var(--ivory);outline:none;margin-top:.3rem;"/>
+        <p style="font-size:.65rem;color:var(--text-soft);margin-top:.3rem;">Brevo → Contacts → Listes → l'ID est le numéro à côté du nom de ta liste</p>
+      </div>
+      <button onclick="saveBrevoConfig()" style="width:100%;padding:.6rem;background:var(--teal-deep);color:#fff;border:none;border-radius:8px;font-family:'Nunito',sans-serif;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;">Sauvegarder</button>
+    </div>
   </div>
 </section>
 <section class="b-preview">
@@ -1221,6 +1294,89 @@ window.movePc=async(coll,id,order,dir)=>{
   await loadColl(coll);
   toast('Ordre mis à jour ✦');
 };
+
+
+// ── CADRAGE PHOTOS HERO ──
+async function loadHeroPositions(){
+  try{
+    const snap=await getDoc(doc(db,'site','heroPositions'));
+    if(!snap.exists())return;
+    const d=snap.data();
+    ['corolles','mer','unique'].forEach(coll=>{
+      const desk=document.getElementById('pos-desk-'+coll);
+      const mob=document.getElementById('pos-mob-'+coll);
+      if(desk&&d[coll+'_desk'])desk.value=d[coll+'_desk'];
+      if(mob&&d[coll+'_mob'])mob.value=d[coll+'_mob'];
+    });
+  }catch(e){}
+}
+window.savePosDesktop=async(coll,val)=>{
+  const u={};u[coll+'_desk']=val;
+  await setDoc(doc(db,'site','heroPositions'),u,{merge:true});
+  toast('Cadrage desktop sauvegardé ✦');
+};
+window.savePosMobile=async(coll,val)=>{
+  const u={};u[coll+'_mob']=val;
+  await setDoc(doc(db,'site','heroPositions'),u,{merge:true});
+  toast('Cadrage mobile sauvegardé ✦');
+};
+setTimeout(loadHeroPositions,800);
+
+// ── BREVO NEWSLETTER ──
+let brevoKey=localStorage.getItem('brevo-key')||'';
+let brevoList=localStorage.getItem('brevo-list')||'';
+
+function initBrevoUI(){
+  const status=document.getElementById('brevo-status');
+  const fields=document.getElementById('brevo-fields');
+  if(!status)return;
+  if(brevoKey&&brevoList){
+    status.textContent='✦ Brevo connecté';
+    fields.style.display='none';
+  } else {
+    status.textContent='⚙ Brevo non configuré';
+    fields.style.display='block';
+  }
+  if(brevoKey) document.getElementById('brevo-key').value=brevoKey;
+  if(brevoList) document.getElementById('brevo-list').value=brevoList;
+}
+window.toggleBrevoConfig=()=>{
+  const f=document.getElementById('brevo-fields');
+  f.style.display=f.style.display==='none'?'block':'none';
+};
+window.saveBrevoConfig=async()=>{
+  brevoKey=document.getElementById('brevo-key').value.trim();
+  brevoList=document.getElementById('brevo-list').value.trim();
+  localStorage.setItem('brevo-key',brevoKey);
+  localStorage.setItem('brevo-list',brevoList);
+  // Sauvegarder dans Firebase pour que le site puisse l'utiliser
+  try{
+    await setDoc(doc(db,'site','brevo'),{key:brevoKey,list:brevoList});
+    toast('Configuration Brevo sauvegardée ✦');
+  }catch(e){toast('Erreur Firebase: '+e.message,'e');}
+  initBrevoUI();
+};
+window.testBrevo=async()=>{
+  const email=document.getElementById('test-email').value.trim();
+  if(!email){toast('Entre un email pour tester','e');return;}
+  if(!brevoKey||!brevoList){toast('Configure Brevo d\'abord','e');return;}
+  const res=await callBrevo(email);
+  if(res.ok) toast('✦ Email ajouté à ta liste Brevo !');
+  else toast('Erreur: '+res.msg,'e');
+};
+async function callBrevo(email){
+  try{
+    const res=await fetch('https://api.brevo.com/v3/contacts',{
+      method:'POST',
+      headers:{'api-key':brevoKey,'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({email,listIds:[parseInt(brevoList)],updateEnabled:true})
+    });
+    if(res.ok||res.status===204||res.status===201) return {ok:true};
+    const d=await res.json();
+    return {ok:false,msg:d.message||res.status};
+  }catch(e){return {ok:false,msg:e.message};}
+}
+setTimeout(initBrevoUI,500);
 
 let bCards=[];
 async function loadBoutique(){

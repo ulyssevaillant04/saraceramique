@@ -1546,7 +1546,6 @@ let galImgs = [
 ];
 let galIdx = 0;
 let galTouchX = null;
-let galAnimating = false;
 
 function openGallery(i) {
   galIdx = i;
@@ -1610,23 +1609,18 @@ function applyCarouselState(animate) {
 }
 
 function galNav(dir) {
-  if(galAnimating) return;
-  galAnimating = true;
   galIdx = (galIdx + dir + galImgs.length) % galImgs.length;
   applyCarouselState(true);
   updateGalCounter();
   document.querySelectorAll('.gal-lb-dot').forEach((d,i) => d.classList.toggle('active', i===galIdx));
-  setTimeout(() => { galAnimating = false; }, 560);
 }
 
 function galGoTo(i) {
-  if(i === galIdx || galAnimating) return;
+  if(i === galIdx) return;
   galIdx = i;
-  galAnimating = true;
   applyCarouselState(true);
   updateGalCounter();
   document.querySelectorAll('.gal-lb-dot').forEach((d,j) => d.classList.toggle('active', j===galIdx));
-  setTimeout(() => { galAnimating = false; }, 560);
 }
 
 function updateGalCounter() {
@@ -1728,21 +1722,17 @@ function applyLbCarouselState(animate){
 }
 function lbNav(dir){
   if(lbAnimating) return;
-  lbAnimating = true;
-  lbIdx = (lbIdx + dir + lbImgs.length) % lbImgs.length;
+    lbIdx = (lbIdx + dir + lbImgs.length) % lbImgs.length;
   applyLbCarouselState(true);
   updateLbCounter();
   document.querySelectorAll('#lb-dots .gal-lb-dot').forEach((d,i)=>d.classList.toggle('active',i===lbIdx));
-  setTimeout(()=>{lbAnimating=false;},560);
-}
+  }
 function lbGoTo(i){
-  if(i===lbIdx||lbAnimating) return;
-  lbIdx = i; lbAnimating = true;
-  applyLbCarouselState(true);
+  if(i===lbIdx) return;
+  lbIdx = i;   applyLbCarouselState(true);
   updateLbCounter();
   document.querySelectorAll('#lb-dots .gal-lb-dot').forEach((d,j)=>d.classList.toggle('active',j===lbIdx));
-  setTimeout(()=>{lbAnimating=false;},560);
-}
+  }
 function buildLbDots(){
   document.getElementById('lb-dots').innerHTML = lbImgs.length > 1
     ? lbImgs.map((_,i)=>`<button class="gal-lb-dot${i===0?' active':''}" onclick="lbGoTo(${i})"></button>`).join('')

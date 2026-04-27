@@ -1291,96 +1291,37 @@ window.openCadraMobile=async(coll)=>{
 
 async function initCadrageModal(coll,mode,opts){
   const imgEl=document.getElementById('img-cp-'+coll+'-hero');
-  if(!imgEl||!imgEl.src){toast('Ajoutez d\'abord une photo','e');return;}
+  if(!imgEl||!imgEl.src){toast('Ajoutez d'abord une photo','e');return;}
+  const isDesk=mode==='desk';
+  let posX=50,posY=50;
+  try{const snap=await getDoc(doc(db,'site','heroPositions'));if(snap.exists()){const pct=snap.data()[coll+'_'+mode+'_pct'];if(pct){posX=pct.x;posY=pct.y;}}}catch(e){}
+  cadrageState.x=posX;cadrageState.y=posY;
+  document.getElementById('m-cadrage').classList.add('open');
+  await new Promise(r=>setTimeout(r,120));
   const preview=document.getElementById('cadrage-preview');
   const frame=document.getElementById('cadrage-frame');
   const img=document.getElementById('cadrage-img');
-  
-  const isDesk=mode==='desk';
-  preview.style.width='100%';
-  preview.style.height='320px';
-  
-  // Charger position actuelle
-  let posX=50,posY=50;
-  try{
-    const snap=await getDoc(doc(db,'site','heroPositions'));
-    if(snap.exists()){
-      const pct=snap.data()[coll+'_'+mode+'_pct'];
-      if(pct){posX=pct.x;posY=pct.y;}
-    }
-  }catch(e){}
-  cadrageState.x=posX; cadrageState.y=posY;
-  
-  img.src=imgEl.src;
-  img.onload=()=>{
-    const pw=preview.offsetWidth;
-    const ph=320;
-    // Desktop : frame 16:9, Mobile : frame CARRÉ
-    const fw=isDesk?pw:Math.min(pw,320);
-    const fh=isDesk?Math.round(fw*9/16):fw; // carré pour mobile
-    
-    const scale=Math.max(fw/img.naturalWidth, fh/img.naturalHeight)*1.4;
-    const iw=img.naturalWidth*scale, ih=img.naturalHeight*scale;
-    img.style.width=iw+'px'; img.style.height=ih+'px';
-    
-    const fl=Math.round((pw-fw)/2), ft=Math.round((ph-fh)/2);
-    frame.style.width=fw+'px'; frame.style.height=fh+'px';
-    frame.style.left=fl+'px'; frame.style.top=ft+'px';
-    
-    const maxX=iw-fw, maxY=ih-fh;
-    const startL=fl-maxX*(posX/100);
-    const startT=ft-maxY*(posY/100);
-    img.style.left=Math.round(startL)+'px';
-    img.style.top=Math.round(startT)+'px';
-    
-    updatePosDisplay();
-    initDrag(preview,img,frame,iw,ih,fw,fh,fl,ft);
-  };
-  document.getElementById('m-cadrage').classList.add('open');
-}
-
-function updatePosDisplay(){
-  document.getElementById('cadrage-pos-display').textContent=`X:${Math.round(cadrageState.x)}% Y:${Math.round(cadrageState.y)}%`;
-}
-
-function initDrag(preview,img,frame,iw,ih,fw,fh,fl,ft){
-  let dragging=false,startX,startY,startLeft,startTop;
-  const minL=fl-(iw-fw), maxL=fl;
-  const minT=ft-(ih-fh), maxT=ft;
-  
-  const onDown=e=>{
-    dragging=true;
-    const pt=e.touches?e.touches[0]:e;
-    startX=pt.clientX; startY=pt.clientY;
-    startLeft=parseInt(img.style.left)||0;
-    startTop=parseInt(img.style.top)||0;
-    img.style.cursor='grabbing';
-  };
-  const onMove=e=>{
-    if(!dragging)return;
-    e.preventDefault();
-    const pt=e.touches?e.touches[0]:e;
-    const dx=pt.clientX-startX, dy=pt.clientY-startY;
-    const newL=Math.min(maxL,Math.max(minL,startLeft+dx));
-    const newT=Math.min(maxT,Math.max(minT,startTop+dy));
-    img.style.left=newL+'px'; img.style.top=newT+'px';
-    const rangeX=maxL-minL, rangeY=maxT-minT;
-    cadrageState.x=rangeX>0?Math.round(((newL-minL)/rangeX)*100):50;
-    cadrageState.y=rangeY>0?Math.round(((newT-minT)/rangeY)*100):50;
-    updatePosDisplay();
-  };
-  const onUp=()=>{dragging=false;img.style.cursor='grab';};
-  
-  // Nettoyer anciens listeners
-  const newImg=img.cloneNode(true);
-  img.parentNode.replaceChild(newImg,img);
-  const ni=document.getElementById('cadrage-img');
-  ni.addEventListener('mousedown',onDown);
-  document.addEventListener('mousemove',onMove);
-  document.addEventListener('mouseup',onUp);
-  ni.addEventListener('touchstart',onDown,{passive:false});
-  document.addEventListener('touchmove',onMove,{passive:false});
-  document.addEventListener('touchend',onUp);
+  preview.style.cssText='height:320px;position:relative;overflow:hidden;';
+  await new Promise(r=>{if(img.src===imgEl.src&&img.complete){r();return;}img.onload=r;img.onerror=r;img.src=imgEl.src;});
+  const pw=preview.offsetWidth||520,ph=320;
+  const fw=isDesk?pw:Math.min(Math.round(ph*0.7),300);
+  const fh=isDesk?Math.round(fw*(9/16)):fw;
+  const scale=Math.max(fw/img.naturalWidth,fh/img.naturalHeight)*1.5;
+  const iw=Math.round(img.naturalWidth*scale),ih=Math.round(img.naturalHeight*scale);
+  const fl=Math.round((pw-fw)/2),ft=Math.round((ph-fh)/2);
+  const minL=fl-(iw-fw),maxL=fl,minT=ft-(ih-fh),maxT=ft;
+  const startL=Math.round(minL+(maxL-minL)*(posX/100));
+  const startT=Math.round(minT+(maxT-minT)*(posY/100));
+  frame.style.cssText=`position:absolute;width:${fw}px;height:${fh}px;left:${fl}px;top:${ft}px;border:2.5px solid #fff;box-shadow:0 0 0 2000px rgba(0,0,0,.5);z-index:2;pointer-events:none;border-radius:4px;`;
+  img.style.cssText=`position:absolute;width:${iw}px;height:${ih}px;left:${startL}px;top:${startT}px;cursor:grab;user-select:none;-webkit-user-drag:none;`;
+  updatePosDisplay();
+  let drag=false,sx,sy,sl,st;
+  const down=e=>{drag=true;const p=e.touches?e.touches[0]:e;sx=p.clientX;sy=p.clientY;sl=parseInt(img.style.left);st=parseInt(img.style.top);img.style.cursor='grabbing';e.preventDefault();};
+  const move=e=>{if(!drag)return;e.preventDefault();const p=e.touches?e.touches[0]:e;const nl=Math.min(maxL,Math.max(minL,sl+(p.clientX-sx)));const nt=Math.min(maxT,Math.max(minT,st+(p.clientY-sy)));img.style.left=nl+'px';img.style.top=nt+'px';const rx=maxL-minL,ry=maxT-minT;cadrageState.x=rx>0?Math.round(((nl-minL)/rx)*100):50;cadrageState.y=ry>0?Math.round(((nt-minT)/ry)*100):50;updatePosDisplay();};
+  const up=()=>{drag=false;img.style.cursor='grab';};
+  img.addEventListener('mousedown',down);img.addEventListener('touchstart',down,{passive:false});
+  window.addEventListener('mousemove',move);window.addEventListener('mouseup',up);
+  window.addEventListener('touchmove',move,{passive:false});window.addEventListener('touchend',up);
 }
 
 window.saveCadragePos=async()=>{

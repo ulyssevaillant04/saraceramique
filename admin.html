@@ -1291,7 +1291,7 @@ window.openCadraMobile=async(coll)=>{
 
 async function initCadrageModal(coll,mode,opts){
   const imgEl=document.getElementById('img-cp-'+coll+'-hero');
-  if(!imgEl||!imgEl.src){toast('Ajoutez d'abord une photo','e');return;}
+  if(!imgEl||!imgEl.src){toast('Aucune photo — ajoutez-en une d\'abord','e');return;}
   const isDesk=mode==='desk';
   let posX=50,posY=50;
   try{const snap=await getDoc(doc(db,'site','heroPositions'));if(snap.exists()){const pct=snap.data()[coll+'_'+mode+'_pct'];if(pct){posX=pct.x;posY=pct.y;}}}catch(e){}

@@ -649,7 +649,11 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   #page-home .h-title{font-size:clamp(2.2rem,11vw,4rem);}
   #page-home .h-orn{margin:1.4rem 0;}
   #page-home .h-btns{flex-direction:column;gap:.8rem;align-items:flex-start;}
-  #apropos,#contact{grid-template-columns:1fr;gap:2.5rem;padding:4rem 1.5rem;}
+  #apropos,#contact{grid-template-columns:1fr;gap:2.5rem;padding:1rem 1.5rem;}
+  #apropos,#galerie,#collections,#univers,#contact{scroll-margin-top:75px;}
+  #apropos .ab-vis{order:2;}
+  #apropos .reveal:last-of-type{order:1;}
+  #apropos,#galerie,#collections,#univers,#contact{scroll-margin-top:75px;}
   #galerie,#collections,#univers{padding:4rem 1.5rem;}
   .bento{grid-template-columns:1fr 1fr;grid-auto-rows:140px;}
   .g:nth-child(n){grid-column:auto;grid-row:auto;}
@@ -659,6 +663,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   .cp-hero{grid-template-columns:1fr !important;min-height:unset !important;margin-top:0;}
   .cp-hero-img{width:100% !important;aspect-ratio:1/1 !important;height:100vw !important;min-height:unset !important;display:block;}
   .cp-hero-text{padding:2.5rem 1.5rem;}
+  .coll-page{padding-top:0;}
   .cp-pieces{padding:3rem 1.5rem;}
   .cp-grid{grid-template-columns:1fr!important;}
   .cp-cta{padding:3rem 1.5rem;}
@@ -860,7 +865,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   </div>
   <div id="gal-voir-plus" style="display:none;text-align:center;margin-top:2.5rem;">
     <button onclick="openGallery(0)" style="display:inline-flex;align-items:center;gap:.7rem;padding:.88rem 2.4rem;background:transparent;border:1.5px solid rgba(75,191,196,.5);border-radius:50px;font-family:'Nunito',sans-serif;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--teal-deep);cursor:pointer;transition:all .3s;">
-      Voir toutes les photos ✦
+      Voir toutes les photos
     </button>
   </div>
 </section>

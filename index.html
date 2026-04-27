@@ -8,6 +8,9 @@
 <meta name="keywords" content="céramique, céramiste, Antibes, Côte d'Azur, tasses, mugs, artisanat, poterie, commande sur-mesure, Sara Mahjoub"/>
 <meta name="author" content="Sara Mahjoub"/>
 <link rel="canonical" href="https://saraceramique.fr"/>
+<link rel="preload" as="image" href="images/mug.JPG"/>
+<link rel="preload" as="image" href="images/coupe.JPG"/>
+<link rel="preload" as="image" href="images/lampadaire.JPG"/>
 <link rel="manifest" href="manifest.json"/>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%234bbfc4'/><g transform='translate(50,50)' fill='white'><ellipse cx='0' cy='-15' rx='10' ry='15' transform='rotate(0)'/><ellipse cx='0' cy='-15' rx='10' ry='15' transform='rotate(72)'/><ellipse cx='0' cy='-15' rx='10' ry='15' transform='rotate(144)'/><ellipse cx='0' cy='-15' rx='10' ry='15' transform='rotate(216)'/><ellipse cx='0' cy='-15' rx='10' ry='15' transform='rotate(288)'/><circle cx='0' cy='0' r='10' fill='%234bbfc4'/></g></svg>"/>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"/>
@@ -697,6 +700,30 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   .c-grid{gap:1.5rem;padding:0 .5rem;}
   .lb-inner{width:95vw;}
   .lb-info{padding:1rem 1.2rem 1.4rem;}
+}
+
+.btn-voir-plus{
+  display:inline-flex;align-items:center;gap:.7rem;
+  padding:.88rem 2.4rem;background:transparent;
+  border:1.5px solid rgba(75,191,196,.5);border-radius:50px;
+  font-family:'Nunito',sans-serif;font-size:.7rem;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:var(--teal-deep);cursor:pointer;
+  transition:all .35s cubic-bezier(.22,1,.36,1);
+  -webkit-tap-highlight-color:transparent;
+}
+@media(hover:hover){
+  .btn-voir-plus:hover{
+    background:linear-gradient(135deg,var(--teal-mid),var(--teal-deep));
+    border-color:transparent;color:#fff;
+    transform:translateY(-2px);
+    box-shadow:0 8px 24px rgba(42,157,163,.25);
+  }
+}
+.btn-voir-plus:active{
+  color:var(--teal-deep);border-color:var(--teal);
+  background:linear-gradient(to right,rgba(75,191,196,.09),transparent);
+  transform:scale(.97);
 }
 </style>
 </head>

@@ -545,10 +545,6 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
   <section class="cp-pieces">
     <h2 class="cp-pieces-title" contenteditable="true" data-key="cpCorollesPiecesTitle" spellcheck="false">Les pièces de la collection <em>Jardin Enchanté</em></h2>
     <div class="cp-grid" id="grid-corolles"></div>
-    <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1rem;">
-    <button class="add-pc" onclick="openAddPc('corolles')" style="flex:1;min-width:180px;">+ Ajouter une pièce</button>
-    <button class="add-pc" onclick="importFromHTML('corolles')" style="flex:1;min-width:180px;border-color:rgba(232,160,180,.4);color:var(--rose-deep);">📥 Importer depuis le site HTML</button>
-  </div>
   </section>
   <div class="cp-cta"><h2 contenteditable="true" data-key="cpCorollesCtaTtl" spellcheck="false">Une pièce vous fait rêver ?</h2><p contenteditable="true" data-key="cpCorollesCtaDesc" spellcheck="false">Chaque création est unique. Contactez-moi pour une commande sur-mesure.</p><span class="btn-teal">Me contacter ✦</span></div>
 </div>
@@ -582,10 +578,6 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
   <section class="cp-pieces">
     <h2 class="cp-pieces-title" contenteditable="true" data-key="cpMerPiecesTitle" spellcheck="false">Les pièces de la collection <em>Trésors Marins</em></h2>
     <div class="cp-grid" id="grid-mer"></div>
-    <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1rem;">
-    <button class="add-pc" onclick="openAddPc('mer')" style="flex:1;min-width:180px;">+ Ajouter une pièce</button>
-    <button class="add-pc" onclick="importFromHTML('mer')" style="flex:1;min-width:180px;border-color:rgba(232,160,180,.4);color:var(--rose-deep);">📥 Importer depuis le site HTML</button>
-  </div>
   </section>
   <div class="cp-cta"><h2 contenteditable="true" data-key="cpMerCtaTtl" spellcheck="false">Une pièce vous fait rêver ?</h2><p contenteditable="true" data-key="cpMerCtaDesc" spellcheck="false">Chaque création est unique. Contactez-moi pour une commande sur-mesure.</p><span class="btn-teal">Me contacter ✦</span></div>
 </div>
@@ -619,10 +611,6 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
   <section class="cp-pieces">
     <h2 class="cp-pieces-title" contenteditable="true" data-key="cpUniquePiecesTitle" spellcheck="false">Les pièces de la collection <em>Pièces Uniques</em></h2>
     <div class="cp-grid" id="grid-unique"></div>
-    <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1rem;">
-    <button class="add-pc" onclick="openAddPc('unique')" style="flex:1;min-width:180px;">+ Ajouter une pièce</button>
-    <button class="add-pc" onclick="importFromHTML('unique')" style="flex:1;min-width:180px;border-color:rgba(232,160,180,.4);color:var(--rose-deep);">📥 Importer depuis le site HTML</button>
-  </div>
   </section>
   <div class="cp-cta"><h2 contenteditable="true" data-key="cpUniqueCtaTtl" spellcheck="false">Votre projet vous attend</h2><p contenteditable="true" data-key="cpUniqueCtaDesc" spellcheck="false">Décrivez-moi votre rêve et ensemble nous créerons quelque chose d'unique.</p><span class="btn-teal">Me contacter ✦</span></div>
 </div>
@@ -711,9 +699,6 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
   <section class="cp-pieces">
     <h2 class="cp-pieces-title" contenteditable="true" data-key="expoPiecesTitle" spellcheck="false">Les expositions <em>Sujet de diplôme</em></h2>
     <div class="cp-grid" id="grid-expo"></div>
-    <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1rem;">
-      <button class="add-pc" onclick="openAddPc('expo')" style="flex:1;min-width:180px;">+ Ajouter un item</button>
-    </div>
   </section>
   <div class="cp-cta">
     <h2 contenteditable="true" data-key="expoCtaTtl" spellcheck="false">Vous souhaitez m'accueillir ?</h2>
@@ -1042,8 +1027,16 @@ async function loadColl(coll){
 function renderColl(coll,items){
   const g=document.getElementById('grid-'+coll);
   if(!g)return;
+  // Carte + en pointillés — identique pour toutes les collections y compris expo
+  const addCard=`<div class="pc-add-card" onclick="openAddPc('${coll}')"
+    style="border:2.5px dashed rgba(75,191,196,.38);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;cursor:pointer;transition:all .25s;background:none;min-height:260px;color:var(--teal-deep);font-family:'Nunito',sans-serif;"
+    onmouseenter="this.style.borderColor='var(--teal)';this.style.background='rgba(75,191,196,.04)'"
+    onmouseleave="this.style.borderColor='rgba(75,191,196,.38)';this.style.background='none'">
+    <div style="width:44px;height:44px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:1.4rem;line-height:1;font-weight:300;">+</div>
+    <span style="font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;">Ajouter</span>
+  </div>`;
   if(!items.length){
-    g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--text-soft);font-style:italic;">Aucune pièce — cliquez sur + pour en ajouter</div>';
+    g.innerHTML=addCard;
     return;
   }
   g.innerHTML=items.map((item,idx)=>{
@@ -1067,7 +1060,7 @@ function renderColl(coll,items){
         <button class="pc-act d" onclick="delPc('${coll}','${item.id}')">🗑️</button>
       </div>
     </div>`;
-  }).join('');
+  }).join('')+addCard;
   // Hover
   g.querySelectorAll('.pc-drag').forEach(el=>{
     el.addEventListener('mouseenter',()=>el.querySelector('.pc-hover-ov').style.opacity='1');

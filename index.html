@@ -231,6 +231,90 @@ loadCollFromFirebase('mer','page-mer');
 loadCollFromFirebase('unique','page-unique');
 loadCollFromFirebase('expo','page-sujetdediplome');
 
+// ── Collections dynamiques depuis Firebase ──
+onSnapshot(collection(db,'site','extraCollections'),snap=>{
+  if(snap.empty)return;
+  const colls=[];
+  snap.forEach(d=>colls.push({id:d.id,...d.data()}));
+  colls.sort((a,b)=>(a.order||0)-(b.order||0));
+  colls.forEach(c=>{
+    const pageId='coll-'+c.id;
+    // 1. Créer la page si elle n'existe pas
+    if(!document.getElementById('page-'+pageId)){
+      const div=document.createElement('div');
+      div.id='page-'+pageId;
+      div.className='page';
+      div.innerHTML=`
+<div class="coll-page">
+  <div class="cp-hero">
+    <div class="cp-hero-img"><img src="${c.img||''}" style="opacity:${c.img?'1':'0'};transition:opacity .4s;" id="img-cp-${pageId}-hero"/></div>
+    <div class="cp-hero-text">
+      <button class="cp-back" onclick="navScrollTo('#collections')"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
+      <p class="cp-hero-tag" data-key="dyncoll_${c.id}_tag">${c.tag||'Collection'}</p>
+      <h1 class="cp-hero-title" data-key="dyncoll_${c.id}_title">${c.name||''}<em></em></h1>
+      <div class="cp-divider"></div>
+      <p class="cp-hero-desc" data-key="dyncoll_${c.id}_desc">${c.desc||''}</p>
+    </div>
+  </div>
+  <section class="cp-pieces">
+    <h2 class="cp-pieces-title reveal" data-key="dyncoll_${c.id}_piecesTitle">Les pièces de la collection <em>${c.name||''}</em></h2>
+    <div class="cp-grid reveal" id="grid-${pageId}"></div>
+  </section>
+  <div class="cp-cta reveal">
+    <h2 data-key="cpCtaTtl">Une pièce vous fait rêver ?</h2>
+    <p data-key="cpCtaDesc">Chaque création est unique. Contactez-moi pour une commande sur-mesure.</p>
+    <button class="btn-teal" onclick="navScrollTo('#contact')">Me contacter</button>
+  </div>
+  <footer>
+    <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
+    <p class="f-tagline">Petits mondes enchantés · Côte d'Azur</p>
+    <ul class="f-links">
+      <li><a href="javascript:void(0)" onclick="navScrollTo('#collections');return false;">Collections</a></li>
+      <li><a href="javascript:void(0)" onclick="navScrollTo('#galerie');return false;">Galerie</a></li>
+      <li><a href="javascript:void(0)" onclick="navScrollTo('#contact');return false;">Contact</a></li>
+    </ul>
+    <p class="f-copy">© 2026 Sara Mahjoub — Tous droits réservés</p>
+  </footer>
+</div>`;
+      // Insérer avant la lightbox
+      document.getElementById('lightbox').before(div);
+      loadCollFromFirebase(pageId,'page-'+pageId);
+    }
+    // 2. Ajouter entrée dans le dropdown Collections menu desktop
+    if(!document.getElementById('dd-dyncoll-'+c.id)){
+      const a=document.createElement('a');
+      a.id='dd-dyncoll-'+c.id;
+      a.href='javascript:void(0)';
+      a.onclick=()=>{goTo(pageId);return false;};
+      a.innerHTML=`<svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" style="animation:spin 12s linear infinite;transform-origin:center;"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>${c.name||''}`;
+      const ddMenus=document.querySelectorAll('.has-dd .dd-menu-inner');
+      if(ddMenus[0])ddMenus[0].appendChild(a);
+    }
+    // 3. Ajouter entrée menu mobile Collections
+    if(!document.getElementById('mob-dyncoll-'+c.id)){
+      const a=document.createElement('a');
+      a.id='mob-dyncoll-'+c.id;
+      a.href='javascript:void(0)';
+      a.onclick=()=>{mobileNav(pageId);return false;};
+      a.innerHTML=`<span class="mob-dd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" style="animation:spin 12s linear infinite;width:14px;height:14px;display:block;"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>${c.name||''}`;
+      document.getElementById('mob-dd-items').appendChild(a);
+    }
+    // 4. Ajouter carte dans la grille collections de la home
+    if(!document.getElementById('coll-card-dyn-'+c.id)){
+      const cardDiv=document.createElement('div');
+      cardDiv.id='coll-card-dyn-'+c.id;
+      cardDiv.className='coll-card reveal';
+      cardDiv.setAttribute('onclick',`goTo('${pageId}')`);
+      cardDiv.innerHTML=`
+<div class="coll-img"><img src="${c.img||''}" /><div class="coll-img-ov"></div></div>
+<div class="coll-body"><p class="coll-tag">${c.tag||'Collection'}</p><h3 class="coll-name">${c.name||''}</h3><p class="coll-desc">${c.desc||''}</p><span class="coll-link">Découvrir →</span></div>`;
+      document.querySelector('.coll-grid').appendChild(cardDiv);
+    }
+    // 5. Exposer dans hashMap
+    if(window._goToHashMap){ window._goToHashMap[pageId]=pageId; window._hashToPage[pageId]=pageId; }
+  });
+});
+
 // ── Expositions dynamiques depuis Firebase ──
 // Génère les pages, cartes home et entrées de menu pour chaque exposition
 onSnapshot(doc(db,'site','expositions'),snap=>{

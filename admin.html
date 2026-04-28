@@ -1202,19 +1202,115 @@ window.delFixedColl=(coll,e)=>{e.stopPropagation();if(!confirm(`Masquer la colle
 
 // ── COLLECTIONS DYNAMIQUES ──
 async function loadDynColls(){
-  try{const snap=await getDocs(collection(db,'site','extraCollections'));const colls=[];snap.forEach(d=>colls.push({id:d.id,...d.data()}));colls.sort((a,b)=>(a.order||0)-(b.order||0));
-  const container=document.getElementById('dyn-colls');
-  container.innerHTML=colls.map(c=>`<div class="del-wrap"><button class="del-x" onclick="delDynColl('${c.id}','${(c.name||'').replace(/'/g,"\\'")}',event)">✕</button><div class="coll-card"><div class="coll-img"><img src="${c.img||''}" onerror="this.parentElement.style.background='rgba(75,191,196,.1)'"/><div class="coll-img-ov"></div></div><div class="coll-body"><p class="coll-tag">${c.tag||'Collection'}</p><h3 class="coll-name">${c.name||''}</h3><p class="coll-desc">${c.desc||''}</p><span class="coll-link">Découvrir →</span></div></div></div>`).join('');
+  try{
+    const snap=await getDocs(collection(db,'site','extraCollections'));
+    const colls=[];
+    snap.forEach(d=>colls.push({id:d.id,...d.data()}));
+    colls.sort((a,b)=>(a.order||0)-(b.order||0));
+    // Mettre à jour la grille de la home admin
+    const container=document.getElementById('dyn-colls');
+    if(container){
+      container.innerHTML=colls.map(c=>`
+        <div class="del-wrap">
+          <button class="del-x" onclick="delDynColl('${c.id}','${(c.name||'').replace(/'/g,"\\'")}',event)">✕</button>
+          <div class="coll-card" onclick="goPage('coll-${c.id}',null)" style="cursor:pointer;">
+            <div class="coll-img"><img src="${c.img||''}" onerror="this.parentElement.style.background='rgba(75,191,196,.1)'"/><div class="coll-img-ov"></div></div>
+            <div class="coll-body"><p class="coll-tag">${c.tag||'Collection'}</p><h3 class="coll-name">${c.name||''}</h3><p class="coll-desc">${c.desc||''}</p><span class="coll-link">Éditer →</span></div>
+          </div>
+        </div>`).join('');
+    }
+    // Créer les pages et entrées de menu pour chaque collection dyn
+    colls.forEach(c=>{ createDynCollPage(c); addDynCollToSnav(c); addDynCollToMenu(c); });
   }catch(e){}
 }
-window.openAddColl=()=>{['nc-name','nc-desc','nc-img'].forEach(id=>document.getElementById(id).value='');document.getElementById('nc-tag').value='Collection';document.getElementById('m-newcoll').classList.add('open');};
+
+function createDynCollPage(c){
+  const pageId='coll-'+c.id;
+  if(document.getElementById('pg-'+pageId))return;
+  const div=document.createElement('div');
+  div.id='pg-'+pageId;
+  div.className='pg';
+  div.innerHTML=`
+<div class="coll-page">
+  <div class="cp-hero">
+    <div class="cp-hero-img" style="position:relative;cursor:pointer;"
+      onmouseenter="this.querySelector('.hero-edit').style.opacity='1'"
+      onmouseleave="this.querySelector('.hero-edit').style.opacity='0'"
+      onclick="changeImg('cp-dyncoll-${c.id}-hero')">
+      <img id="img-cp-dyncoll-${c.id}-hero" src="${c.img||''}" style="width:100%;height:100%;object-fit:cover;display:block;background:linear-gradient(135deg,var(--aqua-light),var(--rose-pale));"/>
+      <div class="hero-edit" style="position:absolute;inset:0;background:rgba(26,53,53,.5);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+        <span style="color:#fff;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer la photo</span>
+      </div>
+    </div>
+    <div class="cp-hero-text">
+      <button class="cp-back" onclick="goPage('home',null);document.querySelector('.sn').click()"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
+      <p class="cp-hero-tag" contenteditable="true" data-key="dyncoll_${c.id}_tag" spellcheck="false">${c.tag||'Collection'}</p>
+      <h1 class="cp-hero-title" contenteditable="true" data-key="dyncoll_${c.id}_title" spellcheck="false">${c.name||''}<em></em></h1>
+      <div class="cp-divider"></div>
+      <p class="cp-hero-desc" contenteditable="true" data-key="dyncoll_${c.id}_desc" spellcheck="false">${c.desc||''}</p>
+    </div>
+  </div>
+  <section class="cp-pieces">
+    <h2 class="cp-pieces-title" contenteditable="true" data-key="dyncoll_${c.id}_piecesTitle" spellcheck="false">Les pièces de la collection <em>${c.name||''}</em></h2>
+    <div class="cp-grid" id="grid-${pageId}"></div>
+  </section>
+  <div class="cp-cta">
+    <h2 contenteditable="true" data-key="cpCtaTtl" spellcheck="false">Une pièce vous fait rêver ?</h2>
+    <p contenteditable="true" data-key="cpCtaDesc" spellcheck="false">Chaque création est unique. Contactez-moi pour une commande sur-mesure.</p>
+    <span class="btn-teal" style="cursor:default;">Me contacter</span>
+  </div>
+</div>`;
+  document.getElementById('m-newcoll').before(div);
+  loadColl(pageId);
+}
+
+function addDynCollToSnav(c){
+  const pageId='coll-'+c.id;
+  if(document.querySelector(`.sn[data-dyncoll-id="${c.id}"]`))return;
+  const btn=document.createElement('button');
+  btn.className='sn';
+  btn.dataset.dyncollId=c.id;
+  btn.textContent=c.name||'Collection';
+  btn.onclick=()=>goPage(pageId,btn);
+  // Insérer après "Pièces Uniques"
+  const uniqueBtn=Array.from(document.querySelectorAll('.sn')).find(b=>b.textContent.trim()==='Pièces Uniques');
+  if(uniqueBtn)uniqueBtn.after(btn);
+  else document.getElementById('snav').appendChild(btn);
+}
+
+function addDynCollToMenu(c){
+  // Déjà ajouté ?
+  if(document.querySelector(`[data-dyncoll-menu="${c.id}"]`))return;
+  // Dans le dropdown Collections du menu de l'admin (il n'y en a pas, les collections sont dans le snav)
+  // Rien à faire ici pour l'admin
+}
+
 window.saveNewColl=async()=>{
-  const name=document.getElementById('nc-name').value.trim();if(!name){toast('Nom obligatoire','e');return;}
-  const id=name.toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-');
-  await setDoc(doc(db,'site','extraCollections',id),{id,name,tag:document.getElementById('nc-tag').value,desc:document.getElementById('nc-desc').value,img:document.getElementById('nc-img').value,order:Date.now()});
-  closeMov('m-newcoll');await loadDynColls();toast('Collection créée ✦');
+  const name=document.getElementById('nc-name').value.trim();
+  if(!name){toast('Nom obligatoire','e');return;}
+  const id=name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'_'+Date.now().toString(36).slice(-4);
+  const data={id,name,tag:document.getElementById('nc-tag').value||'Collection',desc:document.getElementById('nc-desc').value,img:document.getElementById('nc-img').value,order:Date.now()};
+  await setDoc(doc(db,'site','extraCollections',id),data);
+  closeMov('m-newcoll');
+  await loadDynColls();
+  // Naviguer vers la nouvelle page
+  setTimeout(()=>goPage('coll-'+id,null),200);
+  toast('Collection "'+name+'" créée ✦');
 };
-window.delDynColl=async(id,name,e)=>{e.stopPropagation();if(!confirm(`Supprimer la collection "${name}" ?`))return;await deleteDoc(doc(db,'site','extraCollections',id));await loadDynColls();toast('Collection supprimée');};
+
+window.delDynColl=async(id,name,e)=>{
+  e.stopPropagation();
+  if(!confirm(`Supprimer la collection "${name}" et toutes ses pièces ?`))return;
+  await deleteDoc(doc(db,'site','extraCollections',id));
+  // Supprimer les pièces Firebase
+  try{const q=await getDocs(collection(db,'collections','coll-'+id,'pieces'));q.forEach(async d=>await deleteDoc(doc(db,'collections','coll-'+id,'pieces',d.id)));}catch(ex){}
+  // Retirer page et snav
+  const pg=document.getElementById('pg-coll-'+id); if(pg)pg.remove();
+  const btn=document.querySelector(`.sn[data-dyncoll-id="${id}"]`); if(btn)btn.remove();
+  await loadDynColls();
+  goPage('home',document.querySelector('.sn'));
+  toast('Collection supprimée');
+};
 
 // ── GITHUB UPLOAD ──
 let ghToken=localStorage.getItem('gh-token')||'';

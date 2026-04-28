@@ -438,13 +438,28 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
     <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--text-soft);max-width:48ch;margin:1.5rem auto 2rem;line-height:1.95;" contenteditable="true" data-key="expoDesc" spellcheck="false">Retrouvez Sara Mahjoub et ses créations lors de marchés artisanaux, galeries et événements sur la Côte d'Azur.</p>
   </div>
 
-  <!-- Titre grille pièces expo + lien vers pg-sujetdediplome -->
-  <div style="display:flex;align-items:center;justify-content:space-between;max-width:900px;margin:0 auto 1.5rem;">
-    <h3 class="cp-pieces-title" style="margin-bottom:0;font-size:1.1rem;" contenteditable="true" data-key="expoHomePiecesTitle" spellcheck="false">Sujet de diplôme <em>— les pièces</em></h3>
-    <button onclick="goPage('sujetdediplome',null)" style="font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-deep);background:none;border:1.5px solid var(--teal);border-radius:50px;padding:.35rem .9rem;cursor:pointer;font-family:'Nunito',sans-serif;">Éditer les items →</button>
+  <!-- Carte "Nouréa" — miroir exact du site, champs éditables -->
+  <div style="display:flex;justify-content:center;margin-bottom:3.5rem;">
+    <div style="max-width:340px;width:100%;background:rgba(253,250,247,.97);border:1.5px solid rgba(75,191,196,.22);border-radius:18px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.1);">
+      <!-- Image cliquable pour changer -->
+      <div style="aspect-ratio:1;background:linear-gradient(135deg,var(--aqua-light),var(--rose-pale));overflow:hidden;position:relative;cursor:pointer;"
+        onmouseenter="this.querySelector('.admin-img-ov').style.opacity='1'"
+        onmouseleave="this.querySelector('.admin-img-ov').style.opacity='0'"
+        onclick="changeImg('cp-expo-hero')">
+        <img id="img-cp-expo-hero-card" src="" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+        <div class="admin-img-ov" style="position:absolute;inset:0;background:rgba(26,53,53,.5);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+          <span style="color:#fff;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer la photo</span>
+        </div>
+      </div>
+      <div style="padding:1.4rem;">
+        <p contenteditable="true" data-key="expoCardTitle" spellcheck="false"
+          style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.05rem;color:var(--dark);margin-bottom:.4rem;outline:none;">Nouréa <em style="color:var(--rose-deep);">la lumière perdue</em></p>
+        <p contenteditable="true" data-key="expoCardSub" spellcheck="false"
+          style="font-size:.75rem;font-weight:300;color:var(--text-soft);line-height:1.7;margin-bottom:.8rem;outline:none;">Sujet de diplôme · Céramique &amp; installation</p>
+        <span style="font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal-deep);display:flex;align-items:center;gap:.4rem;opacity:.6;">Découvrir →</span>
+      </div>
+    </div>
   </div>
-  <!-- Aperçu grille (lu-only depuis Firebase, cliquable) -->
-  <div id="expo-home-grid-admin" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;max-width:900px;margin:0 auto 3rem;opacity:.7;pointer-events:none;"></div>
 
   <!-- Titre événements -->
   <h3 class="cp-pieces-title" style="font-size:1.1rem;margin-bottom:1.8rem;" contenteditable="true" data-key="expoEvtTitle" spellcheck="false">Marchés &amp; événements <em>à venir</em></h3>
@@ -458,7 +473,7 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
     <button onclick="addEvent('passe')" style="flex:1;padding:.75rem;background:linear-gradient(135deg,var(--rose),var(--rose-deep));color:#fff;border:none;border-radius:12px;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;font-family:'Nunito',sans-serif;cursor:pointer;">+ Ajouter événement passé</button>
   </div>
 
-  <p style="font-size:.72rem;color:var(--text-soft);font-style:italic;text-align:center;margin-top:1.5rem;">✦ Modifiez les champs directement · Puis "Tout enregistrer"</p>
+  <p style="font-size:.72rem;color:var(--text-soft);font-style:italic;text-align:center;margin-top:1.5rem;">✦ Cliquez sur les textes ou l'image pour modifier · Puis "Tout enregistrer"</p>
 </section>
 
 <!-- MON UNIVERS -->
@@ -960,7 +975,10 @@ async function saveGal(){await setDoc(doc(db,'site','galerie'),{imgs:galImgs});r
 async function loadImages(){
   try{const s=await getDoc(doc(db,'site','images'));if(!s.exists())return;const d=s.data();
   const m={'portrait':'portrait-img','coll-corolles':'img-coll-corolles','coll-mer':'img-coll-mer','coll-unique':'img-coll-unique','cp-corolles-hero':'img-cp-corolles-hero','cp-mer-hero':'img-cp-mer-hero','cp-unique-hero':'img-cp-unique-hero','cp-expo-hero':'img-cp-expo-hero'};
-  Object.entries(m).forEach(([k,id])=>{if(d[k]){const el=document.getElementById(id);if(el){el.src=d[k];el.style.display='block';}}});
+  Object.entries(m).forEach(([k,id])=>{if(d[k]){const el=document.getElementById(id);if(el){el.src=d[k];el.style.display='block';}
+    // Aussi mettre à jour la miniature sur la carte home
+    if(k==='cp-expo-hero'){const card=document.getElementById('img-cp-expo-hero-card');if(card){card.src=d[k];card.style.display='block';}}
+  }});
   // Items expo
   [1,2,3].forEach(n=>{if(d['expoItem'+n+'Img']){showExpoItemImg(n,d['expoItem'+n+'Img']);}});}catch(e){}
 }
@@ -1422,27 +1440,6 @@ async function loadEvenements(){
   }
 
   renderAdminEvents();
-  loadExpoHomePreview();
-}
-
-function loadExpoHomePreview(){
-  const grid=document.getElementById('expo-home-grid-admin');
-  if(!grid)return;
-  // Réutiliser loadColl expo pour l'aperçu
-  import('https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js').catch(()=>{});
-  try{
-    const q=query(collection(db,'collections','expo','pieces'),orderBy('order'));
-    onSnapshot(q,snap=>{
-      if(!grid)return;
-      if(snap.empty){grid.innerHTML='<p style="color:var(--text-soft);font-style:italic;font-size:.82rem;grid-column:1/-1;text-align:center;">Aucun item — ajoutez-en depuis la page Sujet de diplôme</p>';return;}
-      const items=[];snap.forEach(d=>items.push({id:d.id,...d.data()}));
-      grid.innerHTML=items.map(item=>`
-        <div style="background:rgba(253,250,247,.9);border:1px solid rgba(75,191,196,.15);border-radius:12px;overflow:hidden;">
-          <div style="aspect-ratio:1;overflow:hidden;background:rgba(75,191,196,.08);">${item.imgs&&item.imgs[0]?`<img src="${item.imgs[0]}" style="width:100%;height:100%;object-fit:cover;"/>`:'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:.72rem;color:var(--text-soft);">À venir</div>'}</div>
-          <div style="padding:.8rem;"><p style="font-family:\'Playfair Display\',serif;font-style:italic;font-size:.88rem;color:var(--dark);">${item.name||''}</p></div>
-        </div>`).join('');
-    });
-  }catch(e){}
 }
 
 function renderAdminEvents(){

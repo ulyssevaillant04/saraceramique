@@ -254,9 +254,19 @@ function renderEvenements(evts){
 }
 
 onSnapshot(doc(db,'site','evenements'),snap=>{
-  if(!snap.exists()){renderEvenements([]);return;}
-  const raw=snap.data().liste;
-  try{renderEvenements(Array.isArray(raw)?raw:JSON.parse(raw||'[]'));}catch(e){renderEvenements([]);}
+  let evts=[];
+  if(snap.exists()){
+    const raw=snap.data().liste;
+    try{evts=Array.isArray(raw)?raw:JSON.parse(raw||'[]');}catch(e){evts=[];}
+  }
+  // Événements par défaut si vide
+  if(!evts.length){
+    evts=[
+      {jour:'—',mois:'',nom:'Marché de Vence',lieu:'Lieu et date à annoncer — suivez Instagram pour les actualités !',lien:'',statut:'futur'},
+      {jour:'✦',mois:'',nom:"Marché d'Antibes",lieu:'Décembre 2024 · Marché artisanal du vieux Antibes',lien:'',statut:'passe'}
+    ];
+  }
+  renderEvenements(evts);
 });
 
 </script>
@@ -1023,8 +1033,8 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
         </div>
       </div>
       <div style="padding:1.4rem;">
-        <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.05rem;color:var(--dark);margin-bottom:.4rem;">Nouréa <em style="color:var(--rose-deep);">la lumière perdue</em></p>
-        <p style="font-size:.75rem;font-weight:300;color:var(--text-soft);line-height:1.7;margin-bottom:.8rem;">Sujet de diplôme · Céramique &amp; installation</p>
+        <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.05rem;color:var(--dark);margin-bottom:.4rem;" data-key="expoCardTitle">Nouréa <em style="color:var(--rose-deep);">la lumière perdue</em></p>
+        <p style="font-size:.75rem;font-weight:300;color:var(--text-soft);line-height:1.7;margin-bottom:.8rem;" data-key="expoCardSub">Sujet de diplôme · Céramique &amp; installation</p>
         <span style="font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal-deep);display:flex;align-items:center;gap:.4rem;">Découvrir <svg width="12" height="6" viewBox="0 0 12 6" fill="none"><path d="M0 3h10M7 1l3 2-3 2" stroke="currentColor" stroke-width=".9"/></svg></span>
       </div>
     </div>

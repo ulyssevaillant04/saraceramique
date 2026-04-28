@@ -438,6 +438,9 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
     <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--text-soft);max-width:48ch;margin:1.5rem auto 2rem;line-height:1.95;" contenteditable="true" data-key="expoDesc" spellcheck="false">Retrouvez Sara Mahjoub et ses créations lors de marchés artisanaux, galeries et événements sur la Côte d'Azur.</p>
   </div>
 
+  <!-- Titre Expositions passées -->
+  <h3 class="cp-pieces-title" style="font-size:1.1rem;margin-bottom:1.5rem;" contenteditable="true" data-key="expoPasseesTitle" spellcheck="false">Expositions <em style="color:var(--teal);">passées</em></h3>
+
   <!-- Carte "Nouréa" — miroir exact du site, champs éditables -->
   <div style="display:flex;justify-content:center;margin-bottom:3.5rem;">
     <div style="max-width:340px;width:100%;background:rgba(253,250,247,.97);border:1.5px solid rgba(75,191,196,.22);border-radius:18px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.1);">
@@ -1449,11 +1452,17 @@ function renderAdminEvents(){
     container.innerHTML='<p style="color:var(--text-soft);font-style:italic;font-size:.82rem;text-align:center;">Aucun événement — utilisez les boutons ci-dessous pour en ajouter</p>';
     return;
   }
-  container.innerHTML=currentEvents.map((e,i)=>`
-    <div style="display:flex;align-items:stretch;gap:1rem;background:rgba(253,250,247,.97);border:1.5px solid ${e.statut==='passe'?'rgba(232,160,180,.25)':'rgba(75,191,196,.22)'};border-radius:16px;padding:1.4rem 1.8rem;box-shadow:0 4px 18px rgba(42,157,163,.06);">
+  container.innerHTML=currentEvents.map((e,i)=>{
+    const isPasse=e.statut==='passe';
+    const bord=isPasse?'rgba(232,160,180,.25)':'rgba(75,191,196,.22)';
+    const grad=isPasse?'linear-gradient(135deg,var(--rose),var(--rose-deep))':'linear-gradient(135deg,var(--teal-mid),var(--teal-deep))';
+    const labelColor=isPasse?'var(--rose-deep)':'var(--teal-deep)';
+    const defaultLabel=isPasse?'passé':'à venir';
+    return `
+    <div style="display:flex;align-items:stretch;gap:1rem;background:rgba(253,250,247,.97);border:1.5px solid ${bord};border-radius:16px;padding:1.4rem 1.8rem;box-shadow:0 4px 18px rgba(42,157,163,.06);">
       <!-- Badge date -->
       <div style="display:flex;flex-direction:column;gap:.5rem;align-items:center;justify-content:center;flex-shrink:0;">
-        <div style="text-align:center;background:${e.statut==='passe'?'linear-gradient(135deg,var(--rose),var(--rose-deep))':'linear-gradient(135deg,var(--teal-mid),var(--teal-deep))'};color:#fff;border-radius:12px;padding:.6rem .9rem;min-width:58px;">
+        <div style="text-align:center;background:${grad};color:#fff;border-radius:12px;padding:.6rem .9rem;min-width:58px;">
           <input value="${e.jour||''}" onchange="updateEvent(${i},'jour',this.value)"
             placeholder="15" maxlength="5"
             style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:400;line-height:1;background:transparent;border:none;color:#fff;text-align:center;width:100%;outline:none;"/>
@@ -1461,7 +1470,10 @@ function renderAdminEvents(){
             placeholder="Jan" maxlength="10"
             style="font-size:.54rem;letter-spacing:.15em;text-transform:uppercase;background:transparent;border:none;color:#fff;text-align:center;width:100%;outline:none;margin-top:.1rem;"/>
         </div>
-        <span style="font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:${e.statut==='passe'?'var(--rose-deep)':'var(--teal-deep)'};">${e.statut==='passe'?'passé':'à venir'}</span>
+        <!-- Label éditable (à venir / passé / etc.) -->
+        <input value="${e.statut_label||defaultLabel}" onchange="updateEvent(${i},'statut_label',this.value)"
+          maxlength="20" title="Étiquette sous le badge"
+          style="font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:${labelColor};background:none;border:none;border-bottom:1px dashed ${labelColor};text-align:center;outline:none;width:62px;cursor:text;"/>
       </div>
       <!-- Champs texte -->
       <div style="flex:1;display:flex;flex-direction:column;gap:.5rem;justify-content:center;">
@@ -1474,7 +1486,8 @@ function renderAdminEvents(){
       </div>
       <!-- Supprimer -->
       <button onclick="deleteEvent(${i})" style="flex-shrink:0;align-self:flex-start;background:none;border:none;color:rgba(201,106,136,.5);font-size:1.1rem;cursor:pointer;padding:.2rem .4rem;line-height:1;transition:color .2s;" title="Supprimer">✕</button>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 window.updateEvent=(i,field,val)=>{
@@ -1484,8 +1497,13 @@ window.updateEvent=(i,field,val)=>{
   window._evtSaveTimer=setTimeout(saveEvents,1200);
 };
 
-window.addEvent=(statut)=>{
-  currentEvents.unshift({jour:'',mois:'',nom:'',lieu:'',lien:'',statut});
+window.addEvent=(statutSuggere)=>{
+  // Alternance automatique : prendre l'opposé du premier événement affiché
+  let statut=statutSuggere;
+  if(currentEvents.length>0){
+    statut=currentEvents[0].statut==='passe'?'futur':'passe';
+  }
+  currentEvents.unshift({jour:'',mois:'',nom:'',lieu:'',lien:'',statut,statut_label:statut==='passe'?'passé':'à venir'});
   renderAdminEvents();
   saveEvents();
 };

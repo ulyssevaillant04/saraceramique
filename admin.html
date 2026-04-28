@@ -1298,9 +1298,12 @@ window.saveNewColl=async()=>{
   const data={id,name,tag:document.getElementById('nc-tag').value||'Collection',desc:document.getElementById('nc-desc').value,img:document.getElementById('nc-img').value,order:Date.now()};
   await setDoc(doc(db,'site','extraCollections',id),data);
   closeMov('m-newcoll');
+  // Créer la page et le bouton snav immédiatement (synchrone)
+  createDynCollPage(data);
+  addDynCollToSnav(data);
   await loadDynColls();
-  // Naviguer vers la nouvelle page
-  setTimeout(()=>goPage('coll-'+id,null),200);
+  // Naviguer vers la nouvelle page maintenant qu'elle existe dans le DOM
+  goPage('coll-'+id, document.querySelector(`.sn[data-dyncoll-id="${id}"]`));
   toast('Collection "'+name+'" créée ✦');
 };
 
@@ -1601,13 +1604,13 @@ window.confirmNewExpo=async()=>{
   const newExpo={id,nom,cardTitle:nom,cardSub:'',imgKey:'cp-expo-'+id,pageKey:id,builtin:false,order:allExpositions.length};
   allExpositions.push(newExpo);
   await saveExpositions();
-  // Créer la page dans le DOM et dans le snav
+  // Créer la page et le bouton snav immédiatement (synchrone)
   createExpoDomPage(newExpo);
   addExpoToSnav(newExpo);
   closeMov('m-new-expo');
   renderAdminExpoGrid();
-  // Naviguer vers la nouvelle page
-  setTimeout(()=>goPage(id,null),200);
+  // Naviguer maintenant que la page existe dans le DOM
+  goPage(id, document.querySelector(`.sn[data-expo-id="${id}"]`));
   toast('Exposition "'+nom+'" créée ✦');
 };
 

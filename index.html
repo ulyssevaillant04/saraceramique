@@ -179,6 +179,15 @@ onSnapshot(doc(db,'site','images'),snap=>{
         el.src=d[k];
         if(el.complete) el.style.opacity='1';
       }
+      // Aussi afficher dans la carte home si c'est expo
+      if(k==='cp-expo-hero'){
+        const card=document.getElementById('img-expo-card-home');
+        const ph=document.getElementById('expo-card-placeholder');
+        if(card){
+          card.onload=()=>{card.style.opacity='1';if(ph)ph.style.display='none';};
+          card.src=d[k];
+        }
+      }
     } else {
       const el=document.querySelector(sel);
       if(el) el.style.opacity='1';
@@ -221,6 +230,35 @@ loadCollFromFirebase('corolles','page-corolles');
 loadCollFromFirebase('mer','page-mer');
 loadCollFromFirebase('unique','page-unique');
 loadCollFromFirebase('expo','page-sujetdediplome');
+
+// ── Événements (site/evenements → tableau JSON) ──
+function renderEvenements(evts){
+  const container=document.getElementById('expo-events-list');
+  if(!container)return;
+  if(!evts||!evts.length){container.innerHTML='';return;}
+  const futurs=evts.filter(e=>e.statut!=='passe');
+  const passes=evts.filter(e=>e.statut==='passe');
+  const makeCard=(e,isPasse)=>`
+    <div class="expo-evt-card${isPasse?' expo-evt-passe':''}" ${e.lien?`onclick="window.open('${e.lien}','_blank')" style="cursor:pointer;"`:''}>
+      <div class="expo-evt-badge" style="background:${isPasse?'linear-gradient(135deg,var(--rose),var(--rose-deep))':'linear-gradient(135deg,var(--teal-mid),var(--teal-deep))'};">
+        <div class="expo-evt-jour">${e.jour||'—'}</div>
+        <div class="expo-evt-mois">${e.mois||''}</div>
+      </div>
+      <div class="expo-evt-body">
+        <p class="expo-evt-nom">${e.nom||''}</p>
+        <p class="expo-evt-lieu">${e.lieu||''}</p>
+      </div>
+      ${e.lien?`<a href="${e.lien}" target="_blank" rel="noopener" class="expo-evt-link" onclick="event.stopPropagation()">+ infos</a>`:''}
+    </div>`;
+  container.innerHTML=[...futurs.map(e=>makeCard(e,false)),...passes.map(e=>makeCard(e,true))].join('');
+}
+
+onSnapshot(doc(db,'site','evenements'),snap=>{
+  if(!snap.exists()){renderEvenements([]);return;}
+  const raw=snap.data().liste;
+  try{renderEvenements(Array.isArray(raw)?raw:JSON.parse(raw||'[]'));}catch(e){renderEvenements([]);}
+});
+
 </script>
 <style>
 /* ══════════════════════════════════════════
@@ -449,6 +487,23 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 .cp-pieces{padding:6rem 5rem;background:rgba(250,245,239,0.82);}
 .cp-pieces-title{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,2.8vw,2rem);font-weight:400;color:var(--dark);text-align:center;margin-bottom:3.5rem;}
 .cp-pieces-title em{font-style:italic;color:var(--rose-deep);}
+
+/* ── Cartes événements ── */
+.expo-evt-card{display:flex;align-items:center;gap:2rem;background:rgba(253,250,247,.97);border:1px solid rgba(75,191,196,.18);border-radius:18px;padding:1.6rem 2rem;box-shadow:0 8px 28px rgba(42,157,163,.08);transition:box-shadow .25s,transform .25s;}
+.expo-evt-card:hover{box-shadow:0 14px 38px rgba(42,157,163,.16);transform:translateY(-2px);}
+.expo-evt-passe{border-color:rgba(232,160,180,.18);box-shadow:0 8px 28px rgba(201,106,136,.06);opacity:.78;}
+.expo-evt-passe:hover{box-shadow:0 14px 38px rgba(201,106,136,.14);}
+.expo-evt-badge{flex-shrink:0;text-align:center;color:#fff;border-radius:14px;padding:.7rem 1.1rem;min-width:62px;}
+.expo-evt-jour{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:400;line-height:1.1;}
+.expo-evt-mois{font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;margin-top:.2rem;opacity:.9;}
+.expo-evt-body{flex:1;min-width:0;}
+.expo-evt-nom{font-family:'Playfair Display',serif;font-style:italic;font-size:1.05rem;color:var(--dark);margin-bottom:.3rem;}
+.expo-evt-lieu{font-size:.78rem;font-weight:300;color:var(--text-soft);line-height:1.7;}
+.expo-evt-link{flex-shrink:0;display:inline-flex;align-items:center;padding:.45rem 1rem;border:1.5px solid var(--teal);border-radius:50px;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--teal-deep);text-decoration:none;font-family:'Nunito',sans-serif;transition:background .2s,color .2s;}
+.expo-evt-link:hover{background:var(--teal);color:#fff;}
+.expo-evt-passe .expo-evt-link{border-color:var(--rose);color:var(--rose-deep);}
+.expo-evt-passe .expo-evt-link:hover{background:var(--rose);color:#fff;}
+@media(max-width:600px){.expo-evt-card{gap:1rem;padding:1.2rem 1.3rem;}.expo-evt-link{display:none;}}
 .cp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;}
 .pc{background:var(--white);border-radius:14px;overflow:hidden;box-shadow:0 5px 22px rgba(42,157,163,.07);transition:transform .3s,box-shadow .3s;cursor:pointer;}
 .pc:hover{transform:translateY(-6px);box-shadow:0 14px 38px rgba(42,157,163,.13);}
@@ -955,28 +1010,32 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     <h2 class="s-ttl" data-key="expoTtl">À la rencontre<br><em>du public</em></h2>
     <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--text-soft);max-width:48ch;margin:1.8rem auto 3.5rem;line-height:1.95;" data-key="expoDesc">Retrouvez Sara Mahjoub et ses créations lors de marchés artisanaux, galeries et événements sur la Côte d'Azur.</p>
   </div>
-  <div class="reveal" style="max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:1.5rem;">
-    <div style="background:rgba(253,250,247,.97);border:1px solid rgba(75,191,196,.18);border-radius:18px;padding:2rem 2.5rem;box-shadow:0 8px 28px rgba(42,157,163,.08);display:flex;align-items:center;gap:2rem;">
-      <div style="flex-shrink:0;text-align:center;background:linear-gradient(135deg,var(--teal-mid),var(--teal-deep));color:#fff;border-radius:14px;padding:.8rem 1.2rem;min-width:64px;">
-        <div style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:400;line-height:1;">—</div>
-        <div style="font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;margin-top:.2rem;opacity:.85;">à venir</div>
+
+  <!-- Item unique → page Sujet de diplôme -->
+  <div class="reveal" style="display:flex;justify-content:center;margin-bottom:3.5rem;">
+    <div onclick="goTo('sujetdediplome')" style="cursor:pointer;max-width:320px;width:100%;background:rgba(253,250,247,.97);border:1px solid rgba(75,191,196,.2);border-radius:18px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.1);transition:transform .3s,box-shadow .3s;"
+      onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 16px 40px rgba(42,157,163,.18)'"
+      onmouseleave="this.style.transform='';this.style.boxShadow='0 8px 28px rgba(42,157,163,.1)'">
+      <div style="aspect-ratio:1;background:linear-gradient(135deg,var(--aqua-light),var(--rose-pale));overflow:hidden;position:relative;">
+        <img id="img-expo-card-home" src="" style="width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s;"/>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;" id="expo-card-placeholder">
+          <span style="font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--teal-deep);opacity:.6;">Expositions</span>
+        </div>
       </div>
-      <div>
-        <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.05rem;color:var(--dark);margin-bottom:.3rem;" data-key="expo1Name">Prochaine exposition</p>
-        <p style="font-size:.78rem;font-weight:300;color:var(--text-soft);line-height:1.7;" data-key="expo1Lieu">Lieu et date à annoncer — suivez Instagram pour les actualités !</p>
-      </div>
-    </div>
-    <div style="background:rgba(253,250,247,.97);border:1px solid rgba(232,160,180,.18);border-radius:18px;padding:2rem 2.5rem;box-shadow:0 8px 28px rgba(201,106,136,.06);display:flex;align-items:center;gap:2rem;opacity:.75;">
-      <div style="flex-shrink:0;text-align:center;background:linear-gradient(135deg,var(--rose),var(--rose-deep));color:#fff;border-radius:14px;padding:.8rem 1.2rem;min-width:64px;">
-        <div style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:400;line-height:1;">✦</div>
-        <div style="font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;margin-top:.2rem;opacity:.85;">passée</div>
-      </div>
-      <div>
-        <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.05rem;color:var(--dark);margin-bottom:.3rem;" data-key="expo2Name">Marché de Noël — Antibes</p>
-        <p style="font-size:.78rem;font-weight:300;color:var(--text-soft);line-height:1.7;" data-key="expo2Lieu">Décembre 2024 · Marché artisanal du vieux Antibes</p>
+      <div style="padding:1.4rem;">
+        <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.05rem;color:var(--dark);margin-bottom:.4rem;">Nouréa <em style="color:var(--rose-deep);">la lumière perdue</em></p>
+        <p style="font-size:.75rem;font-weight:300;color:var(--text-soft);line-height:1.7;margin-bottom:.8rem;">Sujet de diplôme · Céramique &amp; installation</p>
+        <span style="font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal-deep);display:flex;align-items:center;gap:.4rem;">Découvrir <svg width="12" height="6" viewBox="0 0 12 6" fill="none"><path d="M0 3h10M7 1l3 2-3 2" stroke="currentColor" stroke-width=".9"/></svg></span>
       </div>
     </div>
   </div>
+
+  <!-- Événements -->
+  <div class="reveal" style="text-align:center;margin-bottom:2.5rem;">
+    <h3 class="cp-pieces-title" style="margin-bottom:0;" data-key="expoEvtTitle">Marchés &amp; événements <em>à venir</em></h3>
+  </div>
+  <div id="expo-events-list" class="reveal" style="max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:1.2rem;"></div>
+
   <div style="text-align:center;margin-top:3.5rem;" class="reveal">
     <a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="btn-rose-outline" style="display:inline-flex;">
       Suivre les actualités sur Instagram
@@ -1071,7 +1130,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     </div>
   </div>
   <section class="cp-pieces">
-    <h2 class="cp-pieces-title reveal">Les pièces de la collection <em>Jardin Enchanté</em></h2>
+    <h2 class="cp-pieces-title reveal" data-key="cpCorollesPiecesTitle">Les pièces de la collection <em>Jardin Enchanté</em></h2>
     <div class="cp-grid reveal">
       <div class="pc" onclick="openLightbox(this)" data-imgs='["images/mug2.jpg","images/mug.jpg"]' data-name="Tasses Aurore" data-desc="Tasses délicates aux teintes nacrées de l'aurore, bords ondulés comme des pétales au lever du jour."><div class="pc-img"><img src="images/mug2.JPG" /></div><div class="pc-body"><p class="pc-name">Tasses Aurore</p><p class="pc-desc">Tasses délicates aux teintes nacrées de l'aurore, bords ondulés comme des pétales au lever du jour.</p></div></div>
       <div class="pc" onclick="openLightbox(this)" data-imgs='["images/mug.jpg","images/mug2.jpg"]' data-name="Mugs Cueillette" data-desc="Grands mugs généreux aux reliefs floraux, pour les matins où l'on prend le temps de rêver."><div class="pc-img"><img src="images/mug.JPG" /></div><div class="pc-body"><p class="pc-name">Mugs Cueillette</p><p class="pc-desc">Grands mugs généreux aux reliefs floraux, pour les matins où l'on prend le temps de rêver.</p></div></div>
@@ -1117,7 +1176,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     </div>
   </div>
   <section class="cp-pieces">
-    <h2 class="cp-pieces-title reveal">Les pièces de la collection <em>Trésors Marins</em></h2>
+    <h2 class="cp-pieces-title reveal" data-key="cpMerPiecesTitle">Les pièces de la collection <em>Trésors Marins</em></h2>
     <div class="cp-grid reveal">
       <div class="pc" onclick="openLightbox(this)" data-imgs='["images/coupe.jpg","images/coupe2.jpg"]' data-name="Coupes Coquillage" data-desc="Coupelles en grès aux reflets bronze et or, texturées comme des coquillages échoués sur la plage."><div class="pc-img"><img src="images/coupe.JPG" /></div><div class="pc-body"><p class="pc-name">Coupes Coquillage</p><p class="pc-desc">Coupelles en grès aux reflets bronze et or, texturées comme des coquillages échoués sur la plage.</p></div></div>
       <div class="pc" onclick="openLightbox(this)" data-imgs='["images/coupe2.jpg","images/coupe.jpg"]' data-name="Plateaux Écume" data-desc="Grands plateaux bas aux bords irréguliers évoquant l'écume, glaçure nacre et argent."><div class="pc-img"><img src="images/coupe2.JPG" /></div><div class="pc-body"><p class="pc-name">Plateaux Écume</p><p class="pc-desc">Grands plateaux bas aux bords irréguliers évoquant l'écume, glaçure nacre et argent.</p></div></div>
@@ -1166,7 +1225,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     </div>
   </div>
   <section class="cp-pieces">
-    <h2 class="cp-pieces-title reveal">Les pièces de la collection <em>Pièces Uniques</em></h2>
+    <h2 class="cp-pieces-title reveal" data-key="cpUniquePiecesTitle">Les pièces de la collection <em>Pièces Uniques</em></h2>
     <div class="cp-grid reveal">
       <div class="pc" onclick="openLightbox(this)" data-imgs='["images/lampadaire.jpg"]' data-name="Lampadaire Nouréa" data-desc="Sculpture lumineuse en grès noir, ailes de plumes modelées à la main. Pièce unique sur commande."><div class="pc-img"><img src="images/lampadaire.JPG" /></div><div class="pc-body"><p class="pc-name">Lampadaire Nouréa</p><p class="pc-desc">Sculpture lumineuse en grès noir, ailes de plumes modelées à la main. Pièce unique sur commande.</p></div></div>
       <div class="pc" onclick="openLightbox(this)" data-imgs='["images/fiole.jpg","images/coupe2.jpg"]' data-name="Fiole" data-desc="Carafe sculpturale aux bras végétaux, glaçure vert céladon. Objet de contemplation autant que de service."><div class="pc-img"><img src="images/fiole.JPG" /></div><div class="pc-body"><p class="pc-name">Fiole</p><p class="pc-desc">Carafe sculpturale aux bras végétaux, glaçure vert céladon. Objet de contemplation autant que de service.</p></div></div>

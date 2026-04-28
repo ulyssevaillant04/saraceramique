@@ -811,16 +811,16 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 <nav>
   <a class="nav-logo" onclick="goTo('home')" style="cursor:pointer">Sara <span>Céramique</span></a>
   <ul class="nav-links">
-    <li><a onclick="navScrollTo('#apropos')">À Propos</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#apropos');return false;">À Propos</a></li>
     <li class="has-dd">
-      <a onclick="navScrollTo('#collections')">Collections</a>
+      <a href="javascript:void(0)" onclick="navScrollTo('#collections');return false;">Collections</a>
       <div class="dd-menu">
         <div class="dd-menu-inner">
-          <a onclick="goTo('corolles')">
+          <a href="javascript:void(0)" onclick="goTo('corolles');return false;">
             <span class="dd-icon" style="display:flex;align-items:center;justify-content:center;color:var(--teal);font-size:1rem;animation:spin 12s linear infinite;">✿</span>
             Jardin Enchanté
           </a>
-          <a onclick="goTo('mer')">
+          <a href="javascript:void(0)" onclick="goTo('mer');return false;">
             <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="overflow:hidden;">
               <defs><clipPath id="wclip"><rect width="24" height="24"/></clipPath></defs>
               <g clip-path="url(#wclip)">
@@ -836,7 +836,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
             </svg>
             Trésors Marins
           </a>
-          <a onclick="goTo('unique')">
+          <a href="javascript:void(0)" onclick="goTo('unique');return false;">
             <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" style="animation:spin 12s linear infinite;transform-origin:center;">
               <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
             </svg>
@@ -846,16 +846,16 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
       </div>
     </li>
     <li class="has-dd">
-      <a onclick="navScrollTo('#expositions')">Expositions</a>
+      <a href="javascript:void(0)" onclick="navScrollTo('#expositions');return false;">Expositions</a>
       <div class="dd-menu">
         <div class="dd-menu-inner">
-          <a onclick="goTo('sujetdediplome')">Sujet de diplôme</a>
+          <a href="javascript:void(0)" onclick="goTo('sujetdediplome');return false;">Sujet de diplôme</a>
         </div>
       </div>
     </li>
-    <li><a onclick="navScrollTo('#galerie')">Galerie</a></li>
-    <li><a onclick="goTo('boutique')">Boutique <span class="nbadge">Bientôt</span></a></li>
-    <li><a onclick="navScrollTo('#contact')">Contact</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#galerie');return false;">Galerie</a></li>
+    <li><a href="javascript:void(0)" onclick="goTo('boutique');return false;">Boutique <span class="nbadge">Bientôt</span></a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#contact');return false;">Contact</a></li>
   </ul>
   <!-- Hamburger (mobile only) -->
   <button id="mob-btn" onclick="toggleMobileMenu()" aria-label="Menu">
@@ -871,7 +871,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
       <button class="mob-close" onclick="toggleMobileMenu()">✕</button>
     </div>
     <div class="mob-links">
-      <a onclick="mobileNav('#apropos')"><span class="mob-link-icon" style="color:var(--text-soft);font-size:.9rem;">✿</span>À Propos</a>
+      <a href="javascript:void(0)" onclick="mobileNav('#apropos');return false;"><span class="mob-link-icon" style="color:var(--text-soft);font-size:.9rem;">✿</span>À Propos</a>
       <div class="mob-dd">
         <button class="mob-dd-btn" onclick="toggleMobDd()">
           <span class="mob-link-icon">
@@ -886,11 +886,11 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
           <svg class="mob-dd-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
         </button>
         <div class="mob-dd-items" id="mob-dd-items">
-          <a onclick="mobileNav('corolles')">
+          <a href="javascript:void(0)" onclick="mobileNav('corolles');return false;">
             <span class="mob-dd-icon" style="color:var(--teal);animation:spin 12s linear infinite;display:inline-flex;">✿</span>
             Jardin Enchanté
           </a>
-          <a onclick="mobileNav('mer')">
+          <a href="javascript:void(0)" onclick="mobileNav('mer');return false;">
             <span class="mob-dd-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="overflow:hidden;width:16px;height:16px;">
                 <defs><clipPath id="wclip2"><rect width="24" height="24"/></clipPath></defs>
@@ -902,7 +902,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
             </span>
             Trésors Marins
           </a>
-          <a onclick="mobileNav('unique')">
+          <a href="javascript:void(0)" onclick="mobileNav('unique');return false;">
             <span class="mob-dd-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" style="animation:spin 12s linear infinite;width:14px;height:14px;display:block;">
                 <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
@@ -926,15 +926,15 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
           <svg class="mob-dd-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
         </button>
         <div class="mob-dd-items" id="mob-dd-items-expo">
-          <a onclick="mobileNav('sujetdediplome')">Sujet de diplôme</a>
+          <a href="javascript:void(0)" onclick="mobileNav('sujetdediplome');return false;">Sujet de diplôme</a>
         </div>
       </div>
-      <a onclick="mobileNav('#galerie')">
+      <a href="javascript:void(0)" onclick="mobileNav('#galerie');return false;">
         <span class="mob-link-icon">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="4"/></svg>
         </span>Galerie</a>
-      <a onclick="mobileNav('boutique')"><span class="mob-link-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></span>Boutique <span class="nbadge" style="margin-left:.5rem;">Bientôt</span></a>
-      <a onclick="mobileNav('#contact')">
+      <a href="javascript:void(0)" onclick="mobileNav('boutique');return false;"><span class="mob-link-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></span>Boutique <span class="nbadge" style="margin-left:.5rem;">Bientôt</span></a>
+      <a href="javascript:void(0)" onclick="mobileNav('#contact');return false;">
         <span class="mob-link-icon">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
         </span>Contact</a>
@@ -1119,11 +1119,11 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
   <p class="f-tagline" data-key="fTagline">Petits mondes enchantés · Côte d'Azur</p>
   <ul class="f-links">
-    <li><a onclick="navScrollTo('#apropos')">À Propos</a></li>
-    <li><a onclick="navScrollTo('#galerie')">Galerie</a></li>
-    <li><a onclick="navScrollTo('#collections')">Collections</a></li>
-    <li><a onclick="goTo('boutique')">Boutique</a></li>
-    <li><a onclick="navScrollTo('#contact')">Contact</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#apropos');return false;">À Propos</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#galerie');return false;">Galerie</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#collections');return false;">Collections</a></li>
+    <li><a href="javascript:void(0)" onclick="goTo('boutique');return false;">Boutique</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#contact');return false;">Contact</a></li>
     <li class="c-val-ig-wrap"><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="f-ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg class="c-val-ig">@saraceramique</a></li>
   </ul>
   <p class="f-copy" data-key="fCopy">© 2026 Sara Mahjoub — Tous droits réservés</p>
@@ -1165,11 +1165,11 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
   <p class="f-tagline">Petits mondes enchantés · Côte d'Azur</p>
   <ul class="f-links">
-    <li><a onclick="navScrollTo('#apropos')">À Propos</a></li>
-    <li><a onclick="navScrollTo('#galerie')">Galerie</a></li>
-    <li><a onclick="navScrollTo('#collections')">Collections</a></li>
-    <li><a onclick="goTo('boutique')">Boutique</a></li>
-    <li><a onclick="navScrollTo('#contact')">Contact</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#apropos');return false;">À Propos</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#galerie');return false;">Galerie</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#collections');return false;">Collections</a></li>
+    <li><a href="javascript:void(0)" onclick="goTo('boutique');return false;">Boutique</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#contact');return false;">Contact</a></li>
     <li class="c-val-ig-wrap"><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="f-ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg class="c-val-ig">@saraceramique</a></li>
   </ul>
   <p class="f-copy">© 2026 Sara Mahjoub — Tous droits réservés</p>
@@ -1214,11 +1214,11 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
   <p class="f-tagline">Petits mondes enchantés · Côte d'Azur</p>
   <ul class="f-links">
-    <li><a onclick="navScrollTo('#apropos')">À Propos</a></li>
-    <li><a onclick="navScrollTo('#galerie')">Galerie</a></li>
-    <li><a onclick="navScrollTo('#collections')">Collections</a></li>
-    <li><a onclick="goTo('boutique')">Boutique</a></li>
-    <li><a onclick="navScrollTo('#contact')">Contact</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#apropos');return false;">À Propos</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#galerie');return false;">Galerie</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#collections');return false;">Collections</a></li>
+    <li><a href="javascript:void(0)" onclick="goTo('boutique');return false;">Boutique</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#contact');return false;">Contact</a></li>
     <li class="c-val-ig-wrap"><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="f-ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg class="c-val-ig">@saraceramique</a></li>
   </ul>
   <p class="f-copy">© 2026 Sara Mahjoub — Tous droits réservés</p>
@@ -1259,11 +1259,11 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
   <p class="f-tagline">Petits mondes enchantés · Côte d'Azur</p>
   <ul class="f-links">
-    <li><a onclick="navScrollTo('#apropos')">À Propos</a></li>
-    <li><a onclick="navScrollTo('#galerie')">Galerie</a></li>
-    <li><a onclick="navScrollTo('#collections')">Collections</a></li>
-    <li><a onclick="goTo('boutique')">Boutique</a></li>
-    <li><a onclick="navScrollTo('#contact')">Contact</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#apropos');return false;">À Propos</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#galerie');return false;">Galerie</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#collections');return false;">Collections</a></li>
+    <li><a href="javascript:void(0)" onclick="goTo('boutique');return false;">Boutique</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#contact');return false;">Contact</a></li>
     <li class="c-val-ig-wrap"><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="f-ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg class="c-val-ig">@saraceramique</a></li>
   </ul>
   <p class="f-copy">© 2026 Sara Mahjoub — Tous droits réservés</p>
@@ -1304,11 +1304,11 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
   <p class="f-tagline">Petits mondes enchantés · Côte d'Azur</p>
   <ul class="f-links">
-    <li><a onclick="navScrollTo('#apropos')">À Propos</a></li>
-    <li><a onclick="navScrollTo('#galerie')">Galerie</a></li>
-    <li><a onclick="navScrollTo('#collections')">Collections</a></li>
-    <li><a onclick="goTo('boutique')">Boutique</a></li>
-    <li><a onclick="navScrollTo('#contact')">Contact</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#apropos');return false;">À Propos</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#galerie');return false;">Galerie</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#collections');return false;">Collections</a></li>
+    <li><a href="javascript:void(0)" onclick="goTo('boutique');return false;">Boutique</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#contact');return false;">Contact</a></li>
     <li class="c-val-ig-wrap"><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="f-ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg class="c-val-ig">@saraceramique</a></li>
   </ul>
   <p class="f-copy">© 2026 Sara Mahjoub — Tous droits réservés</p>
@@ -1347,12 +1347,12 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
   <p class="f-tagline">Petits mondes enchantés · Côte d'Azur</p>
   <ul class="f-links">
-    <li><a onclick="navScrollTo('#apropos')">À Propos</a></li>
-    <li><a onclick="navScrollTo('#collections')">Collections</a></li>
-    <li><a onclick="goTo('sujetdediplome')">Expositions</a></li>
-    <li><a onclick="navScrollTo('#galerie')">Galerie</a></li>
-    <li><a onclick="goTo('boutique')">Boutique</a></li>
-    <li><a onclick="navScrollTo('#contact')">Contact</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#apropos');return false;">À Propos</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#collections');return false;">Collections</a></li>
+    <li><a href="javascript:void(0)" onclick="goTo('sujetdediplome');return false;">Expositions</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#galerie');return false;">Galerie</a></li>
+    <li><a href="javascript:void(0)" onclick="goTo('boutique');return false;">Boutique</a></li>
+    <li><a href="javascript:void(0)" onclick="navScrollTo('#contact');return false;">Contact</a></li>
     <li class="c-val-ig-wrap"><a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="f-ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg>@saraceramique</a></li>
   </ul>
   <p class="f-copy">© 2026 Sara Mahjoub — Tous droits réservés</p>

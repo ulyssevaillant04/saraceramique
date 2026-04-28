@@ -70,7 +70,7 @@ const db=getFirestore(fb);
 
 // Textes
 onSnapshot(doc(db,'site','textes'),snap=>{
-  if(!snap.exists())return;
+  if(!snap.exists()){document.body.classList.add('texts-loaded');return;}
   const d=snap.data();
   // Mise à jour universelle via data-key (même système que l'admin)
   document.querySelectorAll('[data-key]').forEach(el=>{
@@ -81,7 +81,11 @@ onSnapshot(doc(db,'site','textes'),snap=>{
   if(d.collCorolles)document.querySelectorAll('[data-coll=corolles] .coll-desc').forEach(el=>el.textContent=d.collCorolles);
   if(d.collMer)document.querySelectorAll('[data-coll=mer] .coll-desc').forEach(el=>el.textContent=d.collMer);
   if(d.collUnique)document.querySelectorAll('[data-coll=unique] .coll-desc').forEach(el=>el.textContent=d.collUnique);
+  // Révéler tous les textes maintenant qu'ils sont à jour
+  document.body.classList.add('texts-loaded');
 });
+// Fallback : révéler les textes après 2s max si Firebase tarde
+setTimeout(()=>document.body.classList.add('texts-loaded'), 2000);
 
 
 // Cadrage photos hero (object-position)
@@ -233,6 +237,7 @@ loadCollFromFirebase('expo','page-sujetdediplome');
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;overflow-x:hidden;}
 body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--text);cursor:none;}
+body:not(.texts-loaded) [data-key]{visibility:hidden;}
 
 /* CURSOR */
 #cursor{position:fixed;width:10px;height:10px;background:var(--teal);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);box-shadow:0 0 14px rgba(75,191,196,.75);}
@@ -777,14 +782,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
       <a onclick="navScrollTo('#expositions')">Expositions</a>
       <div class="dd-menu">
         <div class="dd-menu-inner">
-          <a onclick="goTo('sujetdediplome')">
-            <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
-              <rect x="2" y="3" width="20" height="16" rx="2"/>
-              <path d="M8 19h8M12 19v2"/>
-              <path d="M7 8l3 3 4-4"/>
-            </svg>
-            Sujet de diplôme
-          </a>
+          <a onclick="goTo('sujetdediplome')">Sujet de diplôme</a>
         </div>
       </div>
     </li>
@@ -861,16 +859,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
           <svg class="mob-dd-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
         </button>
         <div class="mob-dd-items" id="mob-dd-items-expo">
-          <a onclick="mobileNav('sujetdediplome')">
-            <span class="mob-dd-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" style="width:15px;height:15px;">
-                <rect x="2" y="3" width="20" height="16" rx="2"/>
-                <path d="M8 19h8M12 19v2"/>
-                <path d="M7 8l3 3 4-4"/>
-              </svg>
-            </span>
-            Sujet de diplôme
-          </a>
+          <a onclick="mobileNav('sujetdediplome')">Sujet de diplôme</a>
         </div>
       </div>
       <a onclick="mobileNav('#galerie')">

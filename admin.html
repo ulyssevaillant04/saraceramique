@@ -689,17 +689,17 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
 </div><!-- /pg-sujetdediplome -->
 
 <!-- MODAL NOUVELLE EXPOSITION -->
-<div id="m-new-expo" style="display:none;position:fixed;inset:0;z-index:1200;background:rgba(26,53,53,.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
-  <div style="background:var(--white);border-radius:20px;padding:2.5rem;max-width:440px;width:90%;box-shadow:0 30px 80px rgba(26,53,53,.22);">
+<div id="m-new-expo" class="mov" style="z-index:1200;">
+  <div class="mov-inner" style="max-width:440px;">
     <h3 style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;color:var(--dark);margin-bottom:.5rem;">Nouvelle exposition</h3>
     <p style="font-size:.78rem;color:var(--text-soft);margin-bottom:1.8rem;">Donnez un nom à cette exposition. Vous pourrez ajouter l'image, le sous-titre et les pièces ensuite.</p>
     <div style="display:flex;flex-direction:column;gap:.4rem;margin-bottom:1.2rem;">
       <label style="font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--teal-deep);">Nom de l'exposition</label>
       <input id="new-expo-name" placeholder="ex : Horizons" style="padding:.8rem 1rem;border:1.5px solid rgba(75,191,196,.3);border-radius:10px;font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:var(--dark);outline:none;transition:border-color .2s;" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='rgba(75,191,196,.3)'"/>
     </div>
-    <div style="display:flex;gap:.8rem;margin-top:1.5rem;">
-      <button onclick="confirmNewExpo()" style="flex:1;padding:.85rem;background:linear-gradient(135deg,var(--teal-mid),var(--teal-deep));color:#fff;border:none;border-radius:50px;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;font-family:'Nunito',sans-serif;cursor:pointer;">Créer l'exposition</button>
-      <button onclick="closeModal('m-new-expo')" style="padding:.85rem 1.4rem;background:none;border:1.5px solid rgba(75,191,196,.3);border-radius:50px;font-size:.7rem;color:var(--text-soft);font-family:'Nunito',sans-serif;cursor:pointer;">Annuler</button>
+    <div class="mbrow" style="margin-top:1.5rem;">
+      <button class="mbp" onclick="confirmNewExpo()">Créer l'exposition ✦</button>
+      <button class="mbs" onclick="closeMov('m-new-expo')">Annuler</button>
     </div>
   </div>
 </div>
@@ -1285,6 +1285,12 @@ function addDynCollToMenu(c){
   // Rien à faire ici pour l'admin
 }
 
+window.openAddColl=()=>{
+  ['nc-name','nc-desc','nc-img'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('nc-tag').value='Collection';
+  document.getElementById('m-newcoll').classList.add('open');
+};
+
 window.saveNewColl=async()=>{
   const name=document.getElementById('nc-name').value.trim();
   if(!name){toast('Nom obligatoire','e');return;}
@@ -1583,7 +1589,7 @@ function renderAdminExpoGrid(){
 
 window.openNewExpoModal=()=>{
   document.getElementById('new-expo-name').value='';
-  document.getElementById('m-new-expo').style.display='flex';
+  document.getElementById('m-new-expo').classList.add('open');
   setTimeout(()=>document.getElementById('new-expo-name').focus(),100);
 };
 
@@ -1598,7 +1604,7 @@ window.confirmNewExpo=async()=>{
   // Créer la page dans le DOM et dans le snav
   createExpoDomPage(newExpo);
   addExpoToSnav(newExpo);
-  closeModal('m-new-expo');
+  closeMov('m-new-expo');
   renderAdminExpoGrid();
   // Naviguer vers la nouvelle page
   setTimeout(()=>goPage(id,null),200);

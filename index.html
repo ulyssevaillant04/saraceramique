@@ -231,6 +231,121 @@ loadCollFromFirebase('mer','page-mer');
 loadCollFromFirebase('unique','page-unique');
 loadCollFromFirebase('expo','page-sujetdediplome');
 
+// ── Expositions dynamiques depuis Firebase ──
+// Génère les pages, cartes home et entrées de menu pour chaque exposition
+onSnapshot(doc(db,'site','expositions'),snap=>{
+  if(!snap.exists())return;
+  const expos=snap.data().liste||[];
+  expos.forEach(expo=>{
+    if(expo.builtin||expo.id==='sujetdediplome')return; // Nouréa déjà dans le HTML
+    const pageId=expo.id;
+    // 1. Créer la page si elle n'existe pas
+    if(!document.getElementById('page-'+pageId)){
+      const div=document.createElement('div');
+      div.id='page-'+pageId;
+      div.className='page';
+      div.innerHTML=`
+<div class="coll-page">
+  <div class="cp-hero">
+    <div class="cp-hero-img"><img src="" style="opacity:0;transition:opacity .4s;background:linear-gradient(135deg,var(--aqua-light),var(--rose-pale));" id="img-cp-${pageId}-hero"/></div>
+    <div class="cp-hero-text">
+      <button class="cp-back" onclick="navScrollTo('#expositions')"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux expositions</button>
+      <p class="cp-hero-tag" data-key="${pageId}_tag">Expositions Sara Céramique</p>
+      <h1 class="cp-hero-title" data-key="${pageId}_title">${expo.nom}<em>À la rencontre du public</em></h1>
+      <div class="cp-divider"></div>
+      <p class="cp-hero-desc" data-key="${pageId}_desc">Retrouvez Sara Mahjoub et ses créations lors de marchés artisanaux, galeries et événements sur la Côte d'Azur.</p>
+    </div>
+  </div>
+  <section class="cp-pieces">
+    <h2 class="cp-pieces-title reveal" data-key="${pageId}_piecesTitle">Les pièces <em>${expo.nom}</em></h2>
+    <div class="cp-grid reveal" id="grid-${pageId}"></div>
+  </section>
+  <div class="cp-cta reveal">
+    <h2 data-key="expoCtaTtl">Vous souhaitez m'accueillir ?</h2>
+    <p data-key="expoCtaDesc">Pour toute invitation à exposer, n'hésitez pas à me contacter directement.</p>
+    <button class="btn-teal" onclick="navScrollTo('#contact')">Me contacter</button>
+  </div>
+  <footer>
+    <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
+    <p class="f-tagline">Petits mondes enchantés · Côte d'Azur</p>
+    <ul class="f-links">
+      <li><a href="javascript:void(0)" onclick="navScrollTo('#apropos');return false;">À Propos</a></li>
+      <li><a href="javascript:void(0)" onclick="navScrollTo('#expositions');return false;">Expositions</a></li>
+      <li><a href="javascript:void(0)" onclick="navScrollTo('#galerie');return false;">Galerie</a></li>
+      <li><a href="javascript:void(0)" onclick="goTo('boutique');return false;">Boutique</a></li>
+      <li><a href="javascript:void(0)" onclick="navScrollTo('#contact');return false;">Contact</a></li>
+    </ul>
+    <p class="f-copy">© 2026 Sara Mahjoub — Tous droits réservés</p>
+  </footer>
+</div>`;
+      document.getElementById('lightbox').before(div);
+      // Charger les pièces
+      loadCollFromFirebase(pageId,'page-'+pageId);
+    }
+    // 2. Ajouter l'image hero depuis Firebase images
+    onSnapshot(doc(db,'site','images'),snapImg=>{
+      if(!snapImg.exists())return;
+      const imgData=snapImg.data();
+      if(imgData[expo.imgKey]){
+        const el=document.getElementById('img-cp-'+pageId+'-hero');
+        if(el){el.onload=()=>el.style.opacity='1';el.src=imgData[expo.imgKey];}
+        // Mettre à jour la carte home si elle existe
+        const cardImg=document.getElementById('img-card-home-'+pageId);
+        if(cardImg){cardImg.onload=()=>{cardImg.style.opacity='1';};cardImg.src=imgData[expo.imgKey];}
+      }
+    });
+    // 3. Ajouter entrée dans le menu desktop (dropdown Expositions)
+    if(!document.getElementById('dd-expo-'+pageId)){
+      const a=document.createElement('a');
+      a.id='dd-expo-'+pageId;
+      a.href='javascript:void(0)';
+      a.onclick=()=>{goTo(pageId);return false;};
+      a.textContent=expo.nom;
+      // Insérer dans .dd-menu-inner du dropdown Expositions
+      const ddMenus=document.querySelectorAll('.has-dd .dd-menu-inner');
+      if(ddMenus[1])ddMenus[1].appendChild(a);
+    }
+    // 4. Ajouter entrée dans le menu mobile
+    if(!document.getElementById('mob-expo-'+pageId)){
+      const a=document.createElement('a');
+      a.id='mob-expo-'+pageId;
+      a.href='javascript:void(0)';
+      a.onclick=()=>{mobileNav(pageId);return false;};
+      a.textContent=expo.nom;
+      document.getElementById('mob-dd-items-expo').appendChild(a);
+    }
+    // 5. Ajouter/mettre à jour la carte sur la page home
+    if(!document.getElementById('card-home-expo-'+pageId)){
+      const cardDiv=document.createElement('div');
+      cardDiv.id='card-home-expo-'+pageId;
+      cardDiv.innerHTML=`
+<div onclick="goTo('${pageId}')" style="cursor:pointer;max-width:320px;width:100%;background:rgba(253,250,247,.97);border:1px solid rgba(75,191,196,.2);border-radius:18px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.1);transition:transform .3s,box-shadow .3s;"
+  onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 16px 40px rgba(42,157,163,.18)'"
+  onmouseleave="this.style.transform='';this.style.boxShadow='0 8px 28px rgba(42,157,163,.1)'">
+  <div style="aspect-ratio:1;background:linear-gradient(135deg,var(--aqua-light),var(--rose-pale));overflow:hidden;position:relative;">
+    <img id="img-card-home-${pageId}" src="" style="width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s;"/>
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+      <span style="font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--teal-deep);opacity:.6;">Expositions</span>
+    </div>
+  </div>
+  <div style="padding:1.4rem;">
+    <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.05rem;color:var(--dark);margin-bottom:.4rem;" data-key="${pageId}_cardTitle">${expo.cardTitle||expo.nom}</p>
+    <p style="font-size:.75rem;font-weight:300;color:var(--text-soft);line-height:1.7;margin-bottom:.8rem;" data-key="${pageId}_cardSub">${expo.cardSub||''}</p>
+    <span style="font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal-deep);display:flex;align-items:center;gap:.4rem;">Découvrir <svg width="12" height="6" viewBox="0 0 12 6" fill="none"><path d="M0 3h10M7 1l3 2-3 2" stroke="currentColor" stroke-width=".9"/></svg></span>
+  </div>
+</div>`;
+      // Insérer avant la carte Nouréa existante
+      const expoPassees=document.getElementById('expo-passees-cards');
+      if(expoPassees)expoPassees.appendChild(cardDiv);
+    }
+    // 6. Ajouter dans hashMap et hashToPage pour la navigation par URL
+    if(window._goToHashMap){
+      window._goToHashMap[pageId]=pageId;
+      window._hashToPage[pageId]=pageId;
+    }
+  });
+});
+
 // ── Événements (site/evenements → tableau JSON) ──
 function renderEvenements(evts){
   const container=document.getElementById('expo-events-list');
@@ -1024,7 +1139,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   </div>
 
   <!-- Item unique → page Sujet de diplôme -->
-  <div class="reveal" style="display:flex;justify-content:center;margin-bottom:3.5rem;">
+  <div class="reveal" id="expo-passees-cards" style="display:flex;flex-wrap:wrap;justify-content:center;gap:2rem;margin-bottom:3.5rem;">
     <div onclick="goTo('sujetdediplome')" style="cursor:pointer;max-width:320px;width:100%;background:rgba(253,250,247,.97);border:1px solid rgba(75,191,196,.2);border-radius:18px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.1);transition:transform .3s,box-shadow .3s;"
       onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 16px 40px rgba(42,157,163,.18)'"
       onmouseleave="this.style.transform='';this.style.boxShadow='0 8px 28px rgba(42,157,163,.1)'">
@@ -1412,6 +1527,9 @@ function goTo(name, skipScrollReset){
   document.getElementById('page-'+name).classList.add('active');
   // Sauvegarder la page dans l'URL pour persister au refresh
   const hashMap = {'home':'','corolles':'jardinenchante','mer':'tresorsmarins','unique':'piecesuniques','boutique':'boutique','sujetdediplome':'sujetdediplome'};
+  window._goToHashMap=hashMap;
+  const hashToPage_ref={'jardinenchante':'corolles','tresorsmarins':'mer','piecesuniques':'unique','boutique':'boutique','sujetdediplome':'sujetdediplome'};
+  window._hashToPage=hashToPage_ref;
   const h = hashMap[name];
   if(h) history.replaceState(null,'','#'+h);
   else history.replaceState(null,'',window.location.pathname);
@@ -1821,7 +1939,7 @@ function buildGalDots() {
 document.addEventListener('DOMContentLoaded', () => {
   // Restaurer la page depuis l'URL au chargement/refresh
   const hash = window.location.hash.replace('#','');
-  const hashToPage = {'jardinenchante':'corolles','tresorsmarins':'mer','piecesuniques':'unique','boutique':'boutique','sujetdediplome':'sujetdediplome'};
+  const hashToPage = Object.assign({'jardinenchante':'corolles','tresorsmarins':'mer','piecesuniques':'unique','boutique':'boutique','sujetdediplome':'sujetdediplome'}, window._hashToPage||{});
   if(hash && hashToPage[hash]){
     goTo(hashToPage[hash], false);
   }

@@ -299,7 +299,7 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
   <button class="sn" onclick="goPage('mer',this)">Trésors Marins</button>
   <button class="sn" onclick="goPage('unique',this)">Pièces Uniques</button>
   <button class="sn" onclick="goPage('boutique',this)">Boutique</button>
-  <button class="sn" onclick="goPage('sujetdediplome',this)">Sujet de diplôme</button>
+  <button class="sn" onclick="goPage('sujetdediplome',this)" data-expo-id="sujetdediplome">Nouréa</button>
 </div>
 
 <!-- ═══════════════ PAGE HOME ═══════════════ -->
@@ -441,34 +441,8 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
   <!-- Titre Expositions passées -->
   <h3 class="cp-pieces-title" style="font-size:1.1rem;margin-bottom:1.5rem;" contenteditable="true" data-key="expoPasseesTitle" spellcheck="false">Expositions <em style="color:var(--teal);">passées</em></h3>
 
-  <!-- Grille expositions : carte(s) + encadré + -->
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;max-width:1000px;margin:0 auto 3.5rem;">
-
-    <!-- Carte Nouréa — cliquable pour éditer la page -->
-    <div style="background:rgba(253,250,247,.97);border:1.5px solid rgba(75,191,196,.22);border-radius:18px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.1);cursor:pointer;transition:all .25s;"
-      onclick="goPage('sujetdediplome',null)"
-      onmouseenter="this.style.boxShadow='0 14px 36px rgba(42,157,163,.18)';this.style.transform='translateY(-2px)'"
-      onmouseleave="this.style.boxShadow='0 8px 28px rgba(42,157,163,.1)';this.style.transform=''">
-      <div style="aspect-ratio:1;background:linear-gradient(135deg,var(--aqua-light),var(--rose-pale));overflow:hidden;position:relative;">
-        <img id="img-cp-expo-hero-card" src="" style="width:100%;height:100%;object-fit:cover;display:block;"/>
-      </div>
-      <div style="padding:1.2rem;">
-        <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:var(--dark);margin-bottom:.3rem;" data-key="expoCardTitle">Nouréa <em style="color:var(--rose-deep);">la lumière perdue</em></p>
-        <p style="font-size:.72rem;font-weight:300;color:var(--text-soft);line-height:1.6;" data-key="expoCardSub">Sujet de diplôme · Céramique &amp; installation</p>
-        <span style="font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--teal-deep);display:flex;align-items:center;gap:.3rem;margin-top:.7rem;opacity:.65;">Éditer la page →</span>
-      </div>
-    </div>
-
-    <!-- Encadré + pour ajouter une nouvelle exposition -->
-    <div style="border:2.5px dashed rgba(75,191,196,.38);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;cursor:pointer;transition:all .25s;background:none;min-height:260px;color:var(--teal-deep);font-family:'Nunito',sans-serif;"
-      onclick="alert('Nouvelle exposition — fonctionnalité à venir.')"
-      onmouseenter="this.style.borderColor='var(--teal)';this.style.background='rgba(75,191,196,.04)'"
-      onmouseleave="this.style.borderColor='rgba(75,191,196,.38)';this.style.background='none'">
-      <div style="width:44px;height:44px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:300;">+</div>
-      <span style="font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;">Nouvelle exposition</span>
-    </div>
-
-  </div>
+  <!-- Grille expositions dynamique -->
+  <div id="admin-expo-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;max-width:1000px;margin:0 auto 3.5rem;"></div>
 
   <!-- Titre événements -->
   <h3 class="cp-pieces-title" style="font-size:1.1rem;margin-bottom:1.8rem;" contenteditable="true" data-key="expoEvtTitle" spellcheck="false">Marchés &amp; événements <em>à venir</em></h3>
@@ -714,6 +688,22 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
 </div>
 </div><!-- /pg-sujetdediplome -->
 
+<!-- MODAL NOUVELLE EXPOSITION -->
+<div id="m-new-expo" style="display:none;position:fixed;inset:0;z-index:1200;background:rgba(26,53,53,.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+  <div style="background:var(--white);border-radius:20px;padding:2.5rem;max-width:440px;width:90%;box-shadow:0 30px 80px rgba(26,53,53,.22);">
+    <h3 style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;color:var(--dark);margin-bottom:.5rem;">Nouvelle exposition</h3>
+    <p style="font-size:.78rem;color:var(--text-soft);margin-bottom:1.8rem;">Donnez un nom à cette exposition. Vous pourrez ajouter l'image, le sous-titre et les pièces ensuite.</p>
+    <div style="display:flex;flex-direction:column;gap:.4rem;margin-bottom:1.2rem;">
+      <label style="font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--teal-deep);">Nom de l'exposition</label>
+      <input id="new-expo-name" placeholder="ex : Horizons" style="padding:.8rem 1rem;border:1.5px solid rgba(75,191,196,.3);border-radius:10px;font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:var(--dark);outline:none;transition:border-color .2s;" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='rgba(75,191,196,.3)'"/>
+    </div>
+    <div style="display:flex;gap:.8rem;margin-top:1.5rem;">
+      <button onclick="confirmNewExpo()" style="flex:1;padding:.85rem;background:linear-gradient(135deg,var(--teal-mid),var(--teal-deep));color:#fff;border:none;border-radius:50px;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;font-family:'Nunito',sans-serif;cursor:pointer;">Créer l'exposition</button>
+      <button onclick="closeModal('m-new-expo')" style="padding:.85rem 1.4rem;background:none;border:1.5px solid rgba(75,191,196,.3);border-radius:50px;font-size:.7rem;color:var(--text-soft);font-family:'Nunito',sans-serif;cursor:pointer;">Annuler</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL CADRAGE -->
 <div class="mov" id="m-cadrage">
   <div class="mbox" style="width:560px;">
@@ -893,7 +883,7 @@ window.closeMov=id=>document.getElementById(id).classList.remove('open');
 document.querySelectorAll('.mov').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
 
 // ── LOAD ALL ──
-async function loadAll(){await Promise.all([loadTextes(),loadGalerie(),loadImages(),loadColls(),loadDynColls(),loadBoutique(),loadEvenements()]);}
+async function loadAll(){await Promise.all([loadTextes(),loadGalerie(),loadImages(),loadColls(),loadDynColls(),loadBoutique(),loadEvenements(),restoreExpoPagesFromFirebase()]);}
 
 // ── TEXTES ──
 async function loadTextes(){
@@ -1419,6 +1409,196 @@ window.openCadraMobile=async(coll)=>{
 // fonctionnent sans aucune modification.
 
 window.openAddExpoItem=()=>openAddPc('expo');
+
+// ══════════════════════════════════════════════════════
+// GESTION DYNAMIQUE DES EXPOSITIONS
+// Chaque exposition est un document dans site/expositions
+// Structure : { id, nom, cardTitle, cardSub, imgKey, pageKey, order }
+// ══════════════════════════════════════════════════════
+let allExpositions = []; // liste chargée depuis Firebase
+
+// Identifiant pour la page existante (Nouréa)
+const EXPO_NOURA = {
+  id: 'sujetdediplome',
+  nom: 'Nouréa',
+  cardTitle: 'Nouréa <em style="color:var(--rose-deep);">la lumière perdue</em>',
+  cardSub: 'Sujet de diplôme · Céramique & installation',
+  imgKey: 'cp-expo-hero',
+  pageKey: 'sujetdediplome',
+  builtin: true
+};
+
+async function loadExpositions(){
+  try{
+    const snap=await getDoc(doc(db,'site','expositions'));
+    if(snap.exists()){
+      allExpositions=snap.data().liste||[];
+    }
+  }catch(e){ allExpositions=[]; }
+  // Toujours inclure Nouréa en premier si pas déjà présente
+  if(!allExpositions.find(e=>e.id==='sujetdediplome')){
+    allExpositions.unshift(EXPO_NOURA);
+    saveExpositions();
+  }
+  renderAdminExpoGrid();
+}
+
+function renderAdminExpoGrid(){
+  const grid=document.getElementById('admin-expo-grid');
+  if(!grid)return;
+
+  const cards=allExpositions.map(expo=>{
+    const isBuiltin=expo.builtin||expo.id==='sujetdediplome';
+    const pageId=expo.id==='sujetdediplome'?'sujetdediplome':'expo-'+expo.id;
+    return `
+    <div style="background:rgba(253,250,247,.97);border:1.5px solid rgba(75,191,196,.22);border-radius:18px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.1);cursor:pointer;transition:all .25s;"
+      onclick="goPage('${pageId}',null)"
+      onmouseenter="this.style.boxShadow='0 14px 36px rgba(42,157,163,.18)';this.style.transform='translateY(-2px)'"
+      onmouseleave="this.style.boxShadow='0 8px 28px rgba(42,157,163,.1)';this.style.transform=''">
+      <div style="aspect-ratio:1;background:linear-gradient(135deg,var(--aqua-light),var(--rose-pale));overflow:hidden;position:relative;">
+        <img id="img-card-expo-${expo.id}" src="" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+      </div>
+      <div style="padding:1.2rem;">
+        <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:var(--dark);margin-bottom:.3rem;">${expo.cardTitle||expo.nom}</p>
+        <p style="font-size:.72rem;font-weight:300;color:var(--text-soft);line-height:1.6;">${expo.cardSub||''}</p>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:.7rem;">
+          <span style="font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--teal-deep);opacity:.65;">Éditer la page →</span>
+          ${!isBuiltin?`<button onclick="event.stopPropagation();deleteExposition('${expo.id}')" style="background:none;border:none;color:rgba(201,106,136,.5);cursor:pointer;font-size:.9rem;line-height:1;padding:.2rem;" title="Supprimer">✕</button>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Carte +
+  const addCard=`
+    <div style="border:2.5px dashed rgba(75,191,196,.38);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;cursor:pointer;transition:all .25s;background:none;min-height:260px;color:var(--teal-deep);font-family:'Nunito',sans-serif;"
+      onclick="openNewExpoModal()"
+      onmouseenter="this.style.borderColor='var(--teal)';this.style.background='rgba(75,191,196,.04)'"
+      onmouseleave="this.style.borderColor='rgba(75,191,196,.38)';this.style.background='none'">
+      <div style="width:44px;height:44px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:300;">+</div>
+      <span style="font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;">Nouvelle exposition</span>
+    </div>`;
+
+  grid.innerHTML=cards+addCard;
+
+  // Charger les images des cartes
+  loadImages();
+}
+
+window.openNewExpoModal=()=>{
+  document.getElementById('new-expo-name').value='';
+  document.getElementById('m-new-expo').style.display='flex';
+  setTimeout(()=>document.getElementById('new-expo-name').focus(),100);
+};
+
+window.confirmNewExpo=async()=>{
+  const nom=document.getElementById('new-expo-name').value.trim();
+  if(!nom){toast('Donnez un nom à l\'exposition','e');return;}
+  // Générer un id unique depuis le nom
+  const id='expo-'+nom.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'_'+Date.now().toString(36).slice(-4);
+  const newExpo={id,nom,cardTitle:nom,cardSub:'',imgKey:'cp-expo-'+id,pageKey:id,builtin:false,order:allExpositions.length};
+  allExpositions.push(newExpo);
+  await saveExpositions();
+  // Créer la page dans le DOM et dans le snav
+  createExpoDomPage(newExpo);
+  addExpoToSnav(newExpo);
+  closeModal('m-new-expo');
+  renderAdminExpoGrid();
+  // Naviguer vers la nouvelle page
+  setTimeout(()=>goPage(id,null),200);
+  toast('Exposition "'+nom+'" créée ✦');
+};
+
+async function saveExpositions(){
+  try{
+    await setDoc(doc(db,'site','expositions'),{liste:allExpositions},{merge:true});
+  }catch(e){console.error('saveExpositions',e);}
+}
+
+window.deleteExposition=async(id)=>{
+  if(!confirm('Supprimer cette exposition et toutes ses pièces ?'))return;
+  allExpositions=allExpositions.filter(e=>e.id!==id);
+  await saveExpositions();
+  // Supprimer les pièces dans Firestore
+  try{
+    const q=await getDocs(collection(db,'collections',id,'pieces'));
+    q.forEach(async d=>await deleteDoc(doc(db,'collections',id,'pieces',d.id)));
+  }catch(e){}
+  // Retirer la page du DOM et du snav
+  const pg=document.getElementById('pg-'+id);
+  if(pg)pg.remove();
+  const snavBtn=document.querySelector(`.sn[data-expo-id="${id}"]`);
+  if(snavBtn)snavBtn.remove();
+  renderAdminExpoGrid();
+  // Retourner à l'accueil
+  goPage('home',document.querySelector('.sn'));
+  toast('Exposition supprimée');
+};
+
+function createExpoDomPage(expo){
+  const pageId=expo.id;
+  if(document.getElementById('pg-'+pageId))return; // déjà créée
+  const div=document.createElement('div');
+  div.id='pg-'+pageId;
+  div.className='pg';
+  div.innerHTML=`
+<div class="coll-page">
+  <div class="cp-hero">
+    <div class="cp-hero-img" style="position:relative;cursor:pointer;"
+      onmouseenter="this.querySelector('.hero-edit').style.opacity='1'"
+      onmouseleave="this.querySelector('.hero-edit').style.opacity='0'"
+      onclick="changeImg('${expo.imgKey}')">
+      <img id="img-${expo.imgKey}" src="" style="width:100%;height:100%;object-fit:cover;display:block;background:linear-gradient(135deg,var(--aqua-light),var(--rose-pale));"/>
+      <div class="hero-edit" style="position:absolute;inset:0;background:rgba(26,53,53,.5);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+        <span style="color:#fff;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-family:'Nunito',sans-serif;">📷 Changer la photo</span>
+      </div>
+    </div>
+    <div class="cp-hero-text">
+      <button class="cp-back" onclick="goPage('home',null);document.querySelector('.sn').click()"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux expositions</button>
+      <p class="cp-hero-tag" contenteditable="true" data-key="${pageId}_tag" spellcheck="false">Expositions Sara Céramique</p>
+      <h1 class="cp-hero-title" contenteditable="true" data-key="${pageId}_title" spellcheck="false">${expo.nom}<em>À la rencontre du public</em></h1>
+      <div class="cp-divider"></div>
+      <p class="cp-hero-desc" contenteditable="true" data-key="${pageId}_desc" spellcheck="false">Retrouvez Sara Mahjoub et ses créations lors de marchés artisanaux, galeries et événements sur la Côte d'Azur.</p>
+    </div>
+  </div>
+  <section class="cp-pieces">
+    <h2 class="cp-pieces-title" contenteditable="true" data-key="${pageId}_piecesTitle" spellcheck="false">Les pièces <em>${expo.nom}</em></h2>
+    <div class="cp-grid" id="grid-${pageId}"></div>
+  </section>
+  <div class="cp-cta">
+    <h2 contenteditable="true" data-key="expoCtaTtl" spellcheck="false">Vous souhaitez m'accueillir ?</h2>
+    <p contenteditable="true" data-key="expoCtaDesc" spellcheck="false">Pour toute invitation à exposer, n'hésitez pas à me contacter directement.</p>
+    <span class="btn-teal" style="cursor:default;">Me contacter</span>
+  </div>
+</div>`;
+  document.getElementById('m-new-expo').before(div);
+  // Charger les pièces de cette expo
+  loadColl(pageId);
+}
+
+function addExpoToSnav(expo){
+  const pageId=expo.id;
+  if(document.querySelector(`.sn[data-expo-id="${pageId}"]`))return;
+  const btn=document.createElement('button');
+  btn.className='sn';
+  btn.dataset.expoId=pageId;
+  btn.textContent=expo.nom;
+  btn.onclick=()=>goPage(pageId,btn);
+  document.getElementById('snav').appendChild(btn);
+}
+
+// Au chargement, recréer les pages des expos non-builtins depuis Firebase
+async function restoreExpoPagesFromFirebase(){
+  await loadExpositions();
+  allExpositions.forEach(expo=>{
+    if(!expo.builtin && expo.id!=='sujetdediplome'){
+      createExpoDomPage(expo);
+      addExpoToSnav(expo);
+    }
+  });
+}
+
+
 
 // ── ÉVÉNEMENTS ──
 let currentEvents = [];

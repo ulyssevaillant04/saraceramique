@@ -1206,29 +1206,26 @@ window.delFixedColl=(coll,e)=>{e.stopPropagation();if(!confirm(`Masquer la colle
 // ── COLLECTIONS DYNAMIQUES ──
 async function loadDynColls(){
   try{
-    const snap=await getDocs(collection(db,'site','extraCollections'));
-    const colls=[];
-    snap.forEach(d=>colls.push({id:d.id,...d.data()}));
+    const snap=await getDoc(doc(db,'site','extraCollections'));
+    const colls=snap.exists()?(snap.data().liste||[]):[];
     colls.sort((a,b)=>(a.order||0)-(b.order||0));
-    // Mettre à jour la grille de la home admin
     const container=document.getElementById('dyn-colls');
     if(container){
       container.innerHTML=colls.map(c=>`
         <div class="del-wrap">
           <button class="del-x" onclick="delDynColl('${c.id}','${(c.name||'').replace(/'/g,"\\'")}',event)">✕</button>
-          <div class="coll-card" onclick="goPage('coll-${c.id}',null)" style="cursor:pointer;">
+          <div class="coll-card" onclick="goPage('${c.id}',null)" style="cursor:pointer;">
             <div class="coll-img"><img src="${c.img||''}" onerror="this.parentElement.style.background='rgba(75,191,196,.1)'"/><div class="coll-img-ov"></div></div>
             <div class="coll-body"><p class="coll-tag">${c.tag||'Collection'}</p><h3 class="coll-name">${c.name||''}</h3><p class="coll-desc">${c.desc||''}</p><span class="coll-link">Éditer →</span></div>
           </div>
         </div>`).join('');
     }
-    // Créer les pages et entrées de menu pour chaque collection dyn
-    colls.forEach(c=>{ createDynCollPage(c); addDynCollToSnav(c); addDynCollToMenu(c); });
-  }catch(e){}
+    colls.forEach(c=>{ createDynCollPage(c); addDynCollToSnav(c); });
+  }catch(e){console.error('loadDynColls',e);}
 }
 
 function createDynCollPage(c){
-  const pageId='coll-'+c.id;
+  const pageId=c.id; // id contient déjà le préfixe coll-
   if(document.getElementById('pg-'+pageId))return;
   const div=document.createElement('div');
   div.id='pg-'+pageId;
@@ -1268,14 +1265,12 @@ function createDynCollPage(c){
 }
 
 function addDynCollToSnav(c){
-  const pageId='coll-'+c.id;
   if(document.querySelector(`.sn[data-dyncoll-id="${c.id}"]`))return;
   const btn=document.createElement('button');
   btn.className='sn';
   btn.dataset.dyncollId=c.id;
   btn.textContent=c.name||'Collection';
-  btn.onclick=()=>goPage(pageId,btn);
-  // Insérer après "Pièces Uniques"
+  btn.onclick=()=>goPage(c.id,btn);
   const uniqueBtn=Array.from(document.querySelectorAll('.sn')).find(b=>b.textContent.trim()==='Pièces Uniques');
   if(uniqueBtn)uniqueBtn.after(btn);
   else document.getElementById('snav').appendChild(btn);
@@ -1297,27 +1292,33 @@ window.openAddColl=()=>{
 window.saveNewColl=async()=>{
   const name=document.getElementById('nc-name').value.trim();
   if(!name){toast('Nom obligatoire','e');return;}
-  const id=name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'_'+Date.now().toString(36).slice(-4);
+  const id='coll-'+name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'_'+Date.now().toString(36).slice(-4);
   const data={id,name,tag:document.getElementById('nc-tag').value||'Collection',desc:document.getElementById('nc-desc').value,img:document.getElementById('nc-img').value,order:Date.now()};
-  await setDoc(doc(db,'site','extraCollections',id),data);
+  // Charger la liste existante, ajouter, sauvegarder
+  let colls=[];
+  try{const s=await getDoc(doc(db,'site','extraCollections'));if(s.exists())colls=s.data().liste||[];}catch(e){}
+  colls.push(data);
+  await setDoc(doc(db,'site','extraCollections'),{liste:colls},{merge:true});
   closeMov('m-newcoll');
-  // Créer la page et le bouton snav immédiatement (synchrone)
   createDynCollPage(data);
   addDynCollToSnav(data);
   await loadDynColls();
-  // Naviguer vers la nouvelle page maintenant qu'elle existe dans le DOM
-  goPage('coll-'+id, document.querySelector(`.sn[data-dyncoll-id="${id}"]`));
+  goPage(id, document.querySelector(`.sn[data-dyncoll-id="${id}"]`));
   toast('Collection "'+name+'" créée ✦');
 };
 
 window.delDynColl=async(id,name,e)=>{
   e.stopPropagation();
   if(!confirm(`Supprimer la collection "${name}" et toutes ses pièces ?`))return;
-  await deleteDoc(doc(db,'site','extraCollections',id));
+  // Retirer de la liste dans Firebase
+  let colls=[];
+  try{const s=await getDoc(doc(db,'site','extraCollections'));if(s.exists())colls=s.data().liste||[];}catch(ex){}
+  colls=colls.filter(c=>c.id!==id);
+  await setDoc(doc(db,'site','extraCollections'),{liste:colls},{merge:true});
   // Supprimer les pièces Firebase
-  try{const q=await getDocs(collection(db,'collections','coll-'+id,'pieces'));q.forEach(async d=>await deleteDoc(doc(db,'collections','coll-'+id,'pieces',d.id)));}catch(ex){}
+  try{const q=await getDocs(collection(db,'collections',id,'pieces'));q.forEach(async d=>await deleteDoc(doc(db,'collections',id,'pieces',d.id)));}catch(ex){}
   // Retirer page et snav
-  const pg=document.getElementById('pg-coll-'+id); if(pg)pg.remove();
+  const pg=document.getElementById('pg-'+id); if(pg)pg.remove();
   const btn=document.querySelector(`.sn[data-dyncoll-id="${id}"]`); if(btn)btn.remove();
   await loadDynColls();
   goPage('home',document.querySelector('.sn'));

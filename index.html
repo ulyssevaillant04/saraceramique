@@ -234,18 +234,17 @@ loadCollFromFirebase('unique','page-unique');
 loadCollFromFirebase('expo','page-sujetdediplome');
 
 // ── Collections dynamiques depuis Firebase ──
-onSnapshot(collection(db,'site','extraCollections'),snap=>{
-  if(snap.empty)return;
-  const colls=[];
-  snap.forEach(d=>colls.push({id:d.id,...d.data()}));
-  colls.sort((a,b)=>(a.order||0)-(b.order||0));
+onSnapshot(doc(db,'site','extraCollections'),snap=>{
+  if(!snap.exists())return;
+  const colls=snap.data().liste||[];
   colls.forEach(c=>{
-    const pageId='coll-'+c.id;
+    const pageId=c.id; // contient déjà le préfixe coll-
     // 1. Créer la page si elle n'existe pas
     if(!document.getElementById('page-'+pageId)){
       const div=document.createElement('div');
       div.id='page-'+pageId;
       div.className='page';
+      div.style.display='none';
       div.innerHTML=`
 <div class="coll-page">
   <div class="cp-hero">
@@ -330,6 +329,7 @@ onSnapshot(doc(db,'site','expositions'),snap=>{
       const div=document.createElement('div');
       div.id='page-'+pageId;
       div.className='page';
+      div.style.display='none';
       div.innerHTML=`
 <div class="coll-page">
   <div class="cp-hero">
@@ -364,7 +364,7 @@ onSnapshot(doc(db,'site','expositions'),snap=>{
     <p class="f-copy">© 2026 Sara Mahjoub — Tous droits réservés</p>
   </footer>
 </div>`;
-      document.getElementById('lightbox').before(div);
+      document.body.appendChild(div);
       // Charger les pièces
       loadCollFromFirebase(pageId,'page-'+pageId);
     }

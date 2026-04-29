@@ -992,8 +992,12 @@ window.changeImg=async t=>{
       await setDoc(doc(db,'site','images'),u,{merge:true});
     }
     const m={'portrait':'portrait-img','coll-corolles':'img-coll-corolles','coll-mer':'img-coll-mer','coll-unique':'img-coll-unique','cp-corolles-hero':'img-cp-corolles-hero','cp-mer-hero':'img-cp-mer-hero','cp-unique-hero':'img-cp-unique-hero','cp-expo-hero':'img-cp-expo-hero'};
-    const el=document.getElementById(m[t]);
-    if(el){el.src=path;el.style.display='block';}
+    // Pour les collections et expos dynamiques, construire l'id depuis la clé
+    const elId = m[t] || ('img-'+t);
+    const el=document.getElementById(elId);
+    if(el){el.src=path;el.style.opacity='1';el.style.display='block';}
+    // Carte home expo
+    if(t==='cp-expo-hero'){const card=document.getElementById('img-cp-expo-hero-card');if(card){card.src=path;card.style.display='block';}}
     toast('Photo mise à jour ✦');
   });
 };

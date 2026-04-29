@@ -213,10 +213,13 @@ onSnapshot(doc(db,'site','general'),snap=>{
 async function loadCollFromFirebase(collKey,pageId){
   const q=query(collection(db,'collections',collKey,'pieces'),orderBy('order'));
   onSnapshot(q,snap=>{
-    if(snap.empty)return;
-    const items=[];snap.forEach(d=>items.push({id:d.id,...d.data()}));
     const grid=document.querySelector(`#${pageId} .cp-grid`);
     if(!grid)return;
+    if(snap.empty){
+      grid.innerHTML='<p style="grid-column:1/-1;text-align:center;font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:1.1rem;color:var(--text-soft);padding:3rem 0;">Les pièces arrivent bientôt…</p>';
+      return;
+    }
+    const items=[];snap.forEach(d=>items.push({id:d.id,...d.data()}));
     grid.innerHTML=items.map(item=>`
       <div class="pc" onclick="openLightbox(this)"
         data-imgs='${JSON.stringify(item.imgs||[])}' data-name="${item.name||''}" data-desc="${item.desc||''}">
@@ -437,11 +440,14 @@ function renderEvenements(evts){
   const container=document.getElementById('expo-events-list');
   if(!container)return;
   if(!evts||!evts.length){container.innerHTML='';return;}
-  const futurs=evts.filter(e=>e.statut!=='passe');
-  const passes=evts.filter(e=>e.statut==='passe');
-  const makeCard=(e,isPasse)=>`
-    <div class="expo-evt-card${isPasse?' expo-evt-passe':''}" ${e.lien?`onclick="window.open('${e.lien}','_blank')" style="cursor:pointer;"`:''}>
-      <div class="expo-evt-badge" style="background:${isPasse?'linear-gradient(135deg,var(--rose),var(--rose-deep))':'linear-gradient(135deg,var(--teal-mid),var(--teal-deep))'};">
+  // Afficher tous les événements dans l'ordre, alternance teal/rose par index
+  container.innerHTML=evts.map((e,i)=>{
+    const isTeal=(i%2===0);
+    const bg=isTeal?'linear-gradient(135deg,var(--teal-mid),var(--teal-deep))':'linear-gradient(135deg,var(--rose),var(--rose-deep))';
+    const cls=isTeal?'expo-evt-card':'expo-evt-card expo-evt-passe';
+    return `
+    <div class="${cls}" ${e.lien?`onclick="window.open('${e.lien}','_blank')" style="cursor:pointer;"`:''}>
+      <div class="expo-evt-badge" style="background:${bg};width:72px;min-width:72px;flex-shrink:0;">
         <div class="expo-evt-jour">${e.jour||'—'}</div>
         <div class="expo-evt-mois">${e.mois||''}</div>
       </div>
@@ -451,7 +457,7 @@ function renderEvenements(evts){
       </div>
       ${e.lien?`<a href="${e.lien}" target="_blank" rel="noopener" class="expo-evt-link" onclick="event.stopPropagation()">+ infos</a>`:''}
     </div>`;
-  container.innerHTML=[...futurs.map(e=>makeCard(e,false)),...passes.map(e=>makeCard(e,true))].join('');
+  }).join('');
 }
 
 onSnapshot(doc(db,'site','evenements'),snap=>{
@@ -712,7 +718,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 .expo-evt-card:hover{box-shadow:0 14px 38px rgba(42,157,163,.16);transform:translateY(-2px);}
 .expo-evt-passe{border-color:rgba(232,160,180,.18);box-shadow:0 8px 28px rgba(201,106,136,.06);opacity:.78;}
 .expo-evt-passe:hover{box-shadow:0 14px 38px rgba(201,106,136,.14);}
-.expo-evt-badge{flex-shrink:0;text-align:center;color:#fff;border-radius:14px;padding:.7rem 1.1rem;min-width:62px;}
+.expo-evt-badge{flex-shrink:0;text-align:center;color:#fff;border-radius:14px;padding:.7rem 1.1rem;width:72px;min-width:72px;box-sizing:border-box;}
 .expo-evt-jour{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:400;line-height:1.1;}
 .expo-evt-mois{font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;margin-top:.2rem;opacity:.9;}
 .expo-evt-body{flex:1;min-width:0;}

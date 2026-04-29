@@ -872,6 +872,9 @@ window.goPage=(id,btn)=>{
   if(['corolles','mer','unique'].includes(id)) loadColl(id);
   // Recharger images expo quand on ouvre la page expo
   if(id==='sujetdediplome'){ loadColl('expo'); loadImages(); }
+  // Recharger les pages collections et expositions dynamiques
+  if(id.startsWith('coll-')){ loadColl(id); loadImages(); }
+  if(id.startsWith('expo-')){ loadColl(id); loadImages(); }
 };
 
 window.openAddExpoItem=()=>{
@@ -1778,14 +1781,13 @@ window.updateEvent=(i,field,val)=>{
 };
 
 window.addEvent=(statutSuggere)=>{
-  // Alternance automatique : prendre l'opposé du premier événement affiché
   let statut=statutSuggere;
   if(currentEvents.length>0){
     statut=currentEvents[0].statut==='passe'?'futur':'passe';
   }
-  currentEvents.unshift({jour:'',mois:'',nom:'',lieu:'',lien:'',statut,statut_label:statut==='passe'?'passé':'à venir'});
+  currentEvents.unshift({jour:'',mois:'',nom:'',lieu:'',lien:'',statut});
   renderAdminEvents();
-  saveEvents();
+  // Ne pas sauvegarder tout de suite — attendre que l'utilisateur remplisse les champs
 };
 
 window.deleteEvent=(i)=>{

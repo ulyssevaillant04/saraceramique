@@ -458,6 +458,8 @@ onSnapshot(doc(db,'site','evenements'),snap=>{
     const raw=snap.data().liste;
     try{evts=Array.isArray(raw)?raw:JSON.parse(raw||'[]');}catch(e){evts=[];}
   }
+  // Filtrer les événements sans nom (entrées vides de l'admin)
+  evts=evts.filter(e=>e.nom&&e.nom.trim());
   // Événements par défaut si vide
   if(!evts.length){
     evts=[
@@ -467,6 +469,7 @@ onSnapshot(doc(db,'site','evenements'),snap=>{
   }
   renderEvenements(evts);
 });
+
 
 </script>
 <style>
@@ -1245,7 +1248,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="reveal" style="text-align:center;margin-bottom:2.5rem;">
     <h3 class="cp-pieces-title" style="margin-bottom:0;" data-key="expoEvtTitle">Marchés &amp; événements <em>à venir</em></h3>
   </div>
-  <div id="expo-events-list" style="max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:1.2rem;"></div>
+  <div id="expo-events-list" class="reveal" style="max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:1.2rem;"></div>
 
   <div style="text-align:center;margin-top:3.5rem;" class="reveal">
     <a href="https://www.instagram.com/saraceramique/" target="_blank" rel="noopener" class="btn-rose-outline" style="display:inline-flex;">
@@ -1608,13 +1611,14 @@ function goTo(name, skipScrollReset){
     document.body.scrollTop=0;
   }
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  // Sauvegarder la page dans l'URL pour persister au refresh
+  const pg=document.getElementById('page-'+name);
+  if(!pg)return; // page pas encore créée
+  pg.classList.add('active');
+  // Sauvegarder la page dans l'URL
   const hashMap = {'home':'','corolles':'jardinenchante','mer':'tresorsmarins','unique':'piecesuniques','boutique':'boutique','sujetdediplome':'sujetdediplome'};
   window._goToHashMap=hashMap;
-  const hashToPage_ref={'jardinenchante':'corolles','tresorsmarins':'mer','piecesuniques':'unique','boutique':'boutique','sujetdediplome':'sujetdediplome'};
-  window._hashToPage=hashToPage_ref;
-  const h = hashMap[name];
+  window._hashToPage = window._hashToPage||{'jardinenchante':'corolles','tresorsmarins':'mer','piecesuniques':'unique','boutique':'boutique','sujetdediplome':'sujetdediplome'};
+  const h = hashMap[name] !== undefined ? hashMap[name] : name;
   if(h) history.replaceState(null,'','#'+h);
   else history.replaceState(null,'',window.location.pathname);
   if(!skipScrollReset){
@@ -2023,7 +2027,7 @@ function buildGalDots() {
 document.addEventListener('DOMContentLoaded', () => {
   // Restaurer la page depuis l'URL au chargement/refresh
   const hash = window.location.hash.replace('#','');
-  const hashToPage = Object.assign({'jardinenchante':'corolles','tresorsmarins':'mer','piecesuniques':'unique','boutique':'boutique','sujetdediplome':'sujetdediplome'}, window._hashToPage||{});
+  const hashToPage = window._hashToPage||{'jardinenchante':'corolles','tresorsmarins':'mer','piecesuniques':'unique','boutique':'boutique','sujetdediplome':'sujetdediplome'};
   if(hash && hashToPage[hash]){
     goTo(hashToPage[hash], false);
   }
@@ -2177,7 +2181,7 @@ function mobileNav(target){
   document.getElementById('mob-btn').classList.remove('open');
   document.getElementById('mob-menu').classList.remove('open');
   document.body.style.overflow='';
-  if(['corolles','mer','unique','boutique','home','sujetdediplome'].includes(target)){
+  if(['corolles','mer','unique','boutique','home','sujetdediplome'].includes(target)||target.startsWith('expo-')||target.startsWith('coll-')){
     goTo(target);
   } else {
     const isMobile = window.innerWidth <= 900;

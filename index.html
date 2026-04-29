@@ -447,7 +447,7 @@ function renderEvenements(evts){
     const cls=isTeal?'expo-evt-card':'expo-evt-card expo-evt-passe';
     return `
     <div class="${cls}" ${e.lien?`onclick="window.open('${e.lien}','_blank')" style="cursor:pointer;"`:''}>
-      <div class="expo-evt-badge" style="background:${bg};width:72px;min-width:72px;flex-shrink:0;">
+      <div class="expo-evt-badge" style="background:${bg}">
         <div class="expo-evt-jour">${e.jour||'—'}</div>
         <div class="expo-evt-mois">${e.mois||''}</div>
       </div>
@@ -714,11 +714,11 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 .cp-pieces-title em{font-style:italic;color:var(--rose-deep);}
 
 /* ── Cartes événements ── */
-.expo-evt-card{display:flex;align-items:center;gap:2rem;background:rgba(253,250,247,.97);border:1px solid rgba(75,191,196,.18);border-radius:18px;padding:1.6rem 2rem;box-shadow:0 8px 28px rgba(42,157,163,.08);transition:box-shadow .25s,transform .25s;}
+.expo-evt-card{display:flex;align-items:center;gap:2rem;background:#ffffff;border:1px solid rgba(75,191,196,.18);border-radius:18px;padding:1.6rem 2rem;box-shadow:0 8px 28px rgba(42,157,163,.08);transition:box-shadow .25s,transform .25s;}
 .expo-evt-card:hover{box-shadow:0 14px 38px rgba(42,157,163,.16);transform:translateY(-2px);}
-.expo-evt-passe{border-color:rgba(232,160,180,.18);box-shadow:0 8px 28px rgba(201,106,136,.06);opacity:.78;}
+.expo-evt-passe{background:#ffffff;border-color:rgba(232,160,180,.18);box-shadow:0 8px 28px rgba(201,106,136,.06);}
 .expo-evt-passe:hover{box-shadow:0 14px 38px rgba(201,106,136,.14);}
-.expo-evt-badge{flex-shrink:0;text-align:center;color:#fff;border-radius:14px;padding:.7rem 1.1rem;width:72px;min-width:72px;box-sizing:border-box;}
+.expo-evt-badge{flex-shrink:0;text-align:center;color:#fff;border-radius:14px;padding:.7rem 1.4rem;min-width:90px;}
 .expo-evt-jour{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:400;line-height:1.1;}
 .expo-evt-mois{font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;margin-top:.2rem;opacity:.9;}
 .expo-evt-body{flex:1;min-width:0;}

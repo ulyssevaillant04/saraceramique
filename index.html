@@ -1621,10 +1621,15 @@ function goTo(name, skipScrollReset){
     document.documentElement.scrollTop=0;
     document.body.scrollTop=0;
   }
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  // Masquer toutes les pages (classes ET style inline)
+  document.querySelectorAll('.page').forEach(p=>{
+    p.classList.remove('active');
+    p.style.display='none';
+  });
   const pg=document.getElementById('page-'+name);
-  if(!pg)return; // page pas encore créée
+  if(!pg)return;
   pg.classList.add('active');
+  pg.style.display='block'; // override le style inline si présent
   // Sauvegarder la page dans l'URL
   const hashMap = {'home':'','corolles':'jardinenchante','mer':'tresorsmarins','unique':'piecesuniques','boutique':'boutique','sujetdediplome':'sujetdediplome'};
   window._goToHashMap=hashMap;

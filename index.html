@@ -1669,8 +1669,7 @@ function goTo(name, skipScrollReset){
   window._goToHashMap=hashMap;
   window._hashToPage = window._hashToPage||{'jardinenchante':'corolles','tresorsmarins':'mer','piecesuniques':'unique','boutique':'boutique','sujetdediplome':'sujetdediplome'};
   const h = hashMap[name] !== undefined ? hashMap[name] : name;
-  if(h) history.replaceState(null,'','#'+h);
-  else history.replaceState(null,'',window.location.pathname);
+  // URL toujours propre sans hash
   if(!skipScrollReset){
     requestAnimationFrame(()=>{
       window.scrollTo(0,0);

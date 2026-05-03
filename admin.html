@@ -686,7 +686,12 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
     <div class="cp-hero-text">
       <button class="cp-back" onclick="goPage('home',null);document.querySelector('.sn').click()"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux expositions</button>
       <p class="cp-hero-tag" contenteditable="true" data-key="expoPageTag" spellcheck="false">Expositions Sara Céramique</p>
+      <p style="font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--teal-deep);margin-bottom:.3rem;">Nom dans le menu ↓</p>
       <h1 class="cp-hero-title" contenteditable="true" data-key="expoPageTitle" spellcheck="false">Sujet de diplôme<em>À la rencontre du public</em></h1>
+      <input type="text" data-key="expoNouraMenuName" spellcheck="false"
+        style="font-family:'Playfair Display',serif;font-size:.85rem;font-style:italic;color:var(--teal-deep);background:rgba(75,191,196,.06);border:1px dashed rgba(75,191,196,.3);border-radius:6px;padding:.3rem .6rem;outline:none;margin-bottom:.5rem;width:100%;"
+        placeholder="Nom dans le menu (ex: Nouréa)" value="Nouréa"
+        onchange="document.querySelectorAll('[data-key=expoNouraMenuName]').forEach(el=>el.textContent=this.value)"/>
       <div class="cp-divider"></div>
       <p class="cp-hero-desc" contenteditable="true" data-key="expoPageDesc" spellcheck="false">Retrouvez Sara Mahjoub et ses créations lors de marchés artisanaux, galeries et événements sur la Côte d'Azur.</p>
     </div>

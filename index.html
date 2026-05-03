@@ -325,12 +325,17 @@ function applyDynColls(colls){
     if(!document.getElementById('coll-card-dyn-'+c.id)){
       const cardDiv=document.createElement('div');
       cardDiv.id='coll-card-dyn-'+c.id;
-      cardDiv.className='coll-card reveal';
+      cardDiv.className='coll-card reveal visible'; // visible immédiatement sans attendre l'observer
       cardDiv.setAttribute('onclick',`goTo('${pageId}')`);
       cardDiv.innerHTML=`
 <div class="coll-img"><img src="${c.img||''}" /><div class="coll-img-ov"></div></div>
 <div class="coll-body"><p class="coll-tag">${c.tag||'Collection'}</p><h3 class="coll-name">${c.name||''}</h3><p class="coll-desc">${c.desc||''}</p><span class="coll-link">Découvrir →</span></div>`;
-      document.querySelector('.coll-grid').appendChild(cardDiv);
+      const grid=document.querySelector('.coll-grid');
+      if(grid){
+        grid.appendChild(cardDiv);
+        // Forcer visible immédiatement (pas d'attente IntersectionObserver)
+        cardDiv.classList.add('visible');
+      }
     }
     // 5. Exposer dans hashMap
     if(window._goToHashMap){ window._goToHashMap[pageId]=pageId; window._hashToPage[pageId]=pageId; }
@@ -454,7 +459,10 @@ function applyDynExpos(expos){
 </div>`;
       // Insérer avant la carte Nouréa existante
       const expoPassees=document.getElementById('expo-passees-cards');
-      if(expoPassees)expoPassees.appendChild(cardDiv);
+      if(expoPassees){
+        expoPassees.appendChild(cardDiv);
+        expoPassees.classList.add('visible'); // forcer visible sur le container
+      }
     }
     // 6. Ajouter dans hashMap et hashToPage pour la navigation par URL
     if(window._goToHashMap){
@@ -657,11 +665,11 @@ section{position:relative;}
 .coll-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5rem;margin-top:5rem;}
 .coll-card{background:rgba(253,250,247,.97);border-radius:22px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.09);transition:transform .4s,box-shadow .4s;cursor:pointer;display:flex;flex-direction:column;}
 .coll-card:hover{transform:translateY(-10px);box-shadow:0 22px 56px rgba(42,157,163,.17);}
-.coll-img{aspect-ratio:4/3;position:relative;overflow:hidden;min-height:200px;}
+.coll-img{aspect-ratio:4/3;position:relative;overflow:hidden;}
 .coll-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s;}
 .coll-card:hover .coll-img img{transform:scale(1.05);}
 .coll-img-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(26,53,53,.28),transparent);z-index:1;}
-.coll-body{padding:1.7rem;flex:1;display:flex;flex-direction:column;min-height:160px;}
+.coll-body{padding:1.7rem;flex:1;display:flex;flex-direction:column;}
 /* teal tag */
 .coll-tag{font-size:.58rem;letter-spacing:.3em;text-transform:uppercase;color:var(--teal-deep);margin-bottom:.45rem;}
 /* rose italic name */

@@ -317,7 +317,7 @@ onSnapshot(doc(db,'site','extraCollections'),snap=>{
       document.querySelector('.coll-grid').appendChild(cardDiv);
     }
     // 5. Exposer dans hashMap
-    if(window._goToHashMap){ window._goToHashMap[pageId]=pageId; window._hashToPage[pageId]=pageId; }
+    if(window._pageToSlug){ window._pageToSlug[pageId]=pageId; window._slugToPage[pageId]=pageId; }
   });
 });
 
@@ -430,10 +430,7 @@ onSnapshot(doc(db,'site','expositions'),snap=>{
       if(expoPassees)expoPassees.appendChild(cardDiv);
     }
     // 6. Ajouter dans hashMap et hashToPage pour la navigation par URL
-    if(window._goToHashMap){
-      window._goToHashMap[pageId]=pageId;
-      window._hashToPage[pageId]=pageId;
-    }
+    if(window._pageToSlug){ window._pageToSlug[pageId]=pageId; window._slugToPage[pageId]=pageId; }
   });
 });
 
@@ -1615,6 +1612,41 @@ document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style
 (function tr(){ring.style.left=mx+'px';ring.style.top=my+'px';requestAnimationFrame(tr);})();
 
 /* ── SPA NAVIGATION ── */
+// ── Slugs URL dynamiques ──
+function toSlug(str){
+  return (str||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'').trim();
+}
+window._pageToSlug={'home':'','boutique':'boutique'};
+window._slugToPage={'boutique':'boutique'};
+window.refreshSlugs=function(){
+  function nameFor(key,fb){
+    var els=document.querySelectorAll('[data-key="'+key+'"]');
+    for(var i=0;i<els.length;i++){var t=(els[i].value||els[i].textContent||'').trim();if(t)return t;}
+    return fb;
+  }
+  var pairs=[
+    ['corolles','cpCorollesName','Jardin Enchante'],
+    ['mer','cpMerName','Tresors Marins'],
+    ['unique','cpUniqueName','Pieces Uniques'],
+    ['sujetdediplome','expoNouraMenuName','Nourea'],
+  ];
+  pairs.forEach(function(p){
+    var slug=toSlug(nameFor(p[1],p[2]))||p[0];
+    window._pageToSlug[p[0]]=slug;
+    window._slugToPage[slug]=p[0];
+  });
+  document.querySelectorAll('[id^="dd-dyncoll-"]').forEach(function(el){
+    var pid=el.id.replace('dd-dyncoll-','');
+    var name=(el.textContent||'').trim().split('\n')[0].trim();
+    if(name){var s=toSlug(name)||pid;window._pageToSlug[pid]=s;window._slugToPage[s]=pid;}
+  });
+  document.querySelectorAll('[id^="dd-expo-"]').forEach(function(el){
+    var pid=el.id.replace('dd-expo-','');
+    var name=(el.textContent||'').trim();
+    if(name){var s=toSlug(name)||pid;window._pageToSlug[pid]=s;window._slugToPage[s]=pid;}
+  });
+};
+
 function goTo(name, skipScrollReset){
   if(!skipScrollReset){
     document.documentElement.style.scrollBehavior='auto';
@@ -1632,60 +1664,6 @@ function goTo(name, skipScrollReset){
   if(!pg)return;
   pg.classList.add('active');
   pg.style.display='block'; // override le style inline si présent
-  // ── URL hash : généré dynamiquement depuis le nom du menu ──
-  // Convertit un nom en slug URL (ex: "Cueillette" → "cueillette")
-  function toSlug(str){
-    return str.toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g,'') // retire les accents MAIS garde la lettre de base
-      .replace(/[^a-z0-9]+/g,'')      // retire tout sauf lettres et chiffres
-      .trim();
-  }
-  // Ex: "Nouréa" → "nourea", "Écume" → "ecume", "Trésors Marins" → "tresorsmarins"
-
-  // Map dynamique : pageId → slug URL (mis à jour quand les textes Firebase changent)
-  window._pageToSlug = {
-    'home':'',
-    'boutique':'boutique',
-  };
-  // Map inverse : slug → pageId
-  window._slugToPage = {
-    'boutique':'boutique',
-  };
-
-  // Initialiser les slugs depuis les data-key déjà chargés dans le DOM
-  function refreshSlugs(){
-    function nameFor(key,fallback){
-      const els=document.querySelectorAll('[data-key="'+key+'"]');
-      for(const el of els){const t=(el.value||el.textContent||el.innerText||'').trim();if(t)return t;}
-      return fallback;
-    }
-    const pairs=[
-      ['corolles','cpCorollesName','Jardin Enchanté'],
-      ['mer','cpMerName','Trésors Marins'],
-      ['unique','cpUniqueName','Pièces Uniques'],
-      ['sujetdediplome','expoNouraMenuName','Nouréa'],
-    ];
-    pairs.forEach(([pageId,key,fallback])=>{
-      const name=nameFor(key,fallback);
-      const slug=toSlug(name)||pageId;
-      window._pageToSlug[pageId]=slug;
-      window._slugToPage[slug]=pageId;
-    });
-    document.querySelectorAll('[id^="dd-dyncoll-"]').forEach(el=>{
-      const pageId=el.id.replace('dd-dyncoll-','');
-      const name=(el.textContent||'').trim().split('\n')[0].trim();
-      if(name){const slug=toSlug(name)||pageId;window._pageToSlug[pageId]=slug;window._slugToPage[slug]=pageId;}
-    });
-    document.querySelectorAll('[id^="dd-expo-"]').forEach(el=>{
-      const pageId=el.id.replace('dd-expo-','');
-      const name=(el.textContent||'').trim();
-      if(name){const slug=toSlug(name)||pageId;window._pageToSlug[pageId]=slug;window._slugToPage[slug]=pageId;}
-    });
-  }
-  window.refreshSlugs=refreshSlugs;
-
-  const h = window._pageToSlug[name] !== undefined ? window._pageToSlug[name] : name;
   if(h!=='') history.replaceState(null,'','#'+h);
   else history.replaceState(null,'',window.location.pathname);
   if(!skipScrollReset){
@@ -2101,7 +2079,6 @@ document.addEventListener('DOMContentLoaded', () => {
                    (document.getElementById('page-'+hash)?hash:null) ||
                    staticFallback[hash];
     if(target) goTo(target, false);
-  }
   }
   const lb = document.getElementById('gal-lb');
   lb.addEventListener('touchstart', e => { galTouchX = e.touches[0].clientX; }, {passive:true});

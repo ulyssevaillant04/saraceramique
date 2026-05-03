@@ -657,11 +657,11 @@ section{position:relative;}
 .coll-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5rem;margin-top:5rem;}
 .coll-card{background:rgba(253,250,247,.97);border-radius:22px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.09);transition:transform .4s,box-shadow .4s;cursor:pointer;display:flex;flex-direction:column;}
 .coll-card:hover{transform:translateY(-10px);box-shadow:0 22px 56px rgba(42,157,163,.17);}
-.coll-img{aspect-ratio:4/3;position:relative;overflow:hidden;}
+.coll-img{aspect-ratio:4/3;position:relative;overflow:hidden;min-height:200px;}
 .coll-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s;}
 .coll-card:hover .coll-img img{transform:scale(1.05);}
 .coll-img-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(26,53,53,.28),transparent);z-index:1;}
-.coll-body{padding:1.7rem;flex:1;display:flex;flex-direction:column;}
+.coll-body{padding:1.7rem;flex:1;display:flex;flex-direction:column;min-height:160px;}
 /* teal tag */
 .coll-tag{font-size:.58rem;letter-spacing:.3em;text-transform:uppercase;color:var(--teal-deep);margin-bottom:.45rem;}
 /* rose italic name */

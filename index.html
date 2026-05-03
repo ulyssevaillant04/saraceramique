@@ -237,9 +237,19 @@ loadCollFromFirebase('unique','page-unique');
 loadCollFromFirebase('expo','page-sujetdediplome');
 
 // ── Collections dynamiques depuis Firebase ──
+async function initDynColls(){
+  try{
+    const snap=await getDoc(doc(db,'site','extraCollections'));
+    if(snap.exists()) applyDynColls(snap.data().liste||[]);
+  }catch(e){}
+}
+initDynColls();
+// Mises à jour en temps réel (ex: nouvelles collections créées depuis l'admin)
 onSnapshot(doc(db,'site','extraCollections'),snap=>{
   if(!snap.exists())return;
-  const colls=snap.data().liste||[];
+  applyDynColls(snap.data().liste||[]);
+});
+function applyDynColls(colls){
   colls.forEach(c=>{
     const pageId=c.id; // contient déjà le préfixe coll-
     // 1. Créer la page si elle n'existe pas
@@ -280,8 +290,10 @@ onSnapshot(doc(db,'site','extraCollections'),snap=>{
     <p class="f-copy">© 2026 Sara Mahjoub — Tous droits réservés</p>
   </footer>
 </div>`;
-      // Insérer avant la lightbox
-      document.getElementById('lightbox').before(div);
+      // Insérer dans .site pour respecter le z-index
+      const siteEl2=document.querySelector('.site')||document.getElementById('lightbox')||document.body;
+      if(siteEl2.id==='lightbox') siteEl2.before(div);
+      else siteEl2.appendChild(div);
       loadCollFromFirebase(pageId,'page-'+pageId);
     }
     // 2. Ajouter entrée dans le dropdown Collections menu desktop
@@ -317,13 +329,21 @@ onSnapshot(doc(db,'site','extraCollections'),snap=>{
     // 5. Exposer dans hashMap
     if(window._goToHashMap){ window._goToHashMap[pageId]=pageId; window._hashToPage[pageId]=pageId; }
   });
-});
+}
 
 // ── Expositions dynamiques depuis Firebase ──
-// Génère les pages, cartes home et entrées de menu pour chaque exposition
+async function initDynExpos(){
+  try{
+    const snap=await getDoc(doc(db,'site','expositions'));
+    if(snap.exists()) applyDynExpos(snap.data().liste||[]);
+  }catch(e){}
+}
+initDynExpos();
 onSnapshot(doc(db,'site','expositions'),snap=>{
   if(!snap.exists())return;
-  const expos=snap.data().liste||[];
+  applyDynExpos(snap.data().liste||[]);
+});
+function applyDynExpos(expos){
   expos.forEach(expo=>{
     if(expo.builtin||expo.id==='sujetdediplome')return; // Nouréa déjà dans le HTML
     const pageId=expo.id;
@@ -367,8 +387,10 @@ onSnapshot(doc(db,'site','expositions'),snap=>{
     <p class="f-copy">© 2026 Sara Mahjoub — Tous droits réservés</p>
   </footer>
 </div>`;
-      document.body.appendChild(div);
-      // Charger les pièces
+      // Insérer dans .site pour que le z-index soit correct (éléments flottants en arrière-plan)
+      const siteEl=document.querySelector('.site')||document.getElementById('lightbox')||document.body;
+      if(siteEl.id==='lightbox') siteEl.before(div);
+      else siteEl.appendChild(div);
       loadCollFromFirebase(pageId,'page-'+pageId);
     }
     // 2. Ajouter l'image hero depuis Firebase images
@@ -430,7 +452,7 @@ onSnapshot(doc(db,'site','expositions'),snap=>{
       window._hashToPage[pageId]=pageId;
     }
   });
-});
+}
 
 // ── Événements (site/evenements → tableau JSON) ──
 function renderEvenements(evts){
@@ -623,7 +645,9 @@ section{position:relative;}
 .sc1{top:8%;left:4%;}.sc2{top:22%;right:7%;animation-delay:.8s;}
 .sc3{bottom:18%;left:11%;animation-delay:.4s;}.sc4{bottom:8%;right:5%;animation-delay:1.2s;}
 .coll-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5rem;margin-top:5rem;}
-.coll-card{background:rgba(253,250,247,.97);border-radius:22px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.09);transition:transform .4s,box-shadow .4s;cursor:pointer;display:block;}
+.coll-card{background:rgba(253,250,247,.97);border-radius:22px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.09);transition:transform .4s,box-shadow .4s;cursor:pointer;display:flex;flex-direction:column;}
+.coll-body{flex:1;display:flex;flex-direction:column;padding:1.7rem;}
+.coll-desc{flex:1;}
 .coll-card:hover{transform:translateY(-10px);box-shadow:0 22px 56px rgba(42,157,163,.17);}
 .coll-img{aspect-ratio:4/3;position:relative;overflow:hidden;}
 .coll-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s;}
@@ -1234,7 +1258,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   </div>
 
   <!-- Item unique → page Sujet de diplôme -->
-  <div class="reveal" id="expo-passees-cards" style="display:flex;flex-wrap:wrap;justify-content:center;gap:2rem;margin-bottom:3.5rem;">
+  <div class="reveal" id="expo-passees-cards" style="display:flex;flex-wrap:wrap;justify-content:center;align-items:stretch;gap:2rem;margin-bottom:3.5rem;">
     <div onclick=\"goTo('sujetdediplome');return false;\" style="cursor:pointer;max-width:320px;width:100%;background:rgba(253,250,247,.97);border:1px solid rgba(75,191,196,.2);border-radius:18px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.1);transition:transform .3s,box-shadow .3s;"
       onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 16px 40px rgba(42,157,163,.18)'"
       onmouseleave="this.style.transform='';this.style.boxShadow='0 8px 28px rgba(42,157,163,.1)'">

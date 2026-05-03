@@ -85,6 +85,8 @@ onSnapshot(doc(db,'site','textes'),snap=>{
   if(d.collUnique)document.querySelectorAll('[data-coll=unique] .coll-desc').forEach(el=>el.textContent=d.collUnique);
   // Révéler tous les textes maintenant qu'ils sont à jour
   document.body.classList.add('texts-loaded');
+  // Mettre à jour les slugs URL depuis les nouveaux noms
+  if(window.refreshSlugs) window.refreshSlugs();
 });
 // Fallback : révéler les textes après 2s max si Firebase tarde
 setTimeout(()=>document.body.classList.add('texts-loaded'), 2000);
@@ -1630,12 +1632,61 @@ function goTo(name, skipScrollReset){
   if(!pg)return;
   pg.classList.add('active');
   pg.style.display='block'; // override le style inline si présent
-  // Sauvegarder la page dans l'URL
-  const hashMap = {'home':'','corolles':'jardinenchante','mer':'tresorsmarins','unique':'piecesuniques','boutique':'boutique','sujetdediplome':'sujetdediplome'};
-  window._goToHashMap=hashMap;
-  window._hashToPage = window._hashToPage||{'jardinenchante':'corolles','tresorsmarins':'mer','piecesuniques':'unique','boutique':'boutique','sujetdediplome':'sujetdediplome'};
-  const h = hashMap[name] !== undefined ? hashMap[name] : name;
-  if(h) history.replaceState(null,'','#'+h);
+  // ── URL hash : généré dynamiquement depuis le nom du menu ──
+  // Convertit un nom en slug URL (ex: "Cueillette" → "cueillette")
+  function toSlug(str){
+    return str.toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g,'') // retire les accents MAIS garde la lettre de base
+      .replace(/[^a-z0-9]+/g,'')      // retire tout sauf lettres et chiffres
+      .trim();
+  }
+  // Ex: "Nouréa" → "nourea", "Écume" → "ecume", "Trésors Marins" → "tresorsmarins"
+
+  // Map dynamique : pageId → slug URL (mis à jour quand les textes Firebase changent)
+  window._pageToSlug = {
+    'home':'',
+    'boutique':'boutique',
+  };
+  // Map inverse : slug → pageId
+  window._slugToPage = {
+    'boutique':'boutique',
+  };
+
+  // Initialiser les slugs depuis les data-key déjà chargés dans le DOM
+  function refreshSlugs(){
+    function nameFor(key,fallback){
+      const els=document.querySelectorAll('[data-key="'+key+'"]');
+      for(const el of els){const t=(el.value||el.textContent||el.innerText||'').trim();if(t)return t;}
+      return fallback;
+    }
+    const pairs=[
+      ['corolles','cpCorollesName','Jardin Enchanté'],
+      ['mer','cpMerName','Trésors Marins'],
+      ['unique','cpUniqueName','Pièces Uniques'],
+      ['sujetdediplome','expoNouraMenuName','Nouréa'],
+    ];
+    pairs.forEach(([pageId,key,fallback])=>{
+      const name=nameFor(key,fallback);
+      const slug=toSlug(name)||pageId;
+      window._pageToSlug[pageId]=slug;
+      window._slugToPage[slug]=pageId;
+    });
+    document.querySelectorAll('[id^="dd-dyncoll-"]').forEach(el=>{
+      const pageId=el.id.replace('dd-dyncoll-','');
+      const name=(el.textContent||'').trim().split('\n')[0].trim();
+      if(name){const slug=toSlug(name)||pageId;window._pageToSlug[pageId]=slug;window._slugToPage[slug]=pageId;}
+    });
+    document.querySelectorAll('[id^="dd-expo-"]').forEach(el=>{
+      const pageId=el.id.replace('dd-expo-','');
+      const name=(el.textContent||'').trim();
+      if(name){const slug=toSlug(name)||pageId;window._pageToSlug[pageId]=slug;window._slugToPage[slug]=pageId;}
+    });
+  }
+  window.refreshSlugs=refreshSlugs;
+
+  const h = window._pageToSlug[name] !== undefined ? window._pageToSlug[name] : name;
+  if(h!=='') history.replaceState(null,'','#'+h);
   else history.replaceState(null,'',window.location.pathname);
   if(!skipScrollReset){
     requestAnimationFrame(()=>{
@@ -2043,9 +2094,14 @@ function buildGalDots() {
 document.addEventListener('DOMContentLoaded', () => {
   // Restaurer la page depuis l'URL au chargement/refresh
   const hash = window.location.hash.replace('#','');
-  const hashToPage = window._hashToPage||{'jardinenchante':'corolles','tresorsmarins':'mer','piecesuniques':'unique','boutique':'boutique','sujetdediplome':'sujetdediplome'};
-  if(hash && hashToPage[hash]){
-    goTo(hashToPage[hash], false);
+  const staticFallback = {'jardinenchante':'corolles','tresorsmarins':'mer','piecesuniques':'unique','boutique':'boutique','sujetdediplome':'sujetdediplome'};
+  if(hash){
+    // Essayer dans l'ordre : slugToPage dynamique, hash direct comme pageId, fallback statique
+    const target = (window._slugToPage&&window._slugToPage[hash]) || 
+                   (document.getElementById('page-'+hash)?hash:null) ||
+                   staticFallback[hash];
+    if(target) goTo(target, false);
+  }
   }
   const lb = document.getElementById('gal-lb');
   lb.addEventListener('touchstart', e => { galTouchX = e.touches[0].clientX; }, {passive:true});

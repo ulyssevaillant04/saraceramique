@@ -26,7 +26,7 @@
 <meta property="og:url" content="https://saraceramique.fr"/>
 <meta property="og:title" content="Sara Céramique"/>
 <meta property="og:description" content="Céramiste à Antibes. Tasses, mugs et sculptures inspirés de la nature. Commandes sur-mesure."/>
-<meta property="og:image" content="https://saraceramique.fr/images/preview.jpg"/>
+<meta property="og:image" content="https://saraceramique.fr/images/portrait.jpg"/>
 <meta property="og:image:width" content="1200"/>
 <meta property="og:image:height" content="630"/>
 <meta property="og:locale" content="fr_FR"/>
@@ -36,7 +36,7 @@
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Sara Céramique"/>
 <meta name="twitter:description" content="Céramiste à Antibes. Tasses, mugs et sculptures inspirés de la nature. Commandes sur-mesure."/>
-<meta name="twitter:image" content="https://saraceramique.fr/images/preview.jpg"/>
+<meta name="twitter:image" content="https://saraceramique.fr/images/portrait.jpg"/>
 
 <!-- Données structurées (Schema.org) pour Google -->
 <script type="application/ld+json">
@@ -253,7 +253,7 @@ onSnapshot(doc(db,'site','extraCollections'),snap=>{
   <div class="cp-hero">
     <div class="cp-hero-img"><img src="${c.img||''}" style="opacity:${c.img?'1':'0'};transition:opacity .4s;" id="img-cp-${pageId}-hero"/></div>
     <div class="cp-hero-text">
-      <button class="cp-back" onclick="navScrollTo('#collections')"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
+      <button class="cp-back" onclick=\"navScrollTo('#collections');return false;\"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
       <p class="cp-hero-tag" data-key="dyncoll_${c.id}_tag">${c.tag||'Collection'}</p>
       <h1 class="cp-hero-title" data-key="dyncoll_${c.id}_title">${c.name||''}<em></em></h1>
       <div class="cp-divider"></div>
@@ -267,10 +267,10 @@ onSnapshot(doc(db,'site','extraCollections'),snap=>{
   <div class="cp-cta reveal">
     <h2 data-key="cpCtaTtl">Une pièce vous fait rêver ?</h2>
     <p data-key="cpCtaDesc">Chaque création est unique. Contactez-moi pour une commande sur-mesure.</p>
-    <button class="btn-teal" onclick="navScrollTo('#contact')">Me contacter</button>
+    <button class="btn-teal" onclick=\"navScrollTo('#contact');return false;\">Me contacter</button>
   </div>
   <footer>
-    <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
+    <div class="f-logo" onclick=\"goTo('home');return false;\" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
     <p class="f-tagline">Petits mondes enchantés · Côte d'Azur</p>
     <ul class="f-links">
       <li><a href="javascript:void(0)" onclick="navScrollTo('#collections');return false;">Collections</a></li>
@@ -338,7 +338,7 @@ onSnapshot(doc(db,'site','expositions'),snap=>{
   <div class="cp-hero">
     <div class="cp-hero-img"><img src="" style="opacity:0;transition:opacity .4s;background:linear-gradient(135deg,var(--aqua-light),var(--rose-pale));" id="img-cp-${pageId}-hero"/></div>
     <div class="cp-hero-text">
-      <button class="cp-back" onclick="navScrollTo('#expositions')"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux expositions</button>
+      <button class="cp-back" onclick=\"navScrollTo('#expositions');return false;\"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux expositions</button>
       <p class="cp-hero-tag" data-key="${pageId}_tag">Expositions Sara Céramique</p>
       <h1 class="cp-hero-title" data-key="${pageId}_title">${expo.nom}<em>À la rencontre du public</em></h1>
       <div class="cp-divider"></div>
@@ -352,10 +352,10 @@ onSnapshot(doc(db,'site','expositions'),snap=>{
   <div class="cp-cta reveal">
     <h2 data-key="expoCtaTtl">Vous souhaitez m'accueillir ?</h2>
     <p data-key="expoCtaDesc">Pour toute invitation à exposer, n'hésitez pas à me contacter directement.</p>
-    <button class="btn-teal" onclick="navScrollTo('#contact')">Me contacter</button>
+    <button class="btn-teal" onclick=\"navScrollTo('#contact');return false;\">Me contacter</button>
   </div>
   <footer>
-    <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
+    <div class="f-logo" onclick=\"goTo('home');return false;\" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
     <p class="f-tagline">Petits mondes enchantés · Côte d'Azur</p>
     <ul class="f-links">
       <li><a href="javascript:void(0)" onclick="navScrollTo('#apropos');return false;">À Propos</a></li>
@@ -408,7 +408,7 @@ onSnapshot(doc(db,'site','expositions'),snap=>{
       const cardDiv=document.createElement('div');
       cardDiv.id='card-home-expo-'+pageId;
       cardDiv.innerHTML=`
-<div onclick="goTo('${pageId}')" style="cursor:pointer;max-width:320px;width:100%;background:rgba(253,250,247,.97);border:1px solid rgba(75,191,196,.2);border-radius:18px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.1);transition:transform .3s,box-shadow .3s;"
+<div onclick=\"goTo('${pageId}');return false;\" style="cursor:pointer;max-width:320px;width:100%;background:rgba(253,250,247,.97);border:1px solid rgba(75,191,196,.2);border-radius:18px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.1);transition:transform .3s,box-shadow .3s;"
   onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 16px 40px rgba(42,157,163,.18)'"
   onmouseleave="this.style.transform='';this.style.boxShadow='0 8px 28px rgba(42,157,163,.1)'">
   <div style="aspect-ratio:1;background:linear-gradient(135deg,var(--aqua-light),var(--rose-pale));overflow:hidden;position:relative;">
@@ -1022,7 +1022,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 
 <!-- ══ NAV (shared) ══ -->
 <nav>
-  <a class="nav-logo" onclick="goTo('home')" style="cursor:pointer">Sara <span>Céramique</span></a>
+  <a class="nav-logo" href="javascript:void(0)" onclick="goTo('home');return false;" style="cursor:pointer">Sara <span>Céramique</span></a>
   <ul class="nav-links">
     <li><a href="javascript:void(0)" onclick="navScrollTo('#apropos');return false;">À Propos</a></li>
     <li class="has-dd">
@@ -1031,7 +1031,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
         <div class="dd-menu-inner">
           <a href="javascript:void(0)" onclick="goTo('corolles');return false;">
             <span class="dd-icon" style="display:flex;align-items:center;justify-content:center;color:var(--teal);font-size:1rem;animation:spin 12s linear infinite;">✿</span>
-            Jardin Enchanté
+            <span data-key="cpCorollesName">Jardin Enchanté</span>
           </a>
           <a href="javascript:void(0)" onclick="goTo('mer');return false;">
             <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="overflow:hidden;">
@@ -1047,13 +1047,13 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
                 </path>
               </g>
             </svg>
-            Trésors Marins
+            <span data-key="cpMerName">Trésors Marins</span>
           </a>
           <a href="javascript:void(0)" onclick="goTo('unique');return false;">
             <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" style="animation:spin 12s linear infinite;transform-origin:center;">
               <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
             </svg>
-            Pièces Uniques
+            <span data-key="cpUniqueName">Pièces Uniques</span>
           </a>
         </div>
       </div>
@@ -1101,7 +1101,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
         <div class="mob-dd-items" id="mob-dd-items">
           <a href="javascript:void(0)" onclick="mobileNav('corolles');return false;">
             <span class="mob-dd-icon" style="color:var(--teal);animation:spin 12s linear infinite;display:inline-flex;">✿</span>
-            Jardin Enchanté
+            <span data-key="cpCorollesName">Jardin Enchanté</span>
           </a>
           <a href="javascript:void(0)" onclick="mobileNav('mer');return false;">
             <span class="mob-dd-icon">
@@ -1113,7 +1113,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
                 </g>
               </svg>
             </span>
-            Trésors Marins
+            <span data-key="cpMerName">Trésors Marins</span>
           </a>
           <a href="javascript:void(0)" onclick="mobileNav('unique');return false;">
             <span class="mob-dd-icon">
@@ -1121,7 +1121,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
                 <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
               </svg>
             </span>
-            Pièces Uniques
+            <span data-key="cpUniqueName">Pièces Uniques</span>
           </a>
         </div>
       </div>
@@ -1171,8 +1171,8 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     <div class="h-orn-line r"></div>
   </div>
   <div class="h-btns">
-    <a class="btn-teal" data-key="heroBtn1" onclick="navScrollTo('#galerie')">Découvrir l'atelier</a>
-    <a class="btn-rose-outline" data-key="heroBtn2" onclick="navScrollTo('#contact')">Commander une pièce <svg width="15" height="6" viewBox="0 0 15 6" fill="none"><path d="M0 3h13M10 1l3 2-3 2" stroke="currentColor" stroke-width=".9"/></svg></a>
+    <a class="btn-teal" href="javascript:void(0)" data-key="heroBtn1" onclick="navScrollTo('#galerie');return false;">Découvrir l'atelier</a>
+    <a class="btn-rose-outline" href="javascript:void(0)" data-key="heroBtn2" onclick="navScrollTo('#contact');return false;">Commander une pièce <svg width="15" height="6" viewBox="0 0 15 6" fill="none"><path d="M0 3h13M10 1l3 2-3 2" stroke="currentColor" stroke-width=".9"/></svg></a>
   </div>
   <div style="position:absolute;bottom:2.4rem;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:.55rem;font-size:.56rem;letter-spacing:.28em;text-transform:uppercase;color:var(--text-soft);animation:floatY 4s ease-in-out infinite;">
     <span style="font-size:1.4rem;animation:sway 3s ease-in-out infinite;">🌸</span>
@@ -1208,15 +1208,15 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     <h2 class="s-ttl" data-key="collSttl">Collections</h2>
   </div>
   <div class="coll-grid">
-    <div class="coll-card reveal" onclick="goTo('corolles')" data-coll="corolles">
+    <div class="coll-card reveal" onclick=\"goTo('corolles');return false;\" data-coll="corolles">
       <div class="coll-img"><img src="images/mug2.JPG" /><div class="coll-img-ov"></div></div>
       <div class="coll-body"><p class="coll-tag">Collection</p><h3 class="coll-name">Jardin Enchanté</h3><p class="coll-desc" data-key="collCorolles">Boire dans une fleur. Des tasses et mugs aux bords pétales, pour transformer chaque thé en rituel enchanté.</p><span class="coll-link">Découvrir →</span></div>
     </div>
-    <div class="coll-card reveal" style="transition-delay:.15s" onclick="goTo('mer')" data-coll="mer">
+    <div class="coll-card reveal" style="transition-delay:.15s" onclick=\"goTo('mer');return false;\" data-coll="mer">
       <div class="coll-img"><img src="images/coupe.JPG" /><div class="coll-img-ov"></div></div>
       <div class="coll-body"><p class="coll-tag">Collection</p><h3 class="coll-name">Trésors Marins</h3><p class="coll-desc" data-key="collMer">Coquillages devenus coupelles, vagues sculptées dans l'argile. La mer réinterprétée avec des yeux de fée.</p><span class="coll-link">Découvrir →</span></div>
     </div>
-    <div class="coll-card reveal" style="transition-delay:.3s" onclick="goTo('unique')" data-coll="unique">
+    <div class="coll-card reveal" style="transition-delay:.3s" onclick=\"goTo('unique');return false;\" data-coll="unique">
       <div class="coll-img"><img src="images/lampadaire.JPG" /><div class="coll-img-ov"></div></div>
       <div class="coll-body"><p class="coll-tag">Collection</p><h3 class="coll-name">Pièces Uniques</h3><p class="coll-desc" data-key="collUnique">Lampadaires sculpturaux, cadeaux précieux, objets sur-mesure nés d'un désir particulier.</p><span class="coll-link">Découvrir →</span></div>
     </div>
@@ -1238,7 +1238,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 
   <!-- Item unique → page Sujet de diplôme -->
   <div class="reveal" id="expo-passees-cards" style="display:flex;flex-wrap:wrap;justify-content:center;gap:2rem;margin-bottom:3.5rem;">
-    <div onclick="goTo('sujetdediplome')" style="cursor:pointer;max-width:320px;width:100%;background:rgba(253,250,247,.97);border:1px solid rgba(75,191,196,.2);border-radius:18px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.1);transition:transform .3s,box-shadow .3s;"
+    <div onclick=\"goTo('sujetdediplome');return false;\" style="cursor:pointer;max-width:320px;width:100%;background:rgba(253,250,247,.97);border:1px solid rgba(75,191,196,.2);border-radius:18px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.1);transition:transform .3s,box-shadow .3s;"
       onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 16px 40px rgba(42,157,163,.18)'"
       onmouseleave="this.style.transform='';this.style.boxShadow='0 8px 28px rgba(42,157,163,.1)'">
       <div style="aspect-ratio:1;background:linear-gradient(135deg,var(--aqua-light),var(--rose-pale));overflow:hidden;position:relative;">
@@ -1324,7 +1324,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
 </section>
 
 <footer>
-  <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
+  <div class="f-logo" onclick=\"goTo('home');return false;\" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
   <p class="f-tagline" data-key="fTagline">Petits mondes enchantés · Côte d'Azur</p>
   <ul class="f-links">
     <li><a href="javascript:void(0)" onclick="navScrollTo('#apropos');return false;">À Propos</a></li>
@@ -1347,7 +1347,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="cp-hero">
     <div class="cp-hero-img"><img src="images/mug.JPG" style="opacity:0;transition:opacity .4s;" id="img-cp-corolles-hero"/></div>
     <div class="cp-hero-text">
-      <button class="cp-back" onclick="navScrollTo('#collections')"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
+      <button class="cp-back" onclick=\"navScrollTo('#collections');return false;\"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
       <p class="cp-hero-tag" data-key="cpCorollesTag">Collection Sara Céramique</p>
       <h1 class="cp-hero-title" data-key="cpCorollesTtl">Jardin Enchanté<em>Boire dans une fleur</em></h1>
       <div class="cp-divider"></div>
@@ -1367,10 +1367,10 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="cp-cta reveal">
     <h2 data-key="cpCorollesCtaTtl">Une pièce vous fait rêver ?</h2>
     <p>Chaque création est unique. Contactez-moi pour une commande sur-mesure ou pour acquérir une pièce disponible.</p>
-    <button class="btn-teal" onclick="navScrollTo('#contact')">Me contacter</button>
+    <button class="btn-teal" onclick=\"navScrollTo('#contact');return false;\">Me contacter</button>
   </div>
 <footer>
-  <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
+  <div class="f-logo" onclick=\"goTo('home');return false;\" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
   <p class="f-tagline">Petits mondes enchantés · Côte d'Azur</p>
   <ul class="f-links">
     <li><a href="javascript:void(0)" onclick="navScrollTo('#apropos');return false;">À Propos</a></li>
@@ -1393,7 +1393,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="cp-hero">
     <div class="cp-hero-img"><img src="images/coupe.JPG" style="opacity:0;transition:opacity .4s;" id="img-cp-mer-hero"/></div>
     <div class="cp-hero-text">
-      <button class="cp-back" onclick="navScrollTo('#collections')"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
+      <button class="cp-back" onclick=\"navScrollTo('#collections');return false;\"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
       <p class="cp-hero-tag" data-key="cpMerTag">Collection Sara Céramique</p>
       <h1 class="cp-hero-title" data-key="cpMerTtl">Trésors Marins<em>La mer en forme</em></h1>
       <div class="cp-divider"></div>
@@ -1416,10 +1416,10 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="cp-cta reveal">
     <h2>Une pièce vous fait rêver ?</h2>
     <p>Chaque création est unique. Contactez-moi pour une commande sur-mesure ou pour acquérir une pièce disponible.</p>
-    <button class="btn-teal" onclick="navScrollTo('#contact')">Me contacter</button>
+    <button class="btn-teal" onclick=\"navScrollTo('#contact');return false;\">Me contacter</button>
   </div>
 <footer>
-  <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
+  <div class="f-logo" onclick=\"goTo('home');return false;\" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
   <p class="f-tagline">Petits mondes enchantés · Côte d'Azur</p>
   <ul class="f-links">
     <li><a href="javascript:void(0)" onclick="navScrollTo('#apropos');return false;">À Propos</a></li>
@@ -1442,7 +1442,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="cp-hero">
     <div class="cp-hero-img"><img src="images/lampadaire.JPG" style="opacity:0;transition:opacity .4s;" id="img-cp-unique-hero"/></div>
     <div class="cp-hero-text">
-      <button class="cp-back" onclick="navScrollTo('#collections')"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
+      <button class="cp-back" onclick=\"navScrollTo('#collections');return false;\"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
       <p class="cp-hero-tag" data-key="cpUniqueTag">Sur commande</p>
       <h1 class="cp-hero-title">Pièces Uniques<em>Votre rêve en argile</em></h1>
       <div class="cp-divider"></div>
@@ -1461,10 +1461,10 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="cp-cta reveal">
     <h2>Votre projet vous attend</h2>
     <p>Décrivez-moi votre rêve et ensemble nous créerons quelque chose d'unique.</p>
-    <button class="btn-teal" onclick="navScrollTo('#contact')">Me contacter</button>
+    <button class="btn-teal" onclick=\"navScrollTo('#contact');return false;\">Me contacter</button>
   </div>
 <footer>
-  <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
+  <div class="f-logo" onclick=\"goTo('home');return false;\" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
   <p class="f-tagline">Petits mondes enchantés · Côte d'Azur</p>
   <ul class="f-links">
     <li><a href="javascript:void(0)" onclick="navScrollTo('#apropos');return false;">À Propos</a></li>
@@ -1509,7 +1509,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   </div>
 </section>
 <footer>
-  <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
+  <div class="f-logo" onclick=\"goTo('home');return false;\" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
   <p class="f-tagline">Petits mondes enchantés · Côte d'Azur</p>
   <ul class="f-links">
     <li><a href="javascript:void(0)" onclick="navScrollTo('#apropos');return false;">À Propos</a></li>
@@ -1534,7 +1534,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="cp-hero">
     <div class="cp-hero-img"><img src="" style="opacity:0;transition:opacity .4s;background:linear-gradient(135deg,var(--aqua-light),var(--rose-pale));" id="img-cp-expo-hero"/></div>
     <div class="cp-hero-text">
-      <button class="cp-back" onclick="navScrollTo('#expositions')"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux expositions</button>
+      <button class="cp-back" onclick=\"navScrollTo('#expositions');return false;\"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux expositions</button>
       <p class="cp-hero-tag" data-key="expoPageTag">Expositions Sara Céramique</p>
       <h1 class="cp-hero-title" data-key="expoPageTitle">Sujet de diplôme<em>À la rencontre du public</em></h1>
       <div class="cp-divider"></div>
@@ -1549,10 +1549,10 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="cp-cta reveal">
     <h2 data-key="expoCtaTtl">Vous souhaitez m'accueillir ?</h2>
     <p data-key="expoCtaDesc">Pour toute invitation à exposer, n'hésitez pas à me contacter directement.</p>
-    <button class="btn-teal" onclick="navScrollTo('#contact')">Me contacter</button>
+    <button class="btn-teal" onclick=\"navScrollTo('#contact');return false;\">Me contacter</button>
   </div>
 <footer>
-  <div class="f-logo" onclick="goTo('home')" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
+  <div class="f-logo" onclick=\"goTo('home');return false;\" style="cursor:pointer;">Sara <span class="lt">Céramique</span></div>
   <p class="f-tagline">Petits mondes enchantés · Côte d'Azur</p>
   <ul class="f-links">
     <li><a href="javascript:void(0)" onclick="navScrollTo('#apropos');return false;">À Propos</a></li>

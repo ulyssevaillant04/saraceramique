@@ -517,7 +517,12 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
     <div class="cp-hero-text">
       <button class="cp-back" onclick="goPage('home',null);document.querySelector('.sn').click()"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
       <p class="cp-hero-tag" contenteditable="true" data-key="cpCorollesTag" spellcheck="false">Collection Sara Céramique</p>
+      <p style="font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--teal-deep);margin-bottom:.3rem;">Nom dans le menu ↓</p>
       <h1 class="cp-hero-title" contenteditable="true" data-key="cpCorollesTtl" spellcheck="false">Jardin Enchanté<em>Boire dans une fleur</em></h1>
+      <input type="text" contenteditable="true" data-key="cpCorollesName" spellcheck="false"
+        style="font-family:'Playfair Display',serif;font-size:.85rem;font-style:italic;color:var(--teal-deep);background:rgba(75,191,196,.06);border:1px dashed rgba(75,191,196,.3);border-radius:6px;padding:.3rem .6rem;outline:none;margin-bottom:.5rem;width:100%;"
+        placeholder="Nom dans le menu (ex: Jardin Enchanté)" value="Jardin Enchanté"
+        onchange="document.querySelectorAll('[data-key=cpCorollesName]').forEach(el=>el.textContent=this.value)"/>
       <div class="cp-divider"></div>
       <p class="cp-hero-desc" contenteditable="true" data-key="cpCorollesDesc" spellcheck="false">Chaque matin peut être enchanté. Ces tasses et mugs sont façonnés comme des corolles ouvertes, pour que chaque gorgée devienne un instant féerique.</p>
     </div>
@@ -550,7 +555,12 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
     <div class="cp-hero-text">
       <button class="cp-back" onclick="goPage('home',null);document.querySelector('.sn').click()"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
       <p class="cp-hero-tag" contenteditable="true" data-key="cpMerTag" spellcheck="false">Collection Sara Céramique</p>
+      <p style="font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--teal-deep);margin-bottom:.3rem;">Nom dans le menu ↓</p>
       <h1 class="cp-hero-title" contenteditable="true" data-key="cpMerTtl" spellcheck="false">Trésors Marins<em>La mer en forme</em></h1>
+      <input type="text" data-key="cpMerName" spellcheck="false"
+        style="font-family:'Playfair Display',serif;font-size:.85rem;font-style:italic;color:var(--teal-deep);background:rgba(75,191,196,.06);border:1px dashed rgba(75,191,196,.3);border-radius:6px;padding:.3rem .6rem;outline:none;margin-bottom:.5rem;width:100%;"
+        placeholder="Nom dans le menu (ex: Trésors Marins)" value="Trésors Marins"
+        onchange="document.querySelectorAll('[data-key=cpMerName]').forEach(el=>el.textContent=this.value)"/>
       <div class="cp-divider"></div>
       <p class="cp-hero-desc" contenteditable="true" data-key="cpMerDesc" spellcheck="false">La mer est un jardin infini. Ces pièces naissent de ses coquillages, de ses vagues et de ses créatures.</p>
     </div>
@@ -583,7 +593,12 @@ footer{background:rgba(26,53,53,.96);color:rgba(253,250,247,.68);padding:4rem 5r
     <div class="cp-hero-text">
       <button class="cp-back" onclick="goPage('home',null);document.querySelector('.sn').click()"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
       <p class="cp-hero-tag" contenteditable="true" data-key="cpUniqueTag" spellcheck="false">Sur commande</p>
+      <p style="font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--teal-deep);margin-bottom:.3rem;">Nom dans le menu ↓</p>
       <h1 class="cp-hero-title" contenteditable="true" data-key="cpUniqueTtl" spellcheck="false">Pièces Uniques<em>Votre rêve en argile</em></h1>
+      <input type="text" data-key="cpUniqueName" spellcheck="false"
+        style="font-family:'Playfair Display',serif;font-size:.85rem;font-style:italic;color:var(--teal-deep);background:rgba(75,191,196,.06);border:1px dashed rgba(75,191,196,.3);border-radius:6px;padding:.3rem .6rem;outline:none;margin-bottom:.5rem;width:100%;"
+        placeholder="Nom dans le menu (ex: Pièces Uniques)" value="Pièces Uniques"
+        onchange="document.querySelectorAll('[data-key=cpUniqueName]').forEach(el=>el.textContent=this.value)"/>
       <div class="cp-divider"></div>
       <p class="cp-hero-desc" contenteditable="true" data-key="cpUniqueDesc" spellcheck="false">Certaines créations ne ressemblent à rien d'autre. Elles naissent d'une idée folle, d'un désir de faire entrer quelque chose d'extraordinaire dans le quotidien.</p>
     </div>
@@ -891,14 +906,17 @@ async function loadAll(){await Promise.all([loadTextes(),loadGalerie(),loadImage
 // ── TEXTES ──
 async function loadTextes(){
   try{const s=await getDoc(doc(db,'site','textes'));if(!s.exists())return;const d=s.data();
-  document.querySelectorAll('[data-key]').forEach(el=>{const v=d[el.dataset.key];if(v!==undefined)el.innerHTML=v;});}catch(e){}
+  document.querySelectorAll('[data-key]').forEach(el=>{const v=d[el.dataset.key];if(v!==undefined){if(el.tagName==='INPUT'||el.tagName==='TEXTAREA')el.value=v;else el.innerHTML=v;}});}catch(e){}
   // contact
   try{const s=await getDoc(doc(db,'site','contact'));if(!s.exists())return;const d=s.data();
   const m={'cAdresse':d.adresse,'cEmail':d.email,'cIg':d.instagram};
   Object.entries(m).forEach(([k,v])=>{if(v){const el=document.querySelector(`[data-key="${k}"]`);if(el)el.innerHTML=v;}});}catch(e){}
 }
 window.saveAll=async()=>{
-  const tx={};document.querySelectorAll('[data-key]').forEach(el=>{tx[el.dataset.key]=el.innerHTML;});
+  const tx={};document.querySelectorAll('[data-key]').forEach(el=>{
+    if(el.tagName==='INPUT'||el.tagName==='TEXTAREA') tx[el.dataset.key]=el.value;
+    else tx[el.dataset.key]=el.innerHTML;
+  });
   const contact={adresse:tx.cAdresse||'',email:tx.cEmail||'',instagram:tx.cIg||''};
   delete tx.cAdresse;delete tx.cEmail;delete tx.cIg;
   try{await setDoc(doc(db,'site','textes'),tx,{merge:true});await setDoc(doc(db,'site','contact'),contact,{merge:true});toast('✦ Tout enregistré !');}

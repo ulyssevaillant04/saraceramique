@@ -85,8 +85,6 @@ onSnapshot(doc(db,'site','textes'),snap=>{
   if(d.collUnique)document.querySelectorAll('[data-coll=unique] .coll-desc').forEach(el=>el.textContent=d.collUnique);
   // Révéler tous les textes maintenant qu'ils sont à jour
   document.body.classList.add('texts-loaded');
-  // Mettre à jour les slugs URL depuis les nouveaux noms
-  if(window.refreshSlugs) window.refreshSlugs();
 });
 // Fallback : révéler les textes après 2s max si Firebase tarde
 setTimeout(()=>document.body.classList.add('texts-loaded'), 2000);
@@ -317,7 +315,7 @@ onSnapshot(doc(db,'site','extraCollections'),snap=>{
       document.querySelector('.coll-grid').appendChild(cardDiv);
     }
     // 5. Exposer dans hashMap
-    if(window._pageToSlug){ window._pageToSlug[pageId]=pageId; window._slugToPage[pageId]=pageId; }
+    if(window._goToHashMap){ window._goToHashMap[pageId]=pageId; window._hashToPage[pageId]=pageId; }
   });
 });
 
@@ -430,7 +428,10 @@ onSnapshot(doc(db,'site','expositions'),snap=>{
       if(expoPassees)expoPassees.appendChild(cardDiv);
     }
     // 6. Ajouter dans hashMap et hashToPage pour la navigation par URL
-    if(window._pageToSlug){ window._pageToSlug[pageId]=pageId; window._slugToPage[pageId]=pageId; }
+    if(window._goToHashMap){
+      window._goToHashMap[pageId]=pageId;
+      window._hashToPage[pageId]=pageId;
+    }
   });
 });
 
@@ -1612,41 +1613,6 @@ document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style
 (function tr(){ring.style.left=mx+'px';ring.style.top=my+'px';requestAnimationFrame(tr);})();
 
 /* ── SPA NAVIGATION ── */
-// ── Slugs URL dynamiques ──
-function toSlug(str){
-  return (str||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'').trim();
-}
-window._pageToSlug={'home':'','boutique':'boutique'};
-window._slugToPage={'boutique':'boutique'};
-window.refreshSlugs=function(){
-  function nameFor(key,fb){
-    var els=document.querySelectorAll('[data-key="'+key+'"]');
-    for(var i=0;i<els.length;i++){var t=(els[i].value||els[i].textContent||'').trim();if(t)return t;}
-    return fb;
-  }
-  var pairs=[
-    ['corolles','cpCorollesName','Jardin Enchante'],
-    ['mer','cpMerName','Tresors Marins'],
-    ['unique','cpUniqueName','Pieces Uniques'],
-    ['sujetdediplome','expoNouraMenuName','Nourea'],
-  ];
-  pairs.forEach(function(p){
-    var slug=toSlug(nameFor(p[1],p[2]))||p[0];
-    window._pageToSlug[p[0]]=slug;
-    window._slugToPage[slug]=p[0];
-  });
-  document.querySelectorAll('[id^="dd-dyncoll-"]').forEach(function(el){
-    var pid=el.id.replace('dd-dyncoll-','');
-    var name=(el.textContent||'').trim().split('\n')[0].trim();
-    if(name){var s=toSlug(name)||pid;window._pageToSlug[pid]=s;window._slugToPage[s]=pid;}
-  });
-  document.querySelectorAll('[id^="dd-expo-"]').forEach(function(el){
-    var pid=el.id.replace('dd-expo-','');
-    var name=(el.textContent||'').trim();
-    if(name){var s=toSlug(name)||pid;window._pageToSlug[pid]=s;window._slugToPage[s]=pid;}
-  });
-};
-
 function goTo(name, skipScrollReset){
   if(!skipScrollReset){
     document.documentElement.style.scrollBehavior='auto';
@@ -1664,7 +1630,12 @@ function goTo(name, skipScrollReset){
   if(!pg)return;
   pg.classList.add('active');
   pg.style.display='block'; // override le style inline si présent
-  if(h!=='') history.replaceState(null,'','#'+h);
+  // Sauvegarder la page dans l'URL
+  const hashMap = {'home':'','corolles':'jardinenchante','mer':'tresorsmarins','unique':'piecesuniques','boutique':'boutique','sujetdediplome':'sujetdediplome'};
+  window._goToHashMap=hashMap;
+  window._hashToPage = window._hashToPage||{'jardinenchante':'corolles','tresorsmarins':'mer','piecesuniques':'unique','boutique':'boutique','sujetdediplome':'sujetdediplome'};
+  const h = hashMap[name] !== undefined ? hashMap[name] : name;
+  if(h) history.replaceState(null,'','#'+h);
   else history.replaceState(null,'',window.location.pathname);
   if(!skipScrollReset){
     requestAnimationFrame(()=>{
@@ -2072,13 +2043,9 @@ function buildGalDots() {
 document.addEventListener('DOMContentLoaded', () => {
   // Restaurer la page depuis l'URL au chargement/refresh
   const hash = window.location.hash.replace('#','');
-  const staticFallback = {'jardinenchante':'corolles','tresorsmarins':'mer','piecesuniques':'unique','boutique':'boutique','sujetdediplome':'sujetdediplome'};
-  if(hash){
-    // Essayer dans l'ordre : slugToPage dynamique, hash direct comme pageId, fallback statique
-    const target = (window._slugToPage&&window._slugToPage[hash]) || 
-                   (document.getElementById('page-'+hash)?hash:null) ||
-                   staticFallback[hash];
-    if(target) goTo(target, false);
+  const hashToPage = window._hashToPage||{'jardinenchante':'corolles','tresorsmarins':'mer','piecesuniques':'unique','boutique':'boutique','sujetdediplome':'sujetdediplome'};
+  if(hash && hashToPage[hash]){
+    goTo(hashToPage[hash], false);
   }
   const lb = document.getElementById('gal-lb');
   lb.addEventListener('touchstart', e => { galTouchX = e.touches[0].clientX; }, {passive:true});

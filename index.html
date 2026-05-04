@@ -2330,6 +2330,11 @@ async function subscribeNewsletter() {
         msgEl.textContent='✦ Merci ! Vous serez parmi les premiers informés.';
         msgEl.style.display='block';
         return;
+      } else {
+        const errText = await res.text();
+        console.error('Brevo error:', res.status, errText);
+        msgEl.textContent='Erreur: '+res.status+' — '+errText.substring(0,100);
+        msgEl.style.display='block';
       }
     }
   } catch(e) {}

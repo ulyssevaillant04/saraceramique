@@ -2319,15 +2319,16 @@ async function subscribeNewsletter() {
     const snap = await getDoc(doc(db,'site','brevo'));
     if(snap.exists() && snap.data().key && snap.data().list) {
       const {key, list} = snap.data();
-      const res = await fetch('https://api.brevo.com/v3/contacts', {
+      // Appel via Cloud Function (évite les problèmes CORS)
+      const res = await fetch('https://us-central1-sara-ceramique.cloudfunctions.net/subscribeToBrevo', {
         method:'POST',
-        headers:{'api-key':key,'Content-Type':'application/json','Accept':'application/json'},
-        body:JSON.stringify({email, listIds:[parseInt(list)], updateEnabled:true})
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({email, apiKey:key, listId:list})
       });
-      if(res.ok || res.status===201 || res.status===204) {
+      if(res.ok) {
         emailInput.style.display='none';
         emailInput.closest('.b-notify').querySelector('button').style.display='none';
-        msgEl.textContent='✦ Merci ! Vous serez parmi les premiers informés.';
+        msgEl.textContent='Merci ! Vous serez parmi les premiers informés.';
         msgEl.style.display='block';
         return;
       } else {
@@ -2337,7 +2338,11 @@ async function subscribeNewsletter() {
         msgEl.style.display='block';
       }
     }
-  } catch(e) {}
+  } catch(e) {
+    console.error('Brevo fetch error:', e);
+    msgEl.textContent='Erreur technique: '+e.message;
+    msgEl.style.display='block';
+  }
 
   // Fallback si Brevo non configuré
   emailInput.style.display='none';

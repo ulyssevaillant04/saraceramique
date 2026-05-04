@@ -89,6 +89,13 @@ onSnapshot(doc(db,'site','textes'),snap=>{
 // Fallback : révéler les textes après 2s max si Firebase tarde
 setTimeout(()=>document.body.classList.add('texts-loaded'), 2000);
 
+// Charger la config Brevo et l'exposer globalement pour subscribeNewsletter
+getDoc(doc(db,'site','brevo')).then(snap=>{
+  if(snap.exists()&&snap.data().key&&snap.data().list){
+    window._brevoConfig={key:snap.data().key,list:snap.data().list};
+  }
+}).catch(()=>{});
+
 
 // Cadrage photos hero (object-position)
 onSnapshot(doc(db,'site','heroPositions'),snap=>{
@@ -2314,16 +2321,14 @@ async function subscribeNewsletter() {
     return;
   }
 
-  // Lire la config Brevo depuis Firebase
+  // Lire la config Brevo depuis la variable globale chargée par le module
   try {
-    const snap = await getDoc(doc(db,'site','brevo'));
-    if(snap.exists() && snap.data().key && snap.data().list) {
-      const {key, list} = snap.data();
-      // Appel via Cloud Function (évite les problèmes CORS)
+    const config = window._brevoConfig;
+    if(config && config.key && config.list) {
       const res = await fetch('https://us-central1-sara-ceramique.cloudfunctions.net/subscribeToBrevo', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({email, apiKey:key, listId:list})
+        body:JSON.stringify({email, apiKey:config.key, listId:config.list})
       });
       if(res.ok) {
         emailInput.style.display='none';
@@ -2337,6 +2342,10 @@ async function subscribeNewsletter() {
         msgEl.textContent='Erreur: '+res.status+' — '+errText.substring(0,100);
         msgEl.style.display='block';
       }
+    } else {
+      console.error('Brevo config not loaded yet');
+      msgEl.textContent='Configuration non chargée, réessayez dans quelques secondes.';
+      msgEl.style.display='block';
     }
   } catch(e) {
     console.error('Brevo fetch error:', e);

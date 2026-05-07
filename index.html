@@ -541,6 +541,7 @@ onSnapshot(doc(db,'site','evenements'),snap=>{
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;overflow-x:hidden;}
+@media(max-width:768px){html{scroll-behavior:auto;}}
 body{font-family:'Nunito',sans-serif;background:var(--white);color:var(--text);cursor:none;}
 body:not(.texts-loaded) [data-key]{visibility:hidden;}
 

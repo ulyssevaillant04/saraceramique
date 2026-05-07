@@ -452,7 +452,7 @@ function applyDynExpos(expos){
       const cardDiv=document.createElement('div');
       cardDiv.id='card-home-expo-'+pageId;
       cardDiv.innerHTML=`
-<div onclick=\"goTo('${pageId}');return false;\" style="cursor:pointer;max-width:320px;width:100%;background:rgba(253,250,247,.97);border:1px solid rgba(75,191,196,.2);border-radius:18px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.1);transition:transform .3s,box-shadow .3s;display:flex;flex-direction:column;height:100%;"
+<div onclick=\"goTo('${pageId}');return false;\" style="cursor:pointer;max-width:320px;width:100%;background:rgba(253,250,247,.97);border:1px solid rgba(75,191,196,.2);border-radius:18px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.1);transition:transform .3s,box-shadow .3s;display:flex;flex-direction:column;height:100%;touch-action:manipulation;-webkit-tap-highlight-color:transparent;"
   onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 16px 40px rgba(42,157,163,.18)'"
   onmouseleave="this.style.transform='';this.style.boxShadow='0 8px 28px rgba(42,157,163,.1)'">
   <div style="aspect-ratio:1;background:linear-gradient(135deg,var(--aqua-light),var(--rose-pale));overflow:hidden;position:relative;">
@@ -670,7 +670,7 @@ section{position:relative;}
 .sc1{top:8%;left:4%;}.sc2{top:22%;right:7%;animation-delay:.8s;}
 .sc3{bottom:18%;left:11%;animation-delay:.4s;}.sc4{bottom:8%;right:5%;animation-delay:1.2s;}
 .coll-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5rem;margin-top:5rem;}
-.coll-card{background:rgba(253,250,247,.97);border-radius:22px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.09);transition:transform .4s,box-shadow .4s;cursor:pointer;display:flex;flex-direction:column;}
+.coll-card{background:rgba(253,250,247,.97);border-radius:22px;overflow:hidden;box-shadow:0 8px 28px rgba(42,157,163,.09);transition:transform .4s,box-shadow .4s;cursor:pointer;display:flex;flex-direction:column;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
 .coll-card:hover{transform:translateY(-10px);box-shadow:0 22px 56px rgba(42,157,163,.17);}
 .coll-img{aspect-ratio:4/3;position:relative;overflow:hidden;}
 .coll-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s;}
@@ -1006,7 +1006,8 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   #cursor,#cursor-ring{display:none;}
   #page-home .h-title{font-size:clamp(2.2rem,11vw,4rem);}
   #page-home .h-orn{margin:1.4rem 0;}
-  #page-home .h-btns{flex-direction:column;gap:.8rem;align-items:flex-start;}
+  #page-home .h-btns{flex-direction:column;gap:.8rem;align-items:stretch;}
+  #page-home .h-btns .btn-teal, #page-home .h-btns .btn-rose-outline{text-align:center;justify-content:center;width:100%;box-sizing:border-box;}
   #apropos,#contact{grid-template-columns:1fr;gap:2.5rem;}  #apropos{padding:0.5rem 1.5rem 4rem;}
   #apropos,#galerie,#collections,#expositions,#univers,#contact{scroll-margin-top:75px;}
   #galerie,#collections,#univers,#contact{padding:0.5rem 1.5rem 4rem;}

@@ -1253,15 +1253,15 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     <h2 class="s-ttl" data-key="collSttl">Collections</h2>
   </div>
   <div class="coll-grid">
-    <div class="coll-card reveal" onclick=\"goTo('corolles');return false;\" data-coll="corolles">
+    <div class="coll-card reveal" data-goto="corolles" data-coll="corolles">
       <div class="coll-img"><img src="images/mug2.JPG" /><div class="coll-img-ov"></div></div>
       <div class="coll-body"><p class="coll-tag" data-key="collCorollesTag">Collection</p><h3 class="coll-name" data-key="collCorollesName">Jardin Enchanté</h3><p class="coll-desc" data-key="collCorolles">Boire dans une fleur. Des tasses et mugs aux bords pétales, pour transformer chaque thé en rituel enchanté.</p><span class="coll-link">Découvrir →</span></div>
     </div>
-    <div class="coll-card reveal" style="transition-delay:.15s" onclick=\"goTo('mer');return false;\" data-coll="mer">
+    <div class="coll-card reveal" style="transition-delay:.15s" data-goto="mer" data-coll="mer">
       <div class="coll-img"><img src="images/coupe.JPG" /><div class="coll-img-ov"></div></div>
       <div class="coll-body"><p class="coll-tag" data-key="collMerTag">Collection</p><h3 class="coll-name" data-key="collMerName">Trésors Marins</h3><p class="coll-desc" data-key="collMer">Coquillages devenus coupelles, vagues sculptées dans l'argile. La mer réinterprétée avec des yeux de fée.</p><span class="coll-link">Découvrir →</span></div>
     </div>
-    <div class="coll-card reveal" style="transition-delay:.3s" onclick=\"goTo('unique');return false;\" data-coll="unique">
+    <div class="coll-card reveal" style="transition-delay:.3s" data-goto="unique" data-coll="unique">
       <div class="coll-img"><img src="images/lampadaire.JPG" /><div class="coll-img-ov"></div></div>
       <div class="coll-body"><p class="coll-tag" data-key="collUniqueTag">Collection</p><h3 class="coll-name" data-key="collUniqueName">Pièces Uniques</h3><p class="coll-desc" data-key="collUnique">Lampadaires sculpturaux, cadeaux précieux, objets sur-mesure nés d'un désir particulier.</p><span class="coll-link">Découvrir →</span></div>
     </div>
@@ -1700,12 +1700,17 @@ function navScrollTo(hash){
     const el=document.querySelector(hash);
     if(!el)return;
     el.querySelectorAll('.reveal').forEach(r=>r.classList.add('visible'));
-    // Scroll instantané sur mobile, smooth sur desktop
     const isMobile=window.innerWidth<=768;
-    el.scrollIntoView({behavior:isMobile?'auto':'smooth',block:'start'});
+    if(isMobile){
+      // Sur mobile : scroll instantané sans animation
+      const top=el.getBoundingClientRect().top+window.scrollY-70;
+      window.scrollTo({top,behavior:'auto'});
+    } else {
+      el.scrollIntoView({behavior:'smooth',block:'start'});
+    }
   };
   if(!document.getElementById('page-home').classList.contains('active')){
-    goTo('home',true);setTimeout(doScroll,200);
+    goTo('home',true);setTimeout(doScroll,50);
   } else doScroll();
 }
 
@@ -1994,19 +1999,19 @@ let galImgs = [
   'images/coupe2.JPG','images/lampadaire.JPG','images/mug.JPG','images/coupe.JPG'
 ];
 let galIdx = 0;
-// Fix touch iOS : cartes collections et expositions
-document.addEventListener('touchend', function(e){
-  const card = e.target.closest('.coll-card');
+// Fix touch iOS + click desktop : cartes collections et expositions via data-goto
+function handleCardNav(e){
+  const card = e.target.closest('[data-goto]');
   if(card){
-    const onclickAttr = card.getAttribute('onclick');
-    if(onclickAttr){ e.preventDefault(); eval(onclickAttr); return; }
+    const target = card.getAttribute('data-goto');
+    if(target){
+      if(e.type==='touchend') e.preventDefault();
+      goTo(target);
+    }
   }
-  const expoCard = e.target.closest('[id^="card-home-expo-"] [onclick], #expo-passees-cards [onclick]');
-  if(expoCard){
-    const onclickAttr = expoCard.getAttribute('onclick');
-    if(onclickAttr){ e.preventDefault(); eval(onclickAttr); }
-  }
-}, {passive:false});
+}
+document.addEventListener('click', handleCardNav);
+document.addEventListener('touchend', handleCardNav, {passive:false});
 
 let galTouchX = null;
 

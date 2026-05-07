@@ -276,7 +276,7 @@ function applyDynColls(colls){
   <div class="cp-hero">
     <div class="cp-hero-img"><img src="${c.img||''}" style="opacity:${c.img?'1':'0'};transition:opacity .4s;" id="img-cp-${pageId}-hero"/></div>
     <div class="cp-hero-text">
-      <button class="cp-back" onclick=\"navScrollTo('#collections');return false;\"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
+      <button class="cp-back" data-scrollto="#collections"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
       <p class="cp-hero-tag" data-key="dyncoll_${c.id}_tag">${c.tag||'Collection'}</p>
       <h1 class="cp-hero-title" data-key="dyncoll_${c.id}_title">${c.name||''}<em></em></h1>
       <div class="cp-divider"></div>
@@ -380,7 +380,7 @@ function applyDynExpos(expos){
   <div class="cp-hero">
     <div class="cp-hero-img"><img src="" style="opacity:0;transition:opacity .4s;background:linear-gradient(135deg,var(--aqua-light),var(--rose-pale));" id="img-cp-${pageId}-hero"/></div>
     <div class="cp-hero-text">
-      <button class="cp-back" onclick=\"navScrollTo('#expositions');return false;\"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux expositions</button>
+      <button class="cp-back" data-scrollto="#expositions"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux expositions</button>
       <p class="cp-hero-tag" data-key="${pageId}_tag">Expositions Sara Céramique</p>
       <h1 class="cp-hero-title" data-key="${pageId}_title">${expo.nom}<em>À la rencontre du public</em></h1>
       <div class="cp-divider"></div>
@@ -1389,7 +1389,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="cp-hero">
     <div class="cp-hero-img"><img src="images/mug.JPG" style="opacity:0;transition:opacity .4s;" id="img-cp-corolles-hero"/></div>
     <div class="cp-hero-text">
-      <button class="cp-back" onclick=\"navScrollTo('#collections');return false;\"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
+      <button class="cp-back" data-scrollto="#collections"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
       <p class="cp-hero-tag" data-key="cpCorollesTag">Collection Sara Céramique</p>
       <h1 class="cp-hero-title" data-key="cpCorollesTtl">Jardin Enchanté<em>Boire dans une fleur</em></h1>
       <div class="cp-divider"></div>
@@ -1435,7 +1435,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="cp-hero">
     <div class="cp-hero-img"><img src="images/coupe.JPG" style="opacity:0;transition:opacity .4s;" id="img-cp-mer-hero"/></div>
     <div class="cp-hero-text">
-      <button class="cp-back" onclick=\"navScrollTo('#collections');return false;\"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
+      <button class="cp-back" data-scrollto="#collections"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
       <p class="cp-hero-tag" data-key="cpMerTag">Collection Sara Céramique</p>
       <h1 class="cp-hero-title" data-key="cpMerTtl">Trésors Marins<em>La mer en forme</em></h1>
       <div class="cp-divider"></div>
@@ -1484,7 +1484,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="cp-hero">
     <div class="cp-hero-img"><img src="images/lampadaire.JPG" style="opacity:0;transition:opacity .4s;" id="img-cp-unique-hero"/></div>
     <div class="cp-hero-text">
-      <button class="cp-back" onclick=\"navScrollTo('#collections');return false;\"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
+      <button class="cp-back" data-scrollto="#collections"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux collections</button>
       <p class="cp-hero-tag" data-key="cpUniqueTag">Sur commande</p>
       <h1 class="cp-hero-title" data-key="cpUniqueTtl">Pièces Uniques<em>Votre rêve en argile</em></h1>
       <div class="cp-divider"></div>
@@ -1576,7 +1576,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   <div class="cp-hero">
     <div class="cp-hero-img"><img src="" style="opacity:0;transition:opacity .4s;background:linear-gradient(135deg,var(--aqua-light),var(--rose-pale));" id="img-cp-expo-hero"/></div>
     <div class="cp-hero-text">
-      <button class="cp-back" onclick=\"navScrollTo('#expositions');return false;\"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux expositions</button>
+      <button class="cp-back" data-scrollto="#expositions"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M14 5H2M6 1L2 5l4 4" stroke="currentColor" stroke-width=".9"/></svg>Retour aux expositions</button>
       <p class="cp-hero-tag" data-key="expoPageTag">Expositions Sara Céramique</p>
       <h1 class="cp-hero-title" data-key="expoPageTitle">Sujet de diplôme<em>À la rencontre du public</em></h1>
       <div class="cp-divider"></div>
@@ -1702,16 +1702,23 @@ function navScrollTo(hash){
     el.querySelectorAll('.reveal').forEach(r=>r.classList.add('visible'));
     const isMobile=window.innerWidth<=768;
     if(isMobile){
-      // Sur mobile : scroll instantané sans animation
       const top=el.getBoundingClientRect().top+window.scrollY-70;
       window.scrollTo({top,behavior:'auto'});
     } else {
       el.scrollIntoView({behavior:'smooth',block:'start'});
     }
   };
-  if(!document.getElementById('page-home').classList.contains('active')){
-    goTo('home',true);setTimeout(doScroll,50);
-  } else doScroll();
+  const homePage=document.getElementById('page-home');
+  if(!homePage.classList.contains('active')){
+    // Désactiver temporairement le scroll CSS pour éviter l'animation
+    document.documentElement.style.scrollBehavior='auto';
+    document.body.style.scrollBehavior='auto';
+    goTo('home',true);
+    window.scrollTo(0,0);
+    requestAnimationFrame(()=>requestAnimationFrame(doScroll));
+  } else {
+    doScroll();
+  }
 }
 
 /* ── CANVAS FAIRY ELEMENTS — vivants, visibles, magiques ── */
@@ -2001,12 +2008,23 @@ let galImgs = [
 let galIdx = 0;
 // Fix touch iOS + click desktop : cartes collections et expositions via data-goto
 function handleCardNav(e){
+  // Navigation vers une page
   const card = e.target.closest('[data-goto]');
   if(card){
     const target = card.getAttribute('data-goto');
     if(target){
       if(e.type==='touchend') e.preventDefault();
       goTo(target);
+    }
+    return;
+  }
+  // Scroll vers une section (boutons retour)
+  const scrollBtn = e.target.closest('[data-scrollto]');
+  if(scrollBtn){
+    const hash = scrollBtn.getAttribute('data-scrollto');
+    if(hash){
+      if(e.type==='touchend') e.preventDefault();
+      navScrollTo(hash);
     }
   }
 }

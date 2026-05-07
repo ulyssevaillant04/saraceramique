@@ -1699,9 +1699,10 @@ function navScrollTo(hash){
   const doScroll=()=>{
     const el=document.querySelector(hash);
     if(!el)return;
-    // Révéler immédiatement tous les .reveal de cette section
     el.querySelectorAll('.reveal').forEach(r=>r.classList.add('visible'));
-    el.scrollIntoView({behavior:'smooth',block:'start'});
+    // Scroll instantané sur mobile, smooth sur desktop
+    const isMobile=window.innerWidth<=768;
+    el.scrollIntoView({behavior:isMobile?'auto':'smooth',block:'start'});
   };
   if(!document.getElementById('page-home').classList.contains('active')){
     goTo('home',true);setTimeout(doScroll,200);
@@ -1993,6 +1994,20 @@ let galImgs = [
   'images/coupe2.JPG','images/lampadaire.JPG','images/mug.JPG','images/coupe.JPG'
 ];
 let galIdx = 0;
+// Fix touch iOS : cartes collections et expositions
+document.addEventListener('touchend', function(e){
+  const card = e.target.closest('.coll-card');
+  if(card){
+    const onclickAttr = card.getAttribute('onclick');
+    if(onclickAttr){ e.preventDefault(); eval(onclickAttr); return; }
+  }
+  const expoCard = e.target.closest('[id^="card-home-expo-"] [onclick], #expo-passees-cards [onclick]');
+  if(expoCard){
+    const onclickAttr = expoCard.getAttribute('onclick');
+    if(onclickAttr){ e.preventDefault(); eval(onclickAttr); }
+  }
+}, {passive:false});
+
 let galTouchX = null;
 
 function openGallery(i) {

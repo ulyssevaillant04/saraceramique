@@ -1236,6 +1236,13 @@ window.savePc=async()=>{
   }catch(e){toast('Erreur: '+e.message,'e');}
 };
 window.delPcPhoto=async(coll,id,pi,e)=>{e.stopPropagation();if(!confirm('Retirer cette photo ?'))return;const s=await getDoc(doc(db,'collections',coll,'pieces',id));if(!s.exists())return;const imgs=[...(s.data().imgs||[])];imgs.splice(pi,1);await updateDoc(doc(db,'collections',coll,'pieces',id),{imgs});await loadColl(coll);toast('Photo retirée ✦');};
+
+window.delPc=async(coll,id)=>{
+  if(!confirm('Supprimer cette pièce ?'))return;
+  await deleteDoc(doc(db,'collections',coll,'pieces',id));
+  await loadColl(coll);
+  toast('Pièce supprimée ✦');
+};
 window.replPcPhoto=async(coll,id,pi,path)=>{const s=await getDoc(doc(db,'collections',coll,'pieces',id));if(!s.exists())return;const imgs=[...(s.data().imgs||[])];imgs[pi]=path;await updateDoc(doc(db,'collections',coll,'pieces',id),{imgs});await loadColl(coll);toast('Photo remplacée ✦');};
 
 // ── COLLECTIONS FIXES : masquer/afficher ──

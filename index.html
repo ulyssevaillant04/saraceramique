@@ -1022,6 +1022,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
   .cp-hero-text{padding:2.5rem 1.5rem;}
   .cp-pieces{padding:3rem 1.5rem;}
   .cp-grid{grid-template-columns:repeat(2,1fr)!important;gap:1rem!important;}
+  .cp-grid .pc-desc{display:none;}
   .cp-cta{padding:3rem 1.5rem;}
   .b-preview-grid{grid-template-columns:1fr 1fr;}
   .b-preview{padding:3rem 1.5rem;}
@@ -2004,7 +2005,20 @@ let galImgs = [
 ];
 let galIdx = 0;
 // Fix touch iOS + click desktop : cartes collections et expositions via data-goto
+// Détecter si le touch est un scroll ou un tap
+let _touchStartX=0, _touchStartY=0;
+document.addEventListener('touchstart', e=>{
+  _touchStartX=e.touches[0].clientX;
+  _touchStartY=e.touches[0].clientY;
+}, {passive:true});
+
 function handleCardNav(e){
+  // Si le doigt a bougé de plus de 8px → c'est un scroll, pas un tap
+  if(e.type==='touchend'){
+    const dx=Math.abs(e.changedTouches[0].clientX-_touchStartX);
+    const dy=Math.abs(e.changedTouches[0].clientY-_touchStartY);
+    if(dx>8||dy>8) return;
+  }
   // Navigation vers une page
   const card = e.target.closest('[data-goto]');
   if(card){

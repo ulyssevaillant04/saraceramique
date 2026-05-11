@@ -89,12 +89,40 @@ onSnapshot(doc(db,'site','textes'),snap=>{
 // Fallback : révéler les textes après 2s max si Firebase tarde
 setTimeout(()=>document.body.classList.add('texts-loaded'), 2000);
 
-// Charger la config Brevo et l'exposer globalement pour subscribeNewsletter
-getDoc(doc(db,'site','brevo')).then(snap=>{
-  if(snap.exists()&&snap.data().key&&snap.data().list){
-    window._brevoConfig={key:snap.data().key,list:snap.data().list};
+// ── CONTACT FORM ──
+function sendContact(){
+  const nom=document.getElementById('contact-nom').value.trim();
+  const email=document.getElementById('contact-email').value.trim();
+  const sujet=document.getElementById('contact-sujet').value.trim();
+  const message=document.getElementById('contact-message').value.trim();
+  const msgEl=document.getElementById('contact-msg');
+  if(!nom||!email||!message){
+    msgEl.textContent='Merci de remplir au moins votre nom, email et message.';
+    msgEl.style.color='var(--rose-deep)';
+    msgEl.style.display='block';
+    return;
   }
-}).catch(()=>{});
+  const btn=document.querySelector('.btn-send');
+  btn.disabled=true;btn.textContent='Envoi…';
+  emailjs.send('service_kc1twkl','template_a8yrqa3',{nom,email,sujet,message})
+    .then(()=>{
+      msgEl.textContent='✦ Message envoyé ! Je vous répondrai très vite.';
+      msgEl.style.color='var(--teal-deep)';
+      msgEl.style.display='block';
+      btn.textContent='Envoyer';btn.disabled=false;
+      ['contact-nom','contact-email','contact-sujet','contact-message'].forEach(id=>document.getElementById(id).value='');
+    })
+    .catch(err=>{
+      msgEl.textContent='Une erreur est survenue, réessayez ou écrivez à saraceramique06@gmail.com';
+      msgEl.style.color='var(--rose-deep)';
+      msgEl.style.display='block';
+      btn.textContent='Envoyer';btn.disabled=false;
+    });
+}
+
+// ── NEWSLETTER ──
+// Charger la config Brevo et l'exposer globalement pour subscribeNewsletter
+getDoc(doc(db,'site','brevo')).then(snap=>{\n  if(snap.exists()&&snap.data().key&&snap.data().list){\n    window._brevoConfig={key:snap.data().key,list:snap.data().list};\n  }\n}).catch(()=>{});\n
 
 
 // Cadrage photos hero (object-position)

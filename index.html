@@ -80,7 +80,7 @@ function sendContact(){
   btn.disabled=true;btn.textContent='Envoi…';
   emailjs.send('service_kc1twkl','template_a8yrqa3',{nom:nom,email:email,sujet:sujet,message:message})
     .then(function(){
-      msgEl.textContent='✦ Message envoyé ! Je vous répondrai très vite.';
+      msgEl.textContent='Message envoyé ! Je vous répondrai très vite.';
       msgEl.style.color='#2a9da3';
       msgEl.style.display='block';
       btn.textContent='Envoyer';btn.disabled=false;
@@ -1397,7 +1397,7 @@ footer{background:rgba(26,53,53,0.96);color:rgba(253,250,247,.68);padding:4rem 5
     <div class="f-g"><label class="f-lbl">Sujet</label><input id="contact-sujet" class="f-in" type="text" placeholder="Commande, cours, rêve à réaliser…"/></div>
     <div class="f-g"><label class="f-lbl">Message</label><textarea id="contact-message" class="f-ta" placeholder="Racontez-moi votre idée…"></textarea></div>
     <button class="btn-send" onclick="sendContact()">Envoyer</button>
-    <div id="contact-msg" style="display:none;margin-top:1.2rem;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:var(--teal-deep);text-align:center;animation:riseUp .5s ease both;">✦ Message envoyé ! Je vous répondrai très vite.</div>
+    <div id="contact-msg" style="display:none;margin-top:1.2rem;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:var(--teal-deep);text-align:center;animation:riseUp .5s ease both;">Message envoyé ! Je vous répondrai très vite.</div>
   </div>
 </section>
 

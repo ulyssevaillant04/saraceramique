@@ -90,7 +90,7 @@ onSnapshot(doc(db,'site','textes'),snap=>{
 setTimeout(()=>document.body.classList.add('texts-loaded'), 2000);
 
 // ── CONTACT FORM ──
-function sendContact(){
+window.sendContact=function(){
   const nom=document.getElementById('contact-nom').value.trim();
   const email=document.getElementById('contact-email').value.trim();
   const sujet=document.getElementById('contact-sujet').value.trim();
